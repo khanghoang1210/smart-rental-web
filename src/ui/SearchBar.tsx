@@ -8,7 +8,7 @@ type SearchBarProps = {
 const SearchBar = (prop: SearchBarProps) => {
   return (
     <Input
-      className="w-1/3 h-10 bg-blue-98"
+      className="w-1/3 h-10 bg-blue-98 border-none"
       suffix={
         <div className="rounded-full bg-blue-40  w-7 h-7 items-center flex justify-center">
         <img src={searchIcon} alt="Search Icon" />
