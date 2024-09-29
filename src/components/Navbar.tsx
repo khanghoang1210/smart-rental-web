@@ -10,7 +10,7 @@ import PersonalButton from "../ui/PersonalButton";
 
 const Navbar = () => {
   return (
-    <nav className="relative flex items-center w-full mt-4 pb-2 shadow-sm">
+    <nav className="relative flex justify-center items-center w-full mt-4 pb-2 border-b border-gray-80">
       <div className="px-24">
         {" "}
         <p>Smart Rental</p>
