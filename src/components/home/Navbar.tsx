@@ -1,7 +1,7 @@
-import SearchBar from "../ui/SearchBar";
-import notiIcon from "../assets/noti.svg";
-import bellIcon from "../assets/bell.svg";
-import PersonalButton from "../ui/PersonalButton";
+import SearchBar from "../../ui/SearchBar";
+import notiIcon from "../../assets/noti.svg";
+import bellIcon from "../../assets/bell.svg";
+import PersonalButton from "../../ui/PersonalButton";
 
 // type TopbarProps = {
 //   name: string;
