@@ -1,12 +1,12 @@
 import Footer from "./ui/Footer";
-import Hero from "./components/home/Hero";
 import Navbar from "./components/home/Navbar";
+import Filter from "./components/filter/Filter";
 
 function App() {
   return (
     <div>
       <Navbar />
-      <Hero />
+      <Filter />
       <Footer />
     </div>
   );
