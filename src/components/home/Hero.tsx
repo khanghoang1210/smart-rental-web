@@ -6,7 +6,7 @@ import q7 from "../../assets/q7.png";
 import q1 from "../../assets/q1.png";
 import q3 from "../../assets/q3.png";
 import thuduc from "../../assets/thuduc.png";
-import FeaturedRooms from "./FeaturedRoom";
+import FeaturedRooms from "../room/FeaturedRoom";
 import UserRating from "./UserRating";
 
 // type HomeProps = {
@@ -76,7 +76,7 @@ const Hero = () => {
       <UserRating/>
 
       <div className="flex justify-center mt-24">
-        <div className="bg-gradient-to-b from-blue-40 to-blue-80 relative flex justify-between items-center mt-16 rounded-3xl h-[300px] w-[1050px]">
+        <div className="bg-gradient-to-b from-blue-40 to-blue-80 relative flex justify-between items-center mt-16 rounded-3xl h-[400px] w-[1050px]">
           <div className="space-y-4 ml-16">
             <h1 className="text-gray-80 font-bold text-3xl">
               Bạn có phòng trọ <br /> muốn cho thuê?
@@ -94,7 +94,7 @@ const Hero = () => {
             <img
               src={heroImage1}
               alt=""
-              className="relative h-[300px] w-auto "
+              className="relative h-[400px] w-auto "
             />
           </div>
         </div>

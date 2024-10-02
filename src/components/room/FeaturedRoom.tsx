@@ -51,7 +51,7 @@ const FeaturedRooms = () => {
                 alt={room.title}
                 className="w-full h-40 object-cover"
               />
-              <div className="absolute top-0 right-0 bg-blue-40 text-white px-3 py-1 rounded-bl-lg shadow-lg ">
+              <div className="absolute top-0 right-0 bg-blue-40 text-gray-90 px-3 py-1 rounded-bl-lg shadow-lg ">
                 {room.price}
               </div>
             </div>
