@@ -19,28 +19,23 @@ const PriceRange = () => {
         <div>
           <label className="block mb-2 font-semibold  text-gray-20">Từ</label>
           <Input
-            
-            name="min"
-            id="minPrice"
             value={price[0]}
             suffix="đ"
             onChange={(e) =>
               handleSliderChange([Number(e.target.value), price[1]])
             }
-            className="w-[160px] px-3 py-2 border border-gray-40 rounded"
+            className="w-[160px] px-3 py-2 border border-gray-20 rounded"
           />
         </div>
         <div>
           <label className="block mb-2 font-semibold text-gray-20">Đến</label>
           <Input
-            name="max"
-            id="maxPrice"
             value={price[1]}
             suffix="đ"
             onChange={(e) =>
               handleSliderChange([price[0], Number(e.target.value)])
             }
-            className="w-[160px] px-3 py-2 border border-gray-40 rounded"
+            className="w-[160px] px-3 py-2 border border-gray-20 rounded"
           />
         </div>
       </div>
@@ -50,7 +45,7 @@ const PriceRange = () => {
           range
           min={0}
           max={10000000}
-          step={500000}
+          step={100000}
           value={price}
           onChange={handleSliderChange}
           styles={{

@@ -18,7 +18,7 @@ const SortOptions = () => {
         <button
           key={option}
           onClick={() => setSelectedOption(option)}
-          className={`px-6 py-2 rounded-lg text-sm font-bold ${
+          className={`px-6 py-2 rounded-lg text-sm font-semibold ${
             selectedOption === option
               ? 'bg-blue-40 text-[#FFFFFF]'
               : 'bg-gray-90 text-gray-40'
