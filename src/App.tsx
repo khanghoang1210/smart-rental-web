@@ -1,15 +1,17 @@
-import Footer from "./ui/Footer";
-import Navbar from "./components/home/Navbar";
-import Filter from "./components/filter/Filter";
+
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Filter from "./pages/Filter";
+import Chat from "./pages/Chat";
 
 function App() {
-  return (
-    <div>
-      <Navbar />
-      <Filter />
-      <Footer />
-    </div>
-  );
+  return <BrowserRouter>
+    <Routes>
+      <Route path="" element={<Home/>}></Route>
+      <Route path="filter" element={<Filter/>}></Route>
+      <Route path="chat" element={<Chat/>}></Route>
+    </Routes>
+  </BrowserRouter>
 }
 
 export default App;

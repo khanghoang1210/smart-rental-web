@@ -1,12 +1,11 @@
-import RoomSearchList from "../room/RoomSearchList";
-import NumOfPerson from "./NumOfPerson";
-import PriceRange from "./PriceRange";
-import RoomType from "./RoomType";
-import SortOptions from "./SortOption";
-import UtilitiesList from "./UtilitiesList";
-// type FilterProps = {
 
-// };
+import NumOfPerson from "../components/filter/NumOfPerson";
+import PriceRange from "../components/filter/PriceRange";
+import RoomType from "../components/filter/RoomType";
+import SortOptions from "../components/filter/SortOption";
+import UtilitiesList from "../components/filter/UtilitiesList";
+import RoomSearchList from "../components/room/RoomSearchList";
+
 
 const Filter = () => {
   return (
