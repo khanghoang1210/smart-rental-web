@@ -1,11 +1,11 @@
-import RoomSearchList from "../room/RoomSearchList";
-import PriceRange from "./PriceRange";
-import RoomType from "./RoomType";
-import SortOptions from "./SortOption";
-import UtilitiesList from "./UtilitiesList";
-// type FilterProps = {
 
-// };
+import NumOfPerson from "../components/filter/NumOfPerson";
+import PriceRange from "../components/filter/PriceRange";
+import RoomType from "../components/filter/RoomType";
+import SortOptions from "../components/filter/SortOption";
+import UtilitiesList from "../components/filter/UtilitiesList";
+import RoomSearchList from "../components/room/RoomSearchList";
+
 
 const Filter = () => {
   return (
@@ -21,6 +21,9 @@ const Filter = () => {
         <div>
           <h2 className="text-lg font-bold mb-4 text-blue-10">Tiện ích</h2>
           <UtilitiesList />
+        </div>
+        <div>
+          <NumOfPerson/>
         </div>
       </div>
       <div className="flex flex-col space-y-10">
