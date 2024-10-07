@@ -1,7 +1,7 @@
-import ChatBox from "../components/chat/Chatbox";
-import MessageList from "../components/chat/MessageList";
-import UserDetail from "../components/chat/UserDetail";
-import Navbar from "../components/home/Navbar";
+import ChatBox from "../../components/chat/Chatbox";
+import MessageList from "../../components/chat/MessageList";
+import UserDetail from "../../components/chat/UserDetail";
+import Navbar from "../../components/home/Navbar";
 
 const Chat = () => {
   return (

@@ -1,6 +1,8 @@
 import { Input } from "antd";
-import gallary from "../../assets/gallery.svg"
-import send from "../../assets/send.svg"
+import gallary from "../../assets/gallery.svg";
+import send from "../../assets/send.svg";
+import { useSocket } from "../../context/SocketContext";
+import { useState } from "react";
 
 const messages = [
   {
@@ -176,6 +178,19 @@ const messages = [
 ];
 
 const ChatBox = () => {
+  const [message, setMessage] = useState("")
+  const socket = useSocket();
+
+  const handleSendMessage = async () => {
+    setMessage(message)
+    socket?.emit("sendMessage", {
+      senderId: 1,
+      receiverId: 2,
+      content: message,
+      messageType: "text"
+    });
+  };
+
   return (
     <div
       className="flex flex-col w-2/4 bg-gray-50"
@@ -187,7 +202,9 @@ const ChatBox = () => {
           alt=""
           className="w-8 h-8"
         />
-        <h1 className="font-semibold text-xl text-gray-20">Florencio Dorrance</h1>
+        <h1 className="font-semibold text-xl text-gray-20">
+          Florencio Dorrance
+        </h1>
       </div>
       <div className="flex-grow p-4 overflow-y-auto">
         {messages.map((msg) => (
@@ -219,12 +236,14 @@ const ChatBox = () => {
           placeholder="Nhấn vào đây để chat"
           className="flex-grow px-4 py-2 border rounded-lg focus:outline-none"
           suffix={
-            <div className="rounded-full w-7 h-7 items-center flex justify-center">
+            <button
+              className="rounded-full w-7 h-7 items-center flex justify-center"
+              onClick={handleSendMessage}
+            >
               <img src={send} alt="Send Icon" />
-            </div>
+            </button>
           }
         />
-        
       </div>
     </div>
   );
