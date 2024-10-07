@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
     "antd": "^5.20.6",
+    "currency-icons": "^1.0.14",
     "rc-slider": "^11.1.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -1,7 +1,6 @@
 import nva from "../../assets/nguyenvana.png";
 import PrimaryButton from "../../ui/PrimaryButton";
 import { StarFilled } from "@ant-design/icons";
-// type UserRatingProps = {};
 
 const UserRating = () => {
   return (
