@@ -18,6 +18,7 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
+      "no-useless-catch": "off", // "off" or 0 both work
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',

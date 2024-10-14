@@ -1,58 +1,104 @@
+import { Button, Input } from "antd";
+import { LoginReq } from "../../models/auth";
+import { useState } from "react";
+import AuthenService from "../../services/AuthService";
 
 const Login = () => {
-  return<form className='absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[540px] h-[740px] flex items-center justify-center bg-[#FFF]'>
-  <h3 className='text-xl font-medium text-white'>Sign in to CodeFast</h3>
-  <div>
-      <label htmlFor='userName' className='text-sm font-medium block mb-2 text-gray-300'>
-          Your User Name
-      </label>
-      <input
-          type='userName'
-          name='userName'
-          id='userName'
-          className='
-  border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-  bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-'
-          placeholder='johnwick'
-      />
-  </div>
-  <div>
-      <label htmlFor='password' className='text-sm font-medium block mb-2 text-gray-300'>
-          Your Password
-      </label>
-      <input
-          type='password'
-          name='password'
-          id='password'
-          className='
-  border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-  bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-'
-          placeholder='*******'
-      />
-  </div>
+  const [inputs, setInputs] = useState<LoginReq>({
+    phone_number: "",
+    password: "",
+  });
 
-  <button
-      type='submit'
-      className='w-full text-white focus:ring-blue-300 font-medium rounded-lg
-      text-sm px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s
-  '
-  >
-      Login
-  </button>
-  <button className='flex w-full justify-end'>
-      <a href='#' className='text-sm block text-brand-orange hover:underline w-full text-right'>
-          Forgot Password?
-      </a>
-  </button>
-  <div className='text-sm font-medium text-gray-300'>
-      Not Registered?{" "}
-      <a href='#' className='text-blue-700 hover:underline'>
-          Create account
-      </a>
-  </div>
-</form>
-}
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-export default Login
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputs.phone_number || !inputs.password)
+      return alert("Please fill all field");
+    const authService = new AuthenService();
+    try {
+      const authRes = await authService.login(inputs);
+      const result = authRes.data;
+      if(result.errCode == 200) {
+          const token = result.data.accessToken;
+          console.log(token)
+          // setCookie('token', token, { path: '/' })
+          // router.push('/');
+
+      }else if(result.errCode != 200){
+          alert("User name or password are wrong")
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+  return (
+    <form
+      className="bg-[#FFF] w-full max-w-[450px] shadow-lg rounded-[40px] p-8"
+      onSubmit={handleLogin}
+    >
+      <div className="flex flex-col mb-6">
+        <h2 className="text-xl font-normal text-gray-20">
+          Chào mừng bạn trở lại
+        </h2>
+        <h1 className="text-[40px] font-medium">Đăng nhập</h1>
+      </div>
+
+      <div className="mb-6">
+        <label
+          htmlFor="phone_number"
+          className="block text-sm font-medium text-gray-20 mb-1"
+        >
+          Số điện thoại
+        </label>
+        <Input
+          onChange={handleChangeInput}
+          placeholder="Nhập số điện thoại"
+          id="phone_number"
+          name="phone_number"
+          size="large"
+          className="h-[50px] focus:border-blue-60 hover:border-blue-60"
+        />
+      </div>
+      <div className="mb-6">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-20 mb-1"
+        >
+          Mật khẩu
+        </label>
+        <Input.Password
+          onChange={handleChangeInput}
+          placeholder="Nhập mật khẩu"
+          id="password"
+          name="password"
+          size="large"
+          className="h-[50px] focus:border-blue-60 hover:border-blue-60"
+        />
+      </div>
+      <div className="text-right mb-6">
+        <a href="#" className="text-blue-10">
+          Quên mật khẩu?
+        </a>
+      </div>
+      <Button
+        type="primary"
+        htmlType="submit"
+        className="w-full h-14 mb-10 bg-blue-40"
+        size="large"
+      >
+        Đăng nhập
+      </Button>
+      <div className="text-center text-gray-40">
+        <span>Bạn chưa có tài khoản? </span>
+        <a href="#" className="text-blue-40">
+          Đăng ký ngay
+        </a>
+      </div>
+    </form>
+  );
+};
+
+export default Login;
