@@ -3,6 +3,7 @@ import gallary from "../../assets/gallery.svg";
 import send from "../../assets/send.svg";
 import { useSocket } from "../../context/SocketContext";
 import { useState } from "react";
+import { useAppStore } from "@/store";
 
 const messages = [
   {
@@ -178,19 +179,19 @@ const messages = [
 ];
 
 const ChatBox = () => {
-  const [message, setMessage] = useState("")
+  const { userInfo } = useAppStore();
+  const [message, setMessage] = useState("");
   const socket = useSocket();
-
   const handleSendMessage = async () => {
-    setMessage(message)
+    setMessage(message);
     socket?.emit("sendMessage", {
-      senderId: 1,
+      senderId: userInfo?.id,
       receiverId: 2,
       content: message,
-      messageType: "text"
+      messageType: "text",
     });
   };
-
+  console.log(message)
   return (
     <div
       className="flex flex-col w-2/4 bg-gray-50"
@@ -232,7 +233,10 @@ const ChatBox = () => {
           <img src={gallary} alt="" />
         </button>
         <Input
+          onChange={(e) => setMessage(e.target.value)}
           type="text"
+          id="message"
+          name="message"
           placeholder="Nhấn vào đây để chat"
           className="flex-grow px-4 py-2 border rounded-lg focus:outline-none"
           suffix={

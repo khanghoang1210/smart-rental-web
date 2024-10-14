@@ -2,8 +2,16 @@ import { Button, Input } from "antd";
 import { LoginReq } from "../../models/auth";
 import { useState } from "react";
 import AuthenService from "../../services/AuthService";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import UserService from "@/services/UserService";
+import { useAppStore } from "@/store";
+import { useCookies } from 'react-cookie';
 
 const Login = () => {
+  const [cookie, setCookie] = useCookies(['token'])
+  const {setUserInfo} = useAppStore()
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState<LoginReq>({
     phone_number: "",
     password: "",
@@ -15,20 +23,29 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!inputs.phone_number || !inputs.password)
-      return alert("Please fill all field");
+    if (!inputs.phone_number || !inputs.password) {
+      toast.error("Vui lòng nhập số điện thoại hoặc mật khẩu");
+      return false;
+    }
+      
     const authService = new AuthenService();
+    const userService = new UserService();
     try {
       const authRes = await authService.login(inputs);
       const result = authRes.data;
-      if(result.errCode == 200) {
+      if(authRes.status === 200) {
           const token = result.data.accessToken;
-          console.log(token)
-          // setCookie('token', token, { path: '/' })
-          // router.push('/');
+          const userRes = await userService.getCurrentUser(token);
+          if (userRes.status=== 200) {
+            setUserInfo(userRes.data.data)
+          }
+         
+          setCookie('token', token, { path: '/' })
+          console.log(cookie)
+          navigate('/');
 
-      }else if(result.errCode != 200){
-          alert("User name or password are wrong")
+      }else if(authRes.status !== 200){
+          toast.warning("User name or password are wrong")
       }
     } catch (error) {
       alert(error);

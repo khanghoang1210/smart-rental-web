@@ -8,7 +8,6 @@ export default class AuthenService {
 
   async login(req: LoginReq) {
     const url = AUTH_ENDPOINT + "/login"
-    console.log(url)
     try {
       const res = await apiClient.post(url, req)
       return res;

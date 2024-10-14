@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Constants } from "./constants";
+import { API_URL } from "./constants";
 
 export const apiClient = axios.create({
-    baseURL: Constants.API_URL
+    baseURL: API_URL
 })
