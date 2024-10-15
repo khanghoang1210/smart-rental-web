@@ -1,7 +1,7 @@
 import { ConversationRes } from "@/models/chat/chat";
 import ConversationService from "@/services/ConversationService";
 import UserService from "@/services/UserService"; // Assuming you have a service to get user details
-import { useAppStore } from "@/store";
+import { useAppStore, useConversationStore } from "@/store";
 import { UserInfo } from "@/store/slice/authSlice";
 import { timeAgo } from "@/utils/convertToTimeAgo";
 import { useState, useEffect } from "react";
@@ -11,7 +11,10 @@ interface UserMap {
   [key: number]: UserInfo;
 }
 
+
+
 const MessageList = () => {
+  const { setSelectedConversationId, setSelectedUserId } = useConversationStore();
   const { userInfo } = useAppStore();
   const [conversations, setConversations] = useState<ConversationRes[]>([]);
   const [users, setUsers] = useState<UserMap>({});
@@ -47,7 +50,6 @@ const MessageList = () => {
                   );
                   if (userRes.status === 200) {
                     const fetchedUser = userRes.data.data;
-                    console.log(fetchedUser);
                     setUsers((prevUsers) => ({
                       ...prevUsers,
                       [otherUserId]: fetchedUser,
@@ -92,6 +94,9 @@ const MessageList = () => {
           <div
             key={conversation.id}
             className="flex items-center px-4 py-4 rounded-xl hover:bg-blue-98 cursor-pointer"
+            onClick={() => {setSelectedConversationId(conversation.id)
+              setSelectedUserId(user.id)
+            }}
           >
             <img
               src="../../asset"

@@ -13,3 +13,10 @@ export type MessageRes = {
     content: string;
     created_at: Date;
 }
+
+export type MessageSend = {
+    sender_id: number;
+    receiver_id: number;
+    content: string;
+    type: number;
+}

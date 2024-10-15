@@ -2,196 +2,65 @@ import { Input } from "antd";
 import gallary from "../../assets/gallery.svg";
 import send from "../../assets/send.svg";
 import { useSocket } from "../../context/SocketContext";
-import { useState } from "react";
-import { useAppStore } from "@/store";
+import { useEffect, useState } from "react";
+import { useAppStore, useConversationStore } from "@/store";
+import MessageService from "@/services/MessageService";
+import { useCookies } from "react-cookie";
+import { MessageRes } from "@/models/chat/chat";
+import UserService from "@/services/UserService";
+import { UserInfo } from "@/store/slice/authSlice";
 
-const messages = [
-  {
-    id: 1,
-    sender: "Florencio Dorrance",
-    text: "How are you?",
-    time: "12:45 PM",
-    type: "received",
-  },
-  {
-    id: 2,
-    sender: "User",
-    text: "I am good, thanks!",
-    time: "12:46 PM",
-    type: "sent",
-  },
-  {
-    id: 3,
-    sender: "Florencio Dorrance",
-    text: "This is amazing!",
-    time: "12:47 PM",
-    type: "received",
-  },
-  {
-    id: 4,
-    sender: "User",
-    text: "Wow, really?",
-    time: "12:48 PM",
-    type: "sent",
-  },
-  {
-    id: 5,
-    sender: "Florencio Dorrance",
-    text: "Yes, this is epic!",
-    time: "12:49 PM",
-    type: "received",
-  },
-  {
-    id: 6,
-    sender: "User",
-    text: "I love it! 🔥",
-    time: "12:50 PM",
-    type: "sent",
-  },
-  {
-    id: 7,
-    sender: "Florencio Dorrance",
-    text: "Just ideas for next time.",
-    time: "12:51 PM",
-    type: "received",
-  },
-  {
-    id: 8,
-    sender: "User",
-    text: "Sure, I will note them down.",
-    time: "12:52 PM",
-    type: "sent",
-  },
-  {
-    id: 9,
-    sender: "Florencio Dorrance",
-    text: "See you soon!",
-    time: "12:53 PM",
-    type: "received",
-  },
-  {
-    id: 10,
-    sender: "User",
-    text: "Okay, bye!",
-    time: "12:54 PM",
-    type: "sent",
-  },
-  {
-    id: 11,
-    sender: "Florencio Dorrance",
-    text: "Bye!",
-    time: "12:55 PM",
-    type: "received",
-  },
-  // Thêm nhiều tin nhắn hơn để kiểm tra cuộn
-  {
-    id: 12,
-    sender: "Florencio Dorrance",
-    text: "How are you?",
-    time: "12:56 PM",
-    type: "received",
-  },
-  {
-    id: 13,
-    sender: "User",
-    text: "I am good, thanks!",
-    time: "12:57 PM",
-    type: "sent",
-  },
-  {
-    id: 14,
-    sender: "Florencio Dorrance",
-    text: "This is amazing!",
-    time: "12:58 PM",
-    type: "received",
-  },
-  {
-    id: 15,
-    sender: "User",
-    text: "Wow, really?",
-    time: "12:59 PM",
-    type: "sent",
-  },
-  {
-    id: 16,
-    sender: "Florencio Dorrance",
-    text: "Yes, this is epic!",
-    time: "1:00 PM",
-    type: "received",
-  },
-  {
-    id: 17,
-    sender: "User",
-    text: "I love it! 🔥",
-    time: "1:01 PM",
-    type: "sent",
-  },
-  {
-    id: 18,
-    sender: "Florencio Dorrance",
-    text: "Just ideas for next time.",
-    time: "1:02 PM",
-    type: "received",
-  },
-  {
-    id: 19,
-    sender: "User",
-    text: "Sure, I will note them down.",
-    time: "1:03 PM",
-    type: "sent",
-  },
-  {
-    id: 20,
-    sender: "Florencio Dorrance",
-    text: "See you soon!",
-    time: "1:04 PM",
-    type: "received",
-  },
-  { id: 21, sender: "User", text: "Okay, bye!", time: "1:05 PM", type: "sent" },
-  {
-    id: 22,
-    sender: "Florencio Dorrance",
-    text: "Bye!",
-    time: "1:06 PM",
-    type: "received",
-  },
-  {
-    id: 23,
-    sender: "Florencio Dorrance",
-    text: "Hello again, just testing more.",
-    time: "1:07 PM",
-    type: "received",
-  },
-  {
-    id: 24,
-    sender: "User",
-    text: "Testing the scroll.",
-    time: "1:08 PM",
-    type: "sent",
-  },
-  {
-    id: 25,
-    sender: "Florencio Dorrance",
-    text: "It should scroll now!",
-    time: "1:09 PM",
-    type: "received",
-  },
-];
 
 const ChatBox = () => {
+  const { selectedConversationId, selectedUserId } = useConversationStore();
   const { userInfo } = useAppStore();
-  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<MessageRes[]>([]); // State để lưu các tin nhắn trong cuộc trò chuyện được chọn
   const socket = useSocket();
+  const [cookies] = useCookies(["token"]);
+  const [newMessage, setNewMessage] = useState("");
+  const [senderUser, setSenderUser] = useState<UserInfo>();
+  const messageService = new MessageService();
+  const userService = new UserService();
+
+  useEffect(() => {
+    if (socket) {
+      console.log("Socket connected:", socket);
+    } else {
+      console.log("Socket is null or not connected");
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (selectedConversationId) {
+      fetchMessagesForConversation(selectedConversationId);
+    }
+  }, [selectedConversationId]);
+
+  const fetchMessagesForConversation = async (conversationId:number) => {
+    try {
+      const token = cookies.token;
+      const messageRes = await messageService.getMessagesByConversation(conversationId, token);
+      setMessages(messageRes.data.data);
+      if (selectedUserId) {
+        const sender = await userService.getUserByID(selectedUserId, token);
+        setSenderUser(sender.data.data)
+      }
+    }
+    catch(error){
+      console.error("Error fetching conversations:", error);
+    }
+  };
+
   const handleSendMessage = async () => {
-    setMessage(message);
+    setNewMessage(newMessage);
     socket?.emit("sendMessage", {
-      senderId: userInfo?.id,
-      receiverId: 2,
-      content: message,
-      messageType: "text",
+      sender_id: userInfo?.id,
+      receiver_id: selectedUserId,
+      conversation_id: selectedConversationId,
+      content: newMessage,
+      type: 1,
     });
   };
-  console.log(message)
   return (
     <div
       className="flex flex-col w-2/4 bg-gray-50"
@@ -204,7 +73,7 @@ const ChatBox = () => {
           className="w-8 h-8"
         />
         <h1 className="font-semibold text-xl text-gray-20">
-          Florencio Dorrance
+          {senderUser?.full_name}
         </h1>
       </div>
       <div className="flex-grow p-4 overflow-y-auto">
@@ -212,17 +81,17 @@ const ChatBox = () => {
           <div
             key={msg.id}
             className={`flex ${
-              msg.type === "sent" ? "justify-end" : "justify-start"
+              msg.sender_id === userInfo?.id ? "justify-end" : "justify-start"
             } mb-2`}
           >
             <div
               className={`p-4 rounded-xl max-w-xs ${
-                msg.type === "sent"
+                msg.sender_id === userInfo?.id
                   ? "bg-blue-60 text-[#FFF]"
                   : "bg-gray-90 text-gray-20"
               }`}
             >
-              {msg.text}
+              {msg.content}
             </div>
           </div>
         ))}
@@ -233,7 +102,7 @@ const ChatBox = () => {
           <img src={gallary} alt="" />
         </button>
         <Input
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => setNewMessage(e.target.value)}
           type="text"
           id="message"
           name="message"

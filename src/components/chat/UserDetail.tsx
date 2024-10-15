@@ -1,7 +1,5 @@
-import { useAppStore } from "@/store";
 
 const UserDetail = () => {
-  const {userInfo} = useAppStore()
   return (
     <div className="w-1/4 bg-white p-4 h-full">
       <div className="flex flex-col items-center mb-4">
