@@ -4,7 +4,7 @@ type UtilitiesButtonProps = {
   name: string;
   icon: string; 
   active?: boolean; 
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const UtilitiesButton = (prop: UtilitiesButtonProps) => {

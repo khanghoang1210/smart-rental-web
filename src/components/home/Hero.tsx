@@ -6,8 +6,8 @@ import q7 from "../../assets/q7.png";
 import q1 from "../../assets/q1.png";
 import q3 from "../../assets/q3.png";
 import thuduc from "../../assets/thuduc.png";
-import FeaturedRooms from "../room/FeaturedRoom";
 import UserRating from "./UserRating";
+import FeaturedRooms from "../room/FeaturedRoom";
 
 // type HomeProps = {
 
@@ -72,7 +72,10 @@ const Hero = () => {
         </div>
       </div>
 
-      <FeaturedRooms/>
+      <div>
+        
+      </div>
+      <FeaturedRooms title="Phòng nổi bật"/>
       <UserRating/>
 
       <div className="flex justify-center mt-24">

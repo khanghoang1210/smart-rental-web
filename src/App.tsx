@@ -4,6 +4,7 @@ import Filter from "./pages/Filter";
 import Chat from "./pages/chat";
 import Auth from "./pages/auth";
 import { useAppStore } from "./store";
+import Room from "./pages/room";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
@@ -26,6 +27,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/room" element={<Room />} />
         <Route path="filter" element={<Filter />} />
         <Route
           path="chat"
