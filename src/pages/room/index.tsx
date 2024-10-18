@@ -1,12 +1,13 @@
 import Navbar from "@/components/home/Navbar"
-import RoomDetail from "@/components/room/RoomDetail"
+import PostRoomFlow from "@/components/room/PostRoomForm"
 import Footer from "@/ui/Footer"
 
 const Room = () => {
   return (
     <div>
         <Navbar/>
-        <RoomDetail/>
+        {/* <RoomDetail/> */}
+        <PostRoomFlow/>
         <Footer/>
     </div>
   )
