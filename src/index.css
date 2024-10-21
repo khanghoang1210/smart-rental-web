@@ -68,3 +68,7 @@
   border-color: #0077B6 !important;
   background-color: #0077B6 !important;
 }
+
+.ant-radio-checked .ant-radio-inner{
+  background-color: #0077B6 !important ;
+}

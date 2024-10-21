@@ -17,6 +17,7 @@ import terms from "../../assets/terms.png";
 import contract from "../../assets/contract.png";
 import FeaturedRooms from "./FeaturedRoom";
 import address from "../../assets/address.svg";
+import message_white from "../../assets/message_white.svg";
 import LandlordInfo from "../user/LandlordInfo";
 import { useState } from "react";
 import Map from "../map/Map";
@@ -168,7 +169,7 @@ const RoomDetail = () => {
         <div className="flex justify-start items-center space-x-12 mr-24">
           <LandlordInfo />
           <button className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]">
-            <span className="mr-2">💬</span>
+            <span className="mr-5"><img src={message_white} alt="" className="w-7" /></span>
             Nhắn tin cho Chủ nhà
           </button>
         </div>

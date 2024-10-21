@@ -16,7 +16,8 @@ import snow from "../../assets/snow.svg";
 import UtilitiesButton from "../../ui/UtilitiesButton";
 import { useState } from "react";
 
-const UtilitiesData = [
+// eslint-disable-next-line react-refresh/only-export-components
+export const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
   { id: 2, name: "Cửa sổ", icon: win },
   { id: 3, name: "Wifi", icon: wifi },
