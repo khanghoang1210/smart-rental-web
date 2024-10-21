@@ -1,4 +1,5 @@
 import Navbar from "@/components/home/Navbar"
+import PostRoomFlow from "@/components/room/PostRoomForm"
 import RoomDetail from "@/components/room/RoomDetail"
 import Footer from "@/ui/Footer"
 
