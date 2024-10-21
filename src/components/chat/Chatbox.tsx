@@ -2,17 +2,18 @@ import { Input } from "antd";
 import gallary from "../../assets/gallery.svg";
 import send from "../../assets/send.svg";
 import { useSocket } from "../../context/SocketContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppStore, useConversationStore } from "@/store";
 import MessageService from "@/services/MessageService";
 import { useCookies } from "react-cookie";
-import { MessageRes } from "@/models/chat/chat";
+import { MessageRes, MessageSend } from "@/models/chat/chat";
 import UserService from "@/services/UserService";
 import { UserInfo } from "@/store/slice/authSlice";
 
-
 const ChatBox = () => {
-  const { selectedConversationId, selectedUserId } = useConversationStore();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { selectedConversationId, selectedUserId, addMessage } =
+    useConversationStore();
   const { userInfo } = useAppStore();
   const [messages, setMessages] = useState<MessageRes[]>([]); // State để lưu các tin nhắn trong cuộc trò chuyện được chọn
   const socket = useSocket();
@@ -22,13 +23,19 @@ const ChatBox = () => {
   const messageService = new MessageService();
   const userService = new UserService();
 
-  useEffect(() => {
-    if (socket) {
-      console.log("Socket connected:", socket);
-    } else {
-      console.log("Socket is null or not connected");
+  const scrollToBottom = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [socket]);
+  };
+
+  useEffect(() => {
+    scrollToBottom(); 
+  }, []);
+  
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     if (selectedConversationId) {
@@ -36,20 +43,42 @@ const ChatBox = () => {
     }
   }, [selectedConversationId]);
 
-  const fetchMessagesForConversation = async (conversationId:number) => {
+  const fetchMessagesForConversation = async (conversationId: number) => {
     try {
       const token = cookies.token;
-      const messageRes = await messageService.getMessagesByConversation(conversationId, token);
+      const messageRes = await messageService.getMessagesByConversation(
+        conversationId,
+        token
+      );
       setMessages(messageRes.data.data);
       if (selectedUserId) {
         const sender = await userService.getUserByID(selectedUserId, token);
-        setSenderUser(sender.data.data)
+        setSenderUser(sender.data.data);
       }
-    }
-    catch(error){
+    } catch (error) {
       console.error("Error fetching conversations:", error);
     }
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("receiveMessage", (message: MessageRes) => {
+        if (message.conversation_id === selectedConversationId) {
+          setMessages((prevMessages) => [...prevMessages, message]);
+
+          setTimeout(scrollToBottom, 100);
+
+          
+        }
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("receiveMessage");
+      }
+    };
+  }, [socket, selectedConversationId]);
 
   const handleSendMessage = async () => {
     setNewMessage(newMessage);
@@ -60,7 +89,24 @@ const ChatBox = () => {
       content: newMessage,
       type: 1,
     });
+
+    const messageSend: MessageSend = {
+      sender_id:  userInfo?.id,
+      receiver_id: selectedUserId!, // Ensure receiver_id is from the state
+      content: newMessage,
+      type: 1,
+    };
+    addMessage(messageSend);
+    setNewMessage("");
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     <div
       className="flex flex-col w-2/4 bg-gray-50"
@@ -77,12 +123,13 @@ const ChatBox = () => {
         </h1>
       </div>
       <div className="flex-grow p-4 overflow-y-auto">
-        {messages.map((msg) => (
+        {messages.map((msg, index) => (
           <div
             key={msg.id}
             className={`flex ${
               msg.sender_id === userInfo?.id ? "justify-end" : "justify-start"
             } mb-2`}
+            ref={index === messages.length - 1 ? scrollRef : null}
           >
             <div
               className={`p-4 rounded-xl max-w-xs ${
@@ -102,10 +149,12 @@ const ChatBox = () => {
           <img src={gallary} alt="" />
         </button>
         <Input
+          onKeyDown={handleKeyDown}
+          value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           type="text"
-          id="message"
-          name="message"
+          id="newMessage"
+          name="newMessage"
           placeholder="Nhấn vào đây để chat"
           className="flex-grow px-4 py-2 border rounded-lg focus:outline-none"
           suffix={

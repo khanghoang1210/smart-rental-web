@@ -150,7 +150,7 @@ const PostRoomFlow = () => {
       ),
     },
     {
-      title: "Hình ảnh",
+      title: "Hình ảnh và tiện ích",
       content: (
         <Form layout="vertical">
           <Form.Item label="Giá cho thuê (đ/phòng)">
@@ -273,10 +273,10 @@ const PostRoomFlow = () => {
               }`}
             >
               <div
-                className={`flex items-center justify-center w-5 h-5 rounded-full border font-bold ${
+                className={`flex items-center justify-center w-5 h-5 rounded-full border font-medium ${
                   index === currentStep
                     ? "border-blue-40 bg-white text-blue-40 "
-                    : "border-gray-80 bg-gray-100 text-gray-500"
+                    : "border-gray-80 bg-gray-100 text-gray-20"
                 }`}
               >
                 <span>{index + 1}</span>

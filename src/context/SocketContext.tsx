@@ -31,13 +31,12 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setSocketInstance(socket.current); // Update state to ensure context has the socket instance
 
       const handleReceiveMessage = (message: MessageSend) => {
-        const { selectedUserId } = useConversationStore.getState();
-        console.log("message rcv====", message);
+        const { selectedUserId, addMessage } = useConversationStore.getState();
         if (
           selectedUserId === message.sender_id ||
           selectedUserId === message.receiver_id
         ) {
-          console.log("message rcv", message);
+          addMessage(message)
         }
       };
 

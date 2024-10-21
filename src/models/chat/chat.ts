@@ -15,7 +15,7 @@ export type MessageRes = {
 }
 
 export type MessageSend = {
-    sender_id: number;
+    sender_id: number | undefined;
     receiver_id: number;
     content: string;
     type: number;
