@@ -19,7 +19,6 @@ import FeaturedRooms from "./FeaturedRoom";
 import address from "../../assets/address.svg";
 import LandlordInfo from "../user/LandlordInfo";
 import { useState } from "react";
-import FormItemLabel from "antd/es/form/FormItemLabel";
 
 const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
@@ -165,13 +164,14 @@ const RoomDetail = () => {
 
       <FeaturedRooms title="Đề xuất" />
       <div className="flex items-center justify-center">
-        <LandlordInfo />
-        <button className="ml-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md flex items-center">
-          <span className="mr-2">💬</span>
-          Nhắn tin cho Chủ nhà
-        </button>
+        <div className="flex justify-start items-center space-x-12 mr-24">
+          <LandlordInfo />
+          <button className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]">
+            <span className="mr-2">💬</span>
+            Nhắn tin cho Chủ nhà
+          </button>
+        </div>
       </div>
-      <div></div>
 
       {/* Modal zone */}
       <Modal
@@ -185,7 +185,6 @@ const RoomDetail = () => {
         }
         visible={isModalVisible}
         onCancel={handleCancel}
-         
         footer={null}
       >
         <div className=" p-8 flex space-x-10">
@@ -291,11 +290,17 @@ const RoomDetail = () => {
                 >
                   <Input
                     placeholder="Nhập số tiền"
-                    suffix={<label style={{
-                      color: "#878787",
-                      fontWeight: "800px",
-                      fontSize: "16px",
-                    }}>đ</label>}
+                    suffix={
+                      <label
+                        style={{
+                          color: "#878787",
+                          fontWeight: "800px",
+                          fontSize: "16px",
+                        }}
+                      >
+                        đ
+                      </label>
+                    }
                     className="h-[60px] rounded-[10px]"
                   />
                 </Form.Item>
@@ -394,8 +399,13 @@ const RoomDetail = () => {
               </Form.Item>
               <Form.Item>
                 <div className="flex justify-end space-x-8">
-                  <Button className="h-[50px] w-[150px] rounded-[100px] border-blue-60 text-blue-60 text-base font-medium">Huỷ</Button>
-                  <Button className="h-[50px] w-[150px] rounded-[100px] bg-blue-60 text-[#FFF] font-medium text-base" htmlType="submit">
+                  <Button className="h-[50px] w-[150px] rounded-[100px] border-blue-60 text-blue-60 text-base font-medium">
+                    Huỷ
+                  </Button>
+                  <Button
+                    className="h-[50px] w-[150px] rounded-[100px] bg-blue-60 text-[#FFF] font-medium text-base"
+                    htmlType="submit"
+                  >
                     Gửi
                   </Button>
                 </div>

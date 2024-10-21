@@ -1,7 +1,7 @@
 
 const LandlordInfo = () => {
   return (
-    <div className="border rounded-lg p-6 shadow-md bg-white w-[500px]">  
+    <div className="border rounded-lg p-6 shadow-md w-[500px]">  
 
       <div className="flex justify-center items-center">
         {/* Avatar and Name */}
