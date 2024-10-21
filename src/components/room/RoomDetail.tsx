@@ -19,6 +19,7 @@ import FeaturedRooms from "./FeaturedRoom";
 import address from "../../assets/address.svg";
 import LandlordInfo from "../user/LandlordInfo";
 import { useState } from "react";
+import Map from "../map/Map";
 
 const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
@@ -173,6 +174,8 @@ const RoomDetail = () => {
         </div>
       </div>
 
+      <Map />
+
       {/* Modal zone */}
       <Modal
         className="flex flex-row justify-center items-center h-[800px] "
@@ -183,7 +186,7 @@ const RoomDetail = () => {
             Gửi yêu cầu thuê phòng
           </label>
         }
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
