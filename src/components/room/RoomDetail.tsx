@@ -176,7 +176,6 @@ const RoomDetail = () => {
       </div>
 
       <Map />
-
       {/* Modal zone */}
       <Modal
         className="flex flex-row justify-center items-center h-[800px] "

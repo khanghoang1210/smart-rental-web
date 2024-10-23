@@ -11,15 +11,15 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
 
-  // If authenticated, allow access to the children (protected routes like Chat)
-  return isAuthenticated ? children : <Navigate to="/auth" />;
+  // Nếu đã đăng nhập, cho phép truy cập (các route bảo mật như Chat)
+  return isAuthenticated ? children : <Navigate to="/auth/login" />;
 };
 
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
 
-  // If authenticated, redirect to Home, otherwise show the Auth page
+  // Nếu đã đăng nhập, chuyển hướng đến trang Home, nếu không thì hiển thị Auth
   return isAuthenticated ? <Navigate to="/" /> : children;
 };
 
@@ -39,12 +39,28 @@ function App() {
             </PrivateRoute>
           }
         />
+        {/* Định tuyến con cho Auth */}
         <Route
-          path="auth"
+          path="auth/*"
           element={
-            <AuthRoute>
-              <Auth />
-            </AuthRoute>
+            <Routes>
+              <Route
+                path="login"
+                element={
+                  <AuthRoute>
+                    <Auth type="login" />
+                  </AuthRoute>
+                }
+              />
+              <Route
+                path="register"
+                element={
+                  <AuthRoute>
+                    <Auth type="register" />
+                  </AuthRoute>
+                }
+              />
+            </Routes>
           }
         />
       </Routes>

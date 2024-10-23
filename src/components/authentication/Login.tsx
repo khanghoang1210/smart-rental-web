@@ -3,7 +3,7 @@ import { LoginReq } from "../../models/auth";
 import { useState } from "react";
 import AuthenService from "../../services/AuthService";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserService from "@/services/UserService";
 import { useAppStore } from "@/store";
 import { useCookies } from 'react-cookie';
@@ -30,30 +30,29 @@ const Login = () => {
       
     const authService = new AuthenService();
     const userService = new UserService();
-    try {
-      const authRes = await authService.login(inputs);
-      const result = authRes.data;
-      if(authRes.status === 200) {
-          const token = result.data.accessToken;
-          const userRes = await userService.getCurrentUser(token);
-          if (userRes.status=== 200) {
-            setUserInfo(userRes.data.data)
-          }
-         
-          setCookie('token', token, { path: '/' })
-          console.log(cookie)
-          navigate('/');
+   
+    const authRes = await authService.login(inputs);
+    const result = authRes.data;
+    if(authRes.status === 200) {
+        const token = result.data.accessToken;
+        const userRes = await userService.getCurrentUser(token);
+        if (userRes.status=== 200) {
+          setUserInfo(userRes.data.data)
+          toast.success("Đăng nhập thành công")
+        }
+        
+        setCookie('token', token, { path: '/' })
+        console.log(cookie)
+        navigate('/');
 
-      }else if(authRes.status !== 200){
-          toast.warning("User name or password are wrong")
-      }
-    } catch (error) {
-      alert(error);
+    }else if(authRes.status === 401){
+        toast.warning("User name or password are wrong")
     }
+   
   };
   return (
     <form
-      className="bg-[#FFF] w-full max-w-[450px] shadow-lg rounded-[40px] p-8"
+      className="bg-[#FFF] w-full max-w-[500px] shadow-lg rounded-[40px] p-8"
       onSubmit={handleLogin}
     >
       <div className="flex flex-col mb-6">
@@ -76,7 +75,7 @@ const Login = () => {
           id="phone_number"
           name="phone_number"
           size="large"
-          className="h-[50px] focus:border-blue-60 hover:border-blue-60"
+          className="h-[40px] focus:border-blue-60 hover:border-blue-60"
         />
       </div>
       <div className="mb-6">
@@ -92,7 +91,7 @@ const Login = () => {
           id="password"
           name="password"
           size="large"
-          className="h-[50px] focus:border-blue-60 hover:border-blue-60"
+          className="h-[40px] focus:border-blue-60 hover:border-blue-60"
         />
       </div>
       <div className="text-right mb-6">
@@ -110,9 +109,9 @@ const Login = () => {
       </Button>
       <div className="text-center text-gray-40">
         <span>Bạn chưa có tài khoản? </span>
-        <a href="#" className="text-blue-40">
+        <Link to="/auth/register" className="text-blue-40">
           Đăng ký ngay
-        </a>
+        </Link>
       </div>
     </form>
   );

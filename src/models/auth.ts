@@ -4,10 +4,9 @@ export type LoginReq = {
     password: string;
 }
 
-export type SignUpReq = {
-    userName: string;
-    email: string;
-    fullName: string;
+export type RegisterReq = {
+    phone_number: string;
+    full_name: string;
+    address: string;
     password: string;
-    confirmPassword: string;
 }

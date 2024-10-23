@@ -1,5 +1,5 @@
 
-import { LoginReq, SignUpReq } from "../models/auth"
+import { LoginReq, RegisterReq } from "../models/auth"
 import { API_URL, AUTH_ENDPOINT } from "../utils/constants";
 import {apiClient} from "../utils/apiClient";
 
@@ -16,7 +16,7 @@ export default class AuthenService {
     }
   }
 
-  async signUp(req: SignUpReq) {
+  async signUp(req: RegisterReq) {
     try {
       const res = await fetch(API_URL , {
         method: "POST",
