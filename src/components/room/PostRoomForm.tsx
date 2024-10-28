@@ -49,13 +49,13 @@ const PostRoomForm = () => {
   };
 
   // Cập nhật state cho checkbox
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
+  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, checked } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: checked,
+  //   }));
+  // };
 
   const handleSubmit = () => {
     console.log("Form data submitted:", formData);

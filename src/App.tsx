@@ -6,6 +6,7 @@ import Auth from "./pages/auth";
 import { useAppStore } from "./store";
 import Room from "./pages/room";
 import Request from "./pages/request";
+import Contract from "./pages/contract";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
@@ -31,6 +32,7 @@ function App() {
         <Route path="/room" element={<Room />} />
         <Route path="/request" element={<Request />} />
         <Route path="filter" element={<Filter />} />
+        <Route path="/contract" element={<Contract />} />
         <Route
           path="chat"
           element={
