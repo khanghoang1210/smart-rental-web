@@ -1,19 +1,22 @@
 export interface CreateRoomForm {
-    roomType: string;
-    capacity: string;
-    gender: string;
-    area: string;
-    city: string;
-    district: string;
-    ward: string;
-    street: string;
-    houseNumber: string;
-    roomNumber: string;
-    price: string;
-    deposit: string;
-    electricFee: string;
-    waterFee: string;
-    internetFee: string;
-    parking: boolean;
-    parkingFee: string;
-  }
+  title: string;
+  address: string[] | undefined[];
+  roomNumber: number;
+  roomImages: File[];
+  utilities: string[];
+  description: string;
+  roomType?: string;
+  owner: number;
+  capacity: number;
+  gender?: number;
+  area: number;
+  totalPrice?: number;
+  deposit: number;
+  electricityCost: number;
+  waterCost: number;
+  internetCost: number;
+  isParking: boolean;
+  parkingFee?: number;
+  status: number;
+  isRent: boolean;
+}

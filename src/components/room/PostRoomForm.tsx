@@ -1,91 +1,166 @@
 import { useState } from "react";
-import { Button} from "antd";
+import { Button, RadioChangeEvent } from "antd";
 import RoomInfoForm from "./form/RoomInfoForm";
 import AddressForm from "./form/AddressForm";
 import ImageAndAmenitiesForm from "./form/ImageAndAmenitiesForm";
 import ConfirmationForm from "./form/ConfirmationForm";
-
+import { toast } from "sonner";
+import RoomService from "@/services/RoomService";
+import { useCookies } from "react-cookie";
+import { CreateRoomForm } from "@/models/room";
 
 const PostRoomForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const [formData, setFormData] = useState<CreateRoomForm>({
+    title: "",
+    address: [],
+    roomImages: [],
     roomType: "",
-    capacity: "",
-    gender: "",
-    area: "",
-    city: "",
-    district: "",
-    ward: "",
-    street: "",
-    houseNumber: "",
-    roomNumber: "",
-    price: "",
-    deposit: "",
-    electricFee: "",
-    waterFee: "",
-    internetFee: "",
-    parking: false,
-    parkingFee: "",
+    capacity: 0,
+    gender: 0,
+    area: 0,
+    roomNumber: 0,
+    totalPrice: 0,
+    deposit: 0,
+    electricityCost: 0,
+    waterCost: 0,
+    internetCost: 0,
+    isParking: false,
+    parkingFee: 0,
+    utilities: [],
+    description: "",
+    owner: 0,
+    status: 0,
+    isRent: false,
+  });
+
+  const [addressData, setAddressData] = useState({
+    city: undefined,
+    district: undefined,
+    ward: undefined,
+    street: undefined,
+    houseNumber: undefined,
   });
 
   const next = () => setCurrentStep(currentStep + 1);
   const prev = () => setCurrentStep(currentStep - 1);
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | RadioChangeEvent
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+
+    if (name) {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleAddressInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAddressData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // Cập nhật state cho select dropdown
-  const handleSelectChange = (value: string, name: keyof FormData) => {
-    setFormData((prev) => ({
+  const handleSelectChange = (value: string, name: string) => {
+    setAddressData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
+  const handleImageUpload = (images: File[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      roomImages: images,
+    }));
+  };
   // Cập nhật state cho checkbox
-  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, checked } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: checked,
-  //   }));
-  // };
+  const handleCheckboxChange = (checked: boolean, name: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
 
-  const handleSubmit = () => {
-    console.log("Form data submitted:", formData);
+  const handleSubmit = async () => {
+    const address = [
+      addressData.houseNumber,
+      addressData.street,
+      addressData.ward,
+      addressData.district,
+      addressData.city,
+    ].filter(Boolean); // Use .filter(Boolean) to remove any empty strings
+
+    const reqData: CreateRoomForm = {
+      title: formData.title,
+      address: address,
+      roomNumber: formData.roomNumber,
+      roomImages: formData.roomImages,
+      utilities: formData.utilities,
+      description: formData.description,
+      roomType: formData.roomType,
+      owner: formData.owner,
+      capacity: formData.capacity,
+      gender: formData.gender,
+      area: formData.area,
+      totalPrice: formData.totalPrice,
+      deposit: formData.deposit,
+      electricityCost: formData.electricityCost,
+      waterCost: formData.waterCost,
+      internetCost: formData.internetCost,
+      isParking: formData.isParking,
+      parkingFee: formData.parkingFee,
+      status: formData.status,
+      isRent: formData.isRent,
+    };
+    try {
+      console.log(reqData);
+      const roomService = new RoomService();
+      const response = await roomService.createRoom(token, reqData);
+      console.log(response.data);
+      toast.success("Room created successfully!");
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    }
   };
 
   const steps = [
     {
       title: "Thông tin",
-      content: <RoomInfoForm handleInputChange={handleInputChange} />,
+      content: (
+        <RoomInfoForm
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleCheckboxChange={handleCheckboxChange}
+        />
+      ),
     },
     {
       title: "Địa chỉ",
       content: (
         <AddressForm
+          formData={addressData}
           handleInputChange={handleInputChange}
-          handleSelectChange={()=>handleSelectChange}
+          handleSelectChange={handleSelectChange}
+          handleAddressInputChange={handleAddressInputChange}
         />
       ),
     },
     {
       title: "Hình ảnh và tiện ích",
-      content: (
-        <ImageAndAmenitiesForm/>
-      ),
+      content: <ImageAndAmenitiesForm handleImageUpload={handleImageUpload} />,
     },
     {
       title: "Xác nhận",
-      content: (
-       <ConfirmationForm/>
-      ),
+      content: <ConfirmationForm />,
     },
   ];
 
@@ -119,7 +194,7 @@ const PostRoomForm = () => {
             </div>
 
             {index !== steps.length - 1 && (
-              <div className="w-14 h-0.5 bg-gray-80 "></div>
+              <div className="w-12 h-0.5 bg-gray-80 "></div>
             )}
           </div>
         ))}

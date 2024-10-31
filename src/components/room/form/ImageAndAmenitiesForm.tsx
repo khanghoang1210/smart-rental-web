@@ -2,8 +2,22 @@ import { Form, Upload } from "antd";
 import { UtilitiesData } from "../../filter/UtilitiesList";
 import UtilitiesButton from "@/ui/UtilitiesButton";
 import digital from "../../../assets/digital.svg";
+import { useState } from "react";
 
-const ImageAndAmenitiesForm = () => {
+interface ImageAndAmenitiesFormProps {
+  handleImageUpload: (images: File[]) => void;
+}
+
+const ImageAndAmenitiesForm = (prop: ImageAndAmenitiesFormProps) => {
+
+  const [fileList, setFileList] = useState<File[]>([]);
+
+  const handleFileChange = (info: any) => {
+    const files = info.fileList.map((file: any) => file.originFileObj as File);
+    setFileList(files);
+    prop.handleImageUpload(files);
+  };
+
   return (
     <Form layout="vertical" className="w-[725px]">
       <div className="border-b mb-5">
@@ -20,7 +34,7 @@ const ImageAndAmenitiesForm = () => {
         }
         className="mb-6"
       >
-        <Upload.Dragger className="h-44 border-dashed">
+        <Upload.Dragger onChange={handleFileChange} className="h-44 border-dashed">
           <div className="ant-upload-drag-icon flex justify-center mb-3">
             <img src={digital} alt="" />
           </div>
