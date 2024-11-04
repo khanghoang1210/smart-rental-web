@@ -11,10 +11,9 @@ interface UserMap {
   [key: number]: UserInfo;
 }
 
-
-
 const MessageList = () => {
-  const { setSelectedConversationId, setSelectedUserId } = useConversationStore();
+  const { setSelectedConversationId, setSelectedUserId } =
+    useConversationStore();
   const { userInfo } = useAppStore();
   const [conversations, setConversations] = useState<ConversationRes[]>([]);
   const [users, setUsers] = useState<UserMap>({});
@@ -94,8 +93,9 @@ const MessageList = () => {
           <div
             key={conversation.id}
             className="flex items-center px-4 py-4 rounded-xl hover:bg-blue-98 cursor-pointer"
-            onClick={() => {setSelectedConversationId(conversation.id)
-              setSelectedUserId(user.id)
+            onClick={() => {
+              setSelectedConversationId(conversation.id);
+              setSelectedUserId(user.id);
             }}
           >
             <img
@@ -108,13 +108,13 @@ const MessageList = () => {
                 {user ? user.full_name : "Unknown User"}
               </span>
               <span className="text-sm text-gray-60">
-                {conversation.last_message.content}
+                {conversation.last_message.type === 2
+                  ? "Yêu cầu được chấp nhận"
+                  : conversation.last_message.content}
               </span>
             </div>
             <span className="ml-auto text-xs text-gray-80">
-              {
-                
-                timeAgo(conversation.last_message.created_at.toString())}
+              {timeAgo(conversation.last_message.created_at.toString())}
             </span>
           </div>
         );

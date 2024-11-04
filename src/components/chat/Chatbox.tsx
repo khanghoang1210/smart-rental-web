@@ -9,6 +9,7 @@ import { useCookies } from "react-cookie";
 import { MessageRes, MessageSend } from "@/models/chat/chat";
 import UserService from "@/services/UserService";
 import { UserInfo } from "@/store/slice/authSlice";
+import MessageCard from "@/ui/MessageCard";
 
 const ChatBox = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -30,9 +31,9 @@ const ChatBox = () => {
   };
 
   useEffect(() => {
-    scrollToBottom(); 
+    scrollToBottom();
   }, []);
-  
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -50,7 +51,12 @@ const ChatBox = () => {
         conversationId,
         token
       );
-      setMessages(messageRes.data.data);
+      const data = messageRes.data.data;
+      const parsedMessages = data.map((msg: MessageRes) => ({
+        ...msg,
+        rent_auto_content: msg.type === 2 ? JSON.parse(msg.rent_auto_content as unknown as string) : undefined,
+      }));
+      setMessages(parsedMessages);
       if (selectedUserId) {
         const sender = await userService.getUserByID(selectedUserId, token);
         setSenderUser(sender.data.data);
@@ -63,12 +69,15 @@ const ChatBox = () => {
   useEffect(() => {
     if (socket) {
       socket.on("receiveMessage", (message: MessageRes) => {
-        if (message.conversation_id === selectedConversationId) {
-          setMessages((prevMessages) => [...prevMessages, message]);
-
+        const parsedMessage = {
+          ...message,
+          rent_auto_content: message.type === 2 ? JSON.parse(message.rent_auto_content as unknown as string) : undefined,
+        };
+  
+        if (parsedMessage.conversation_id === selectedConversationId) {
+          setMessages((prevMessages) => [...prevMessages, parsedMessage]);
+  
           setTimeout(scrollToBottom, 100);
-
-          
         }
       });
     }
@@ -91,7 +100,7 @@ const ChatBox = () => {
     });
 
     const messageSend: MessageSend = {
-      sender_id:  userInfo?.id,
+      sender_id: userInfo?.id,
       receiver_id: selectedUserId!, // Ensure receiver_id is from the state
       content: newMessage,
       type: 1,
@@ -131,15 +140,24 @@ const ChatBox = () => {
             } mb-2`}
             ref={index === messages.length - 1 ? scrollRef : null}
           >
-            <div
-              className={`p-4 rounded-xl max-w-xs ${
-                msg.sender_id === userInfo?.id
-                  ? "bg-blue-60 text-[#FFF]"
-                  : "bg-gray-90 text-gray-20"
-              }`}
-            >
-              {msg.content}
-            </div>
+            {msg.type === 2 ? ( 
+              <MessageCard
+                rentalRequestID={msg.rent_auto_content.rental_id}
+                roomTitle={msg.rent_auto_content.room_title}
+                roomAddress={msg.rent_auto_content.room_address}
+                isSender={msg.sender_id === userInfo?.id ? true : false}
+              />
+            ) : (
+              <div
+                className={`px-3 py-2 rounded-xl max-w-xs ${
+                  msg.sender_id === userInfo?.id
+                    ? "bg-blue-60 text-[#FFF]"
+                    : "bg-gray-90 text-gray-20"
+                }`}
+              >
+                {msg.content}
+              </div>
+            )}
           </div>
         ))}
       </div>

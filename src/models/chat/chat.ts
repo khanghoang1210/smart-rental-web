@@ -10,7 +10,8 @@ export type MessageRes = {
     conversation_id: number;
     sender_id: number;
     type: number;
-    content: string;
+    content?: string;
+    rent_auto_content: RentalAutoContent;
     created_at: Date;
 }
 
@@ -19,4 +20,10 @@ export type MessageSend = {
     receiver_id: number;
     content: string;
     type: number;
+}
+
+export type RentalAutoContent = {
+    rental_id: number;
+    room_title: string;
+    room_address: string;
 }
