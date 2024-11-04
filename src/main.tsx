@@ -7,6 +7,6 @@ import { Toaster } from 'sonner'
 createRoot(document.getElementById('root')!).render(
   <SocketProvider>
     <App/>
-    <Toaster closeButton/>
+    <Toaster/>
   </SocketProvider>
 )
