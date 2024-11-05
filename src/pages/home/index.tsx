@@ -1,4 +1,4 @@
-import { Footer } from "antd/es/layout/layout"
+import Footer from "@/ui/Footer"
 import Hero from "../../components/home/Hero"
 import Navbar from "../../components/home/Navbar"
 
