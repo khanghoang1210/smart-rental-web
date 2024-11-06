@@ -1,7 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { AuthSlice, UserInfo } from "./slice/authSlice";
-import { customStorage } from "@/utils/localStorage";
 import { ChatSlice } from "./slice/chatSlice";
 import { MessageSend } from "@/models/chat/chat";
 
@@ -36,15 +34,8 @@ export const useConversationStore = create<ChatSlice>((set, get) => ({
 }));
 
 
-export const useAppStore = create(
-  persist<AuthSlice>(
-    (set) => ({
-      userInfo: undefined,
-      setUserInfo: (userInfo: UserInfo) => set({ userInfo }),
-    }),
-    {
-      name: "currentUser",
-      storage: customStorage,
-    }
-  )
-);
+export const useAppStore = create<AuthSlice>((set) => ({
+  userInfo: null,
+  setUserInfo: (user: UserInfo) => set({ userInfo: user }),
+  clearUserInfo: () => set({ userInfo: undefined }),
+}));

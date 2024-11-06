@@ -8,11 +8,13 @@ import { toast } from "sonner";
 import RoomService from "@/services/RoomService";
 import { useCookies } from "react-cookie";
 import { CreateRoomForm } from "@/models/room";
+import { useAppStore } from "@/store";
 
 const PostRoomForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
+  const {userInfo} = useAppStore();
   const [formData, setFormData] = useState<CreateRoomForm>({
     title: "",
     address: [],
@@ -35,6 +37,8 @@ const PostRoomForm = () => {
     status: 0,
     isRent: false,
   });
+
+  console.log("====", userInfo)
 
   const [addressData, setAddressData] = useState({
     city: undefined,
@@ -107,7 +111,7 @@ const PostRoomForm = () => {
       utilities: formData.utilities,
       description: formData.description,
       roomType: formData.roomType,
-      owner: formData.owner,
+      owner: userInfo?.id,
       capacity: formData.capacity,
       gender: formData.gender,
       area: formData.area,
@@ -126,7 +130,7 @@ const PostRoomForm = () => {
       const roomService = new RoomService();
       const response = await roomService.createRoom(token, reqData);
       console.log(response.data);
-      toast.success("Room created successfully!");
+      toast.success("Tạo phòng thành công");
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
     }

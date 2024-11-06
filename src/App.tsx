@@ -7,10 +7,26 @@ import { useAppStore } from "./store";
 import Room from "./pages/room";
 import Request from "./pages/request";
 import Contract from "./pages/contract";
+import { useEffect } from "react";
+import { customStorage } from "./utils/localStorage";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
+  const { clearUserInfo } = useAppStore();
+
+  useEffect(() => {
+    const handleTabClose = () => {
+      clearUserInfo();
+      customStorage.removeItem('currentUser');
+    };
+    
+    window.addEventListener('beforeunload', handleTabClose);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleTabClose);
+    };
+  }, [clearUserInfo]);
 
   // Nếu đã đăng nhập, cho phép truy cập (các route bảo mật như Chat)
   return isAuthenticated ? children : <Navigate to="/auth/login" />;

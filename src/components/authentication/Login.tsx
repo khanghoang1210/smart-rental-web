@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Button, Input, Spin } from "antd";
 import { LoginReq } from "../../models/auth";
 import { useState } from "react";
 import AuthenService from "../../services/AuthService";
@@ -6,11 +6,12 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import UserService from "@/services/UserService";
 import { useAppStore } from "@/store";
-import { useCookies } from 'react-cookie';
+import { useCookies } from "react-cookie";
 
 const Login = () => {
-  const [cookie, setCookie] = useCookies(['token'])
-  const {setUserInfo} = useAppStore()
+  const [cookie, setCookie] = useCookies(["token"]);
+  const [loading, setLoading] = useState(false);
+  const { setUserInfo } = useAppStore();
   const navigate = useNavigate();
   const [inputs, setInputs] = useState<LoginReq>({
     phone_number: "",
@@ -27,28 +28,25 @@ const Login = () => {
       toast.error("Vui lòng nhập số điện thoại hoặc mật khẩu");
       return false;
     }
-      
+    setLoading(true);
     const authService = new AuthenService();
     const userService = new UserService();
-   
-    const authRes = await authService.login(inputs);
-    const result = authRes.data;
-    if(authRes.status === 200) {
-        const token = result.data.accessToken;
-        const userRes = await userService.getCurrentUser(token);
-        if (userRes.status=== 200) {
-          setUserInfo(userRes.data.data)
-          toast.success("Đăng nhập thành công")
-        }
-        
-        setCookie('token', token, { path: '/' })
-        console.log(cookie)
-        navigate('/');
+    try {
+      const authRes = await authService.login(inputs);
+      const result = authRes.data;
+      const token = result.data.accessToken;
+      const userRes = await userService.getCurrentUser(token);
+      console.log(userRes.data.data)
+      setUserInfo(userRes.data.data);
+      toast.success("Đăng nhập thành công");
 
-    }else if(authRes.status === 401){
-        toast.warning("User name or password are wrong")
+      setCookie("token", token, { path: "/" });
+      navigate("/");
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      setLoading(false); 
     }
-   
   };
   return (
     <form
@@ -104,8 +102,9 @@ const Login = () => {
         htmlType="submit"
         className="w-full h-14 mb-10 bg-blue-40"
         size="large"
+        disabled={loading}
       >
-        Đăng nhập
+        {loading ? <Spin /> : "Đăng nhập"}
       </Button>
       <div className="text-center text-gray-40">
         <span>Bạn chưa có tài khoản? </span>

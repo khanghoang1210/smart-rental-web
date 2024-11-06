@@ -6,7 +6,7 @@ export interface CreateRoomForm {
   utilities: string[];
   description: string;
   roomType?: string;
-  owner: number;
+  owner: number | undefined;
   capacity: number;
   gender?: number;
   area: number;
