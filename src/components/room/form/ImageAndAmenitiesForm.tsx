@@ -6,16 +6,30 @@ import { useState } from "react";
 
 interface ImageAndAmenitiesFormProps {
   handleImageUpload: (images: File[]) => void;
+  handleUtilitySelect: (utilities: string[]) => void;
 }
 
-const ImageAndAmenitiesForm = (prop: ImageAndAmenitiesFormProps) => {
-
+const ImageAndAmenitiesForm = (props: ImageAndAmenitiesFormProps) => {
   const [fileList, setFileList] = useState<File[]>([]);
+  const [selectedUtilities, setSelectedUtilities] = useState<string[]>([]);
 
   const handleFileChange = (info: any) => {
     const files = info.fileList.map((file: any) => file.originFileObj as File);
     setFileList(files);
-    prop.handleImageUpload(files);
+    props.handleImageUpload(files);
+  };
+
+  const toggleUtility = (utilityName: string) => {
+    setSelectedUtilities((prev) =>
+      prev.includes(utilityName)
+        ? prev.filter((u) => u !== utilityName)
+        : [...prev, utilityName]
+    );
+    props.handleUtilitySelect(
+      selectedUtilities.includes(utilityName)
+        ? selectedUtilities.filter((u) => u !== utilityName)
+        : [...selectedUtilities, utilityName]
+    );
   };
 
   return (
@@ -34,7 +48,10 @@ const ImageAndAmenitiesForm = (prop: ImageAndAmenitiesFormProps) => {
         }
         className="mb-6"
       >
-        <Upload.Dragger onChange={handleFileChange} className="h-44 border-dashed">
+        <Upload.Dragger
+          onChange={handleFileChange}
+          className="h-44 border-dashed"
+        >
           <div className="ant-upload-drag-icon flex justify-center mb-3">
             <img src={digital} alt="" />
           </div>
@@ -54,7 +71,13 @@ const ImageAndAmenitiesForm = (prop: ImageAndAmenitiesFormProps) => {
       >
         <div className="grid grid-cols-4 gap-4">
           {UtilitiesData.map((utility) => (
-            <UtilitiesButton name={utility.name} icon={utility.icon} />
+            <UtilitiesButton
+              key={utility.id}
+              name={utility.name}
+              icon={utility.icon}
+              active={selectedUtilities.includes(utility.name)}
+              onClick={() => toggleUtility(utility.name)}
+            />
           ))}
         </div>
       </Form.Item>

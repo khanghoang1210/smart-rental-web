@@ -9,7 +9,7 @@ export type UserInfo = {
   
   // Define AuthSlice interface with userInfo and setUserInfo
   export interface AuthSlice {
-    userInfo: UserInfo | null;
+    userInfo: UserInfo | undefined;
     setUserInfo: (userInfo: UserInfo) => void;
     clearUserInfo: () => void;
   }

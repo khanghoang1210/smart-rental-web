@@ -5,18 +5,18 @@ export interface CreateRoomForm {
   roomImages: File[];
   utilities: string[];
   description: string;
-  roomType?: string;
+  roomType: string;
   owner: number | undefined;
   capacity: number;
-  gender?: number;
+  gender: number;
   area: number;
-  totalPrice?: number;
+  totalPrice: number;
   deposit: number;
   electricityCost: number;
   waterCost: number;
   internetCost: number;
   isParking: boolean;
-  parkingFee?: number;
+  parkingFee: number;
   status: number;
   isRent: boolean;
 }

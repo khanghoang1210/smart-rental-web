@@ -1,6 +1,11 @@
 import { Form, Input } from 'antd';
 
-const ConfirmationForm = () => {
+interface ConfirmationFormProps {
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+}
+const ConfirmationForm = (prop: ConfirmationFormProps) => {
   return (
     <Form layout="vertical" className="w-[725px]">
       {/* Tiêu đề bước */}
@@ -19,10 +24,12 @@ const ConfirmationForm = () => {
         className="mb-4"
       >
         <Input
+        name='title'
           placeholder="Nhập tiêu đề bài đăng"
           maxLength={60}
           showCount
           className="h-10"
+          onChange={prop.handleInputChange}
         />
       </Form.Item>
 
@@ -33,8 +40,10 @@ const ConfirmationForm = () => {
       >
         <Input.TextArea
           placeholder="Môi trường sống sạch, khu phố an ninh..."
+          name="description"
           rows={6}
           maxLength={500}
+          onChange={prop.handleInputChange}
         />
       </Form.Item>
     </Form>
