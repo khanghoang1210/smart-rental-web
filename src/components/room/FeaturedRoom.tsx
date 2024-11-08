@@ -1,69 +1,68 @@
+import { RoomRes } from "@/models/room";
+import RoomService from "@/services/RoomService";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
-const rooms = [
-  {
-    id: 1,
-    imageUrl:
-      "https://thietkenhadep.net/wp-content/uploads/2024/07/banner-tc.jpg",
-    price: "4.7 triệu vnd",
-    title: "Phòng cho thuê Quận 7",
-    location: "Đường Nguyễn Văn Linh, Quận 7",
-  },
-  {
-    id: 2,
-    imageUrl:
-      "https://neohouse.vn/wp-content/uploads/2022/01/thiet-ke-nha-ong-1-tang.jpg",
-    price: "4.7 triệu vnd",
-    title: "Phòng cho thuê Quận 7",
-    location: "Đường Nguyễn Văn Linh, Quận 7",
-  },
-  {
-    id: 3,
-    imageUrl:
-      "https://thanhvietcorp.vn/uploads/images/Bao%20chi/cac-mau-nha-vuon-dep.jpg",
-    price: "4.7 triệu vnd",
-    title: "Phòng cho thuê Quận 7",
-    location: "Đường Nguyễn Văn Linh, Quận 7",
-  },
-  {
-    id: 4,
-    imageUrl:
-      "https://spacet-release.s3.ap-southeast-1.amazonaws.com/img/blog/2024-01-05/can-xac-dinh-vi-tri-va-dien-tich-xay-dung-truoc-khi-thi-cong-6597a8aa5dd40d59132b2e7f.webp",
-    price: "4.7 triệu vnd",
-    title: "Phòng cho thuê Quận 7",
-    location: "Đường Nguyễn Văn Linh, Quận 7",
-  },
-];
 
 type FeaturedRoomsProps = {
-  title: string
-}
+  title: string;
+};
 const FeaturedRooms = (prop: FeaturedRoomsProps) => {
+  const navigate = useNavigate();
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const [rooms, setRooms] = useState<RoomRes[]>()
 
+  useEffect(() => {
+  const roomService = new RoomService();
 
+    const fetchRoom = async () => {
+      try {
+        const messageRes = await roomService.getAll(token);
+        const data = messageRes.data.data;
+        const roomsResponse = data.map((room: RoomRes) => ({
+          ...room,
+          
+        }));
+        setRooms(roomsResponse)
+        console.log("rooms", rooms)
+      } catch (error) {
+        console.error("Error fetching conversations:", error);
+      }
+    };
+    fetchRoom();
+  }, []);
+  
+
+  const handleRoomClick = (roomId: number) => {
+    navigate(`/room/${roomId}`); // Navigate to the dynamic route
+  };
   return (
     <div className="container mx-auto py-8 px-8 max-w-[1100px]">
       <h2 className="text-2xl md:text-2xl font-bold mb-6 text-blue-10">
         {prop.title}
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
-        {rooms.map((room) => (
+      <div  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
+        {rooms?.slice(0, 4).map((room) => (
           <div
             key={room.id}
+            onClick={() => handleRoomClick(room.id)}
             className="bg-white rounded-lg shadow-lg overflow-hidden hover:cursor-pointer transition duration-300 transform hover:scale-105"
           >
             <div className="relative ">
               <img
-                src={room.imageUrl}
+                src={room.room_images[0]}
                 alt={room.title}
                 className="w-full h-40 object-cover"
               />
               <div className="absolute top-0 right-0 bg-blue-40 text-gray-90 px-3 py-1 rounded-bl-lg shadow-lg ">
-                {room.price}
+                {room.total_price}
               </div>
             </div>
             <div className="p-4">
               <h3 className="text-lg font-semibold">{room.title}</h3>
-              <p className="text-gray-600">{room.location}</p>
+              <p className="text-gray-600">{room.address.join(" ")}</p>
             </div>
           </div>
         ))}

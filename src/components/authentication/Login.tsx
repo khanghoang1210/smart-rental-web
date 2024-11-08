@@ -9,7 +9,7 @@ import { useAppStore } from "@/store";
 import { useCookies } from "react-cookie";
 
 const Login = () => {
-  const [cookie, setCookie] = useCookies(["token"]);
+  const [, setCookie] = useCookies(["token"]);
   const [loading, setLoading] = useState(false);
   const { setUserInfo } = useAppStore();
   const navigate = useNavigate();

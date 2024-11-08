@@ -65,9 +65,9 @@ const RoomInfoForm: React.FC<RoomInfoFormProps> = (props) => {
       <Form.Item label={<label className="text-base font-medium text-gray-40">GIỚI TÍNH</label>}>
         <Radio.Group name="gender" onChange={props.handleInputChange} value={props.formData.gender}>
           <div className="flex space-x-5">
-            <Radio className="text-center px-3 py-2 border rounded-lg w-40" value="all">Tất cả</Radio>
-            <Radio className="text-center px-3 py-2 border rounded-lg w-40" value="male">Nam</Radio>
-            <Radio className="text-center px-3 py-2 border rounded-lg w-40" value="female">Nữ</Radio>
+            <Radio className="text-center px-3 py-2 border rounded-lg w-40" value="1">Tất cả</Radio>
+            <Radio className="text-center px-3 py-2 border rounded-lg w-40" value="2">Nam</Radio>
+            <Radio className="text-center px-3 py-2 border rounded-lg w-40" value="3">Nữ</Radio>
           </div>
         </Radio.Group>
       </Form.Item>

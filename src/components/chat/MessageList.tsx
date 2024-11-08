@@ -3,7 +3,7 @@ import ConversationService from "@/services/ConversationService";
 import UserService from "@/services/UserService"; // Assuming you have a service to get user details
 import { useAppStore, useConversationStore } from "@/store";
 import { UserInfo } from "@/store/slice/authSlice";
-import { timeAgo } from "@/utils/convertToTimeAgo";
+import { timeAgo } from "@/utils/converter";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 

@@ -19,8 +19,16 @@ import FeaturedRooms from "./FeaturedRoom";
 import address from "../../assets/address.svg";
 import message_white from "../../assets/message_white.svg";
 import LandlordInfo from "../user/LandlordInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Map from "../map/Map";
+import { useParams } from "react-router-dom";
+import { RoomRes } from "@/models/room";
+import RoomService from "@/services/RoomService";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
+import Footer from "@/ui/Footer";
+import Navbar from "../home/Navbar";
+import { toCurrencyAbbreviation, toCurrencyFormat } from "@/utils/converter";
 
 const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
@@ -33,6 +41,12 @@ const UtilitiesData = [
 
 const RoomDetail = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const [room, setRoom] = useState<RoomRes>();
+  const { id } = useParams<{ id: string }>();
+  const roomId = id ? parseInt(id, 10) : null;
+  console.log("======", roomId)
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -41,18 +55,35 @@ const RoomDetail = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+  useEffect(() => {
+    const roomService = new RoomService();
+    if (roomId === null || isNaN(roomId)) {
+      toast.error("Phòng không tồn tại");
+      return;
+    } 
+    const fetchRoomByID = async (id: number) => {
+      try {
+        const messageRes = await roomService.getByID(token, id);
+        const data = messageRes.data.data;
+        setRoom(data);
+      } catch (error) {
+        if (error instanceof Error) toast.error(error.message);
+      }
+    };
+    fetchRoomByID(roomId);
+  }, [id, token]);
+
+  console.log("room", room);
   return (
+    <>
+    <Navbar/>
     <div className="p-8">
       {/* Title and Address */}
       <div className="mb-8 text-center mt-12 space-y-5">
-        <h1 className="text-[32px] font-bold text-blue-10">
-          CHDV Cao cấp chuyên nghiệp Nguyễn Văn Linh Quận 7
-        </h1>
+        <h1 className="text-[32px] font-bold text-blue-10">{room?.title}</h1>
         <div className="flex justify-center items-center space-x-2">
           <img src={address} alt="" />
-          <p className="text-gray-60 text-xl ">
-            320 Nguyễn Văn Linh, Phường Bình Thuận, Quận 7, Hồ Chí Minh
-          </p>
+          <p className="text-gray-60 text-xl ">{room?.address.join(", ")}</p>
         </div>
       </div>
 
@@ -61,19 +92,19 @@ const RoomDetail = () => {
         {/* Main Image */}
         <div className="col-span-1">
           <img
-            src="https://neohouse.vn/wp-content/uploads/2022/01/thiet-ke-nha-ong-1-tang.jpg"
+            src={room?.room_images[0]} 
             alt="Main Property"
             className="rounded-lg object-cover w-[570px] h-80"
           />
         </div>
         <div className="flex flex-col space-y-2">
           <img
-            src="https://neohouse.vn/wp-content/uploads/2022/01/thiet-ke-nha-ong-1-tang.jpg"
+            src={room?.room_images[0]} 
             alt="Living Room"
             className="rounded-lg object-cover w-[450px] h-40"
           />
           <img
-            src="https://thanhvietcorp.vn/uploads/images/Bao%20chi/cac-mau-nha-vuon-dep.jpg"
+            src={room?.room_images[0]} 
             alt="Bedroom"
             className="rounded-lg object-cover w-full h-40"
           />
@@ -87,27 +118,31 @@ const RoomDetail = () => {
               <span className="text-gray-20 text-sm uppercase block">
                 CÒN PHÒNG
               </span>
-              <span className="text-blue-40 font-bold text-lg">Còn</span>
+              <span className="text-blue-40 font-bold text-lg">
+                {room?.is_rent ? "Hết" : "Còn"}
+              </span>
             </div>
             <div className="text-center">
               <span className="text-gray-20 text-sm uppercase block">
                 DIỆN TÍCH
               </span>
-              <span className="text-blue-40 font-bold text-lg">35m2</span>
+              <span className="text-blue-40 font-bold text-lg">
+                {room?.area}m2
+              </span>
             </div>
             <div className="text-center">
               <span className="text-gray-20 text-sm uppercase block">
                 ĐẶT CỌC
               </span>
-              <span className="text-blue-40 font-bold text-lg">11tr</span>
+              <span className="text-blue-40 font-bold text-lg">
+                {toCurrencyAbbreviation(room?.deposit)}
+              </span>
             </div>
           </div>
 
           <div className="mt-6">
             <h3 className="text-2xl font-semibold text-blue-10 mb-4">Mô tả</h3>
-            <p className="text-gray-600">
-              Minimal techno is a minimalist subgenre of techno music...
-            </p>
+            <p className="text-gray-600">{room?.description}</p>
           </div>
 
           {/* Amenities */}
@@ -130,24 +165,34 @@ const RoomDetail = () => {
           <Card className="shadow-md rounded-lg p-4 mt-6">
             <h3 className="text-2xl font-semibold text-blue-10 mb-4">Giá cả</h3>
             <h2 className="text-3xl font-bold text-blue-40 mb-4">
-              2.000.000 ₫ / phòng
+              {toCurrencyFormat(room?.total_price)} ₫ / phòng
             </h2>
             <div className="grid grid-cols-4 gap-4 border-2 border-blue-60 rounded-md p-4">
               <div className="flex flex-col items-center space-y-1">
                 <img src={bulb} alt="Bulb" className="w-8 h-8" />
-                <p className="font-bold text-blue-60">3.8k</p>
+                <p className="font-bold text-blue-60">
+                  {room?.internet_cost
+                    ? room?.electricity_cost + "k"
+                    : "Miễn phí"}
+                </p>
               </div>
               <div className="flex flex-col items-center space-y-1">
                 <img src={water_active} alt="Water" className="w-8 h-8" />
-                <p className="font-bold text-blue-60">25k</p>
+                <p className="font-bold text-blue-60">
+                  {room?.internet_cost ? room?.water_cost + "k" : "Miễn phí"}
+                </p>
               </div>
               <div className="flex flex-col items-center space-y-1">
                 <img src={wifi_active} alt="Wi-Fi" className="w-8 h-8" />
-                <p className="font-bold text-blue-60">Miễn phí</p>
+                <p className="font-bold text-blue-60">
+                  {room?.internet_cost ? room?.internet_cost + "k" : "Miễn phí"}
+                </p>
               </div>
               <div className="flex flex-col items-center space-y-1">
                 <img src={bike_active} alt="Bike" className="w-8 h-8" />
-                <p className="font-bold text-blue-60">120k</p>
+                <p className="font-bold text-blue-60">
+                  {room?.parking_fee ? room?.parking_fee + "k" : "Miễn phí"}
+                </p>
               </div>
             </div>
 
@@ -169,7 +214,9 @@ const RoomDetail = () => {
         <div className="flex justify-start items-center space-x-12 mr-24">
           <LandlordInfo />
           <button className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]">
-            <span className="mr-5"><img src={message_white} alt="" className="w-7" /></span>
+            <span className="mr-5">
+              <img src={message_white} alt="" className="w-7" />
+            </span>
             Nhắn tin cho Chủ nhà
           </button>
         </div>
@@ -418,6 +465,8 @@ const RoomDetail = () => {
         </div>
       </Modal>
     </div>
+    <Footer/>
+    </>
   );
 };
 

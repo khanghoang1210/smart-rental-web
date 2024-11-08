@@ -7,7 +7,7 @@ import ConfirmationForm from "./form/ConfirmationForm";
 import { toast } from "sonner";
 import RoomService from "@/services/RoomService";
 import { useCookies } from "react-cookie";
-import { CreateRoomForm } from "@/models/room";
+import { Address, CreateRoomForm } from "@/models/room";
 import { useAppStore } from "@/store";
 
 const PostRoomForm = () => {
@@ -38,15 +38,7 @@ const PostRoomForm = () => {
     isRent: false,
   });
 
-  console.log("====", userInfo);
-
-  const [addressData, setAddressData] = useState({
-    city: undefined,
-    district: undefined,
-    ward: undefined,
-    street: undefined,
-    houseNumber: undefined,
-  });
+  const [addressData, setAddressData] = useState<Address>(Object);
 
   const next = () => setCurrentStep(currentStep + 1);
   const prev = () => setCurrentStep(currentStep - 1);
@@ -110,46 +102,23 @@ const PostRoomForm = () => {
       addressData.city,
     ].filter(Boolean); // Use .filter(Boolean) to remove any empty strings
 
-    // const reqData: CreateRoomForm = {
-    //   title: formData.title,
-    //   address: address,
-    //   roomNumber: formData.roomNumber,
-    //   roomImages: formData.roomImages,
-    //   utilities: formData.utilities,
-    //   description: formData.description,
-    //   roomType: formData.roomType,
-    //   owner: userInfo?.id,
-    //   capacity: formData.capacity,
-    //   gender: formData.gender,
-    //   area: formData.area,
-    //   totalPrice: formData.totalPrice,
-    //   deposit: formData.deposit,
-    //   electricityCost: formData.electricityCost,
-    //   waterCost: formData.waterCost,
-    //   internetCost: formData.internetCost,
-    //   isParking: formData.isParking,
-    //   parkingFee: formData.parkingFee,
-    //   status: formData.status,
-    //   isRent: formData.isRent,
-    // };
-
     const form = new FormData();
     form.append("title", formData.title);
     form.append("room_number", formData.roomNumber.toString());
     form.append("description", formData.description);
     form.append("room_type", formData.roomType);
-      form.append("owner", userInfo?.id ? userInfo.id.toString() : "");
-      form.append("capacity", formData.capacity.toString());
+    form.append("owner", userInfo?.id ? userInfo.id.toString() : "");
+    form.append("capacity", formData.capacity.toString());
     form.append("gender", formData.gender.toString());
     form.append("status", formData.status.toString());
     form.append("isRent", formData.isRent.toString());
-    form.append("totalPrice", formData.totalPrice.toString());
+    form.append("total_price", formData.totalPrice.toString());
     form.append("deposit", formData.deposit.toString());
-    form.append("electricityCost", formData.electricityCost.toString());
-    form.append("waterCost", formData.waterCost.toString());
-    form.append("internetCost", formData.internetCost.toString());
-    form.append("isParking", formData.isParking.toString());
-    form.append("parkingFee", formData.parkingFee.toString());
+    form.append("electricity_cost", formData.electricityCost.toString());
+    form.append("water_cost", formData.waterCost.toString());
+    form.append("internet_cost", formData.internetCost.toString());
+    form.append("is_parking", formData.isParking.toString());
+    form.append("parking_fee", formData.parkingFee.toString());
     form.append("status", formData.status.toString());
     form.append("isRent", formData.isRent.toString());
 
@@ -158,12 +127,15 @@ const PostRoomForm = () => {
     });
 
     formData.roomImages.forEach((file) => {
-      form.append(`roomImages`, file);
+      form.append(`room_images`, file);
     });
 
+    address.forEach((add) => {
+      form.append("address", add);
+    });
 
     try {
-      console.log(form);
+      console.log("form", form.getAll);
       const roomService = new RoomService();
       const response = await roomService.createRoom(token, form);
       console.log(response.data);

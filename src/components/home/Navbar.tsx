@@ -4,11 +4,13 @@ import bellIcon from "../../assets/bell.svg";
 import PersonalButton from "../../ui/PersonalButton";
 import { AutoCompleteProps } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // type TopbarProps = {
 //   name: string;
 //   role: string;
 // };
+
 const mockVal = (str: string, repeat = 1) => ({
   value: str.repeat(repeat),
 });
@@ -23,14 +25,17 @@ const Navbar = () => {
   const onSelect = (data: string) => {
     console.log("onSelect", data);
   };
-
+  const navigate = useNavigate();
   const getPanelValue = (searchText: string) =>
     !searchText
       ? []
       : [mockVal(searchText), mockVal(searchText, 2), mockVal(searchText, 3)];
+  const onClickHome = () => {
+    navigate("/")
+  }
   return (
     <nav className="relative flex justify-center items-center w-full mt-4 pb-2 border-b border-gray-80">
-      <div className="px-24">
+      <div className="px-24 cursor-pointer" onClick={()=>onClickHome()}>
         {" "}
         <p>Smart Rental</p>
       </div>
