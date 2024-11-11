@@ -15,7 +15,14 @@ export default class RoomService {
       });
       return res;
     } catch (error) {
-      throw error;
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
+      }
     }
   }
 

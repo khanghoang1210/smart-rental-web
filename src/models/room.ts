@@ -30,7 +30,7 @@ export interface RoomRes {
   utilities: string[];
   description: string;
   room_type: string;
-  owner: number | undefined;
+  owner: number;
   capacity: number;
   gender: number;
   area: number;

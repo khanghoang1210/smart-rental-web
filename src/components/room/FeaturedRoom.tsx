@@ -3,6 +3,7 @@ import RoomService from "@/services/RoomService";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 
 type FeaturedRoomsProps = {
@@ -28,7 +29,7 @@ const FeaturedRooms = (prop: FeaturedRoomsProps) => {
         setRooms(roomsResponse)
         console.log("rooms", rooms)
       } catch (error) {
-        console.error("Error fetching conversations:", error);
+        if (error instanceof Error) toast.error(error.message);
       }
     };
     fetchRoom();

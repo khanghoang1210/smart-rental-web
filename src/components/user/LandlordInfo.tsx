@@ -1,5 +1,8 @@
 
-const LandlordInfo = () => {
+interface LandlordInfoProps {
+  name: string | undefined;
+}
+const LandlordInfo = (prop: LandlordInfoProps) => {
   return (
     <div className="border rounded-lg p-6 shadow-md w-[500px]">  
 
@@ -11,7 +14,7 @@ const LandlordInfo = () => {
             alt="Nam Huong"
             className="rounded-full w-32 h-32 object-cover mb-4"
           />
-          <h3 className="text-[32px] font-medium text-blue-10">Nam Huong</h3>
+          <h3 className="text-[32px] font-medium text-blue-10">{prop.name}</h3>
           <p className="text-gray-20 text-2xl font-medium">Chủ nhà</p>
         </div>
 
