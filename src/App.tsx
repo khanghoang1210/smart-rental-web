@@ -10,6 +10,7 @@ import Contract from "./pages/contract";
 import { useEffect } from "react";
 import { customStorage } from "./utils/localStorage";
 import RoomDetail from "./components/room/RoomDetail";
+import ContractManagementPage from "./pages/ContractManagementPage";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
@@ -51,6 +52,7 @@ function App() {
         <Route path="/request" element={<Request />} />
         <Route path="filter" element={<Filter />} />
         <Route path="/contract" element={<Contract />} />
+        <Route path="/contract/manage" element={<ContractManagementPage />} />
         <Route
           path="chat"
           element={

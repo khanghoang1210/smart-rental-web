@@ -16,7 +16,7 @@ const RequestList = () => {
       <div className="mt-2 space-y-3">
         {list.map((item) => (
           <div
-            className="flex justify-between items-center hover:bg-blue-98 cursor-pointer focus:outline-none p-5 bg-blue-50 rounded-md border"
+            className="flex justify-between items-center hover:bg-blue-98 cursor-pointer focus:border-none p-5 rounded-md border border-gray-90"
             key={item}
           >
             <div className="flex items-center space-x-2">
