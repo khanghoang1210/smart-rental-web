@@ -22,7 +22,8 @@ export default{
   			'60': '#A4A2A7',
   			'80': '#DADADB',
   			'90': '#F2F2F2'
-  		}
+  		},
+		red: '#FF425E',
   	},
   	extend: {
   		fontFamily: {

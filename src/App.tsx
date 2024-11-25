@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import { customStorage } from "./utils/localStorage";
 import RoomDetail from "./components/room/RoomDetail";
 import ContractManagementPage from "./pages/ContractManagementPage";
+import InvoicePage from "./pages/invoice/InvoicePage";
+import Payment from "./pages/payment";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
@@ -53,6 +55,9 @@ function App() {
         <Route path="filter" element={<Filter />} />
         <Route path="/contract" element={<Contract />} />
         <Route path="/contract/manage" element={<ContractManagementPage />} />
+        <Route path="/invoice/manage" element={<InvoicePage />} />
+        <Route path="/payment" element={<Payment />} />
+    
         <Route
           path="chat"
           element={
