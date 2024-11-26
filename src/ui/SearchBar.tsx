@@ -6,6 +6,7 @@ type SearchBarProps = {
   options: AutoCompleteProps["options"];
   onSelect: (value: string) => void;
   onSearch: (value: string) => void;
+  onPressEnter: () => void;
 };
 
 const SearchBar = (prop: SearchBarProps) => {
@@ -15,10 +16,12 @@ const SearchBar = (prop: SearchBarProps) => {
     options={prop.options}
     onSelect={prop.onSelect}
     onSearch={prop.onSearch}
+    
     style={{ width: '100%' }}
   >
     <Input
       className="h-10 bg-blue-98 border-none rounded-md"
+      onPressEnter={prop.onPressEnter}
       suffix={
         <div className="rounded-full bg-blue-40 w-7 h-7 items-center flex justify-center">
           <img src={searchIcon} alt="Search Icon" />

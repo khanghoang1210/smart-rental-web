@@ -19,4 +19,16 @@ export default class ConversationService {
     }
   }
 
+  async createConversation(token: string, userID: number) {
+    const url = CONVERSATION_ENDPOINT;
+    try {
+      const res = await apiClient.post(url, {user_b : userID}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }

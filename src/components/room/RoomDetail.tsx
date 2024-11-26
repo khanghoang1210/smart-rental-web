@@ -21,7 +21,7 @@ import message_white from "../../assets/message_white.svg";
 import LandlordInfo from "../user/LandlordInfo";
 import { useEffect, useState } from "react";
 import Map from "../map/Map";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { RoomRes } from "@/models/room";
 import RoomService from "@/services/RoomService";
 import { useCookies } from "react-cookie";
@@ -33,6 +33,7 @@ import UserService from "@/services/UserService";
 import { UserRes } from "@/models/user";
 import { CreateRentalRequestReq } from "@/models/chat/request";
 import RequestService from "@/services/RequestService";
+import ConversationService from "@/services/ConversationService";
 
 const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
@@ -59,6 +60,8 @@ const RoomDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [form] = Form.useForm();
   const roomId = id ? parseInt(id, 10) : null;
+  const [conversationId, setConversationId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -69,7 +72,10 @@ const RoomDetail = () => {
       toast.error("Invalid room ID");
       return;
     }
-    if (parseFloat(values.suggested_price) < 0 || parseInt(values.num_of_person, 10) < 0) {
+    if (
+      parseFloat(values.suggested_price) < 0 ||
+      parseInt(values.num_of_person, 10) < 0
+    ) {
       toast.error("Giá trị không hợp lệ");
       return;
     }
@@ -120,6 +126,37 @@ const RoomDetail = () => {
     fetchRoomByID(roomId);
   }, [id, token, room?.owner]);
 
+  const handleStartConversation = async () => {
+    try {
+      // Nếu conversation đã tồn tại, điều hướng đến trang trò chuyện
+      if (conversationId) {
+        navigate(`/chat/${conversationId}`);
+        return;
+      }
+
+      // Nếu chưa, tạo conversation mới
+      const conversationService = new ConversationService();
+      if (user) {
+        const response = await conversationService.createConversation(
+          token,
+          user?.id
+        );
+
+        if (response && response.data) {
+          const newConversationId = response.data.id; // ID của conversation mới
+          setConversationId(newConversationId);
+
+          // Điều hướng đến trang chat
+          navigate(`/chat/${newConversationId}`);
+        } else {
+          toast.error("Không thể tạo cuộc trò chuyện, vui lòng thử lại.");
+        }
+      }
+    } catch (error) {
+      console.error("Error starting conversation:", error);
+      toast.error("Đã xảy ra lỗi khi bắt đầu cuộc trò chuyện.");
+    }
+  };
   if (!room) {
     return <div>Loading...</div>;
   }
@@ -269,7 +306,10 @@ const RoomDetail = () => {
         <div className="flex items-center justify-center">
           <div className="flex justify-start items-center space-x-12 mr-24">
             <LandlordInfo name={user?.full_name} />
-            <button className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]">
+            <button
+              onClick={handleStartConversation}
+              className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]"
+            >
               <span className="mr-5">
                 <img src={message_white} alt="" className="w-7" />
               </span>

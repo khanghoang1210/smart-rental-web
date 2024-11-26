@@ -6,8 +6,15 @@ import SortOptions from "../components/filter/SortOption";
 import UtilitiesList from "../components/filter/UtilitiesList";
 import RoomSearchList from "../components/room/RoomSearchList";
 import Navbar from "@/components/home/Navbar";
+import { RoomRes } from "@/models/room";
+import { useLocation } from "react-router-dom";
+
 
 const Filter = () => {
+
+  const location = useLocation();
+  const roomData: RoomRes[] = location.state?.roomData || [];
+  console.log("room ====", roomData)
   return (
     <>
       {" "}
@@ -31,7 +38,7 @@ const Filter = () => {
         </div>
         <div className="flex flex-col space-y-10">
           <SortOptions />
-          <RoomSearchList />
+          <RoomSearchList roomData={roomData} />
         </div>
       </div>
       <Footer />

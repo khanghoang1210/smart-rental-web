@@ -66,4 +66,21 @@ export default class RoomService {
       }
     }
   }
+
+  async searchByAddress(textSearch: string) {
+    const url = ROOM_ENDPOINT + `/search-by-address?search=${textSearch}`;
+    try {
+      const res = await apiClient.get(url);
+      return res;
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
+      }
+    }
+  }
 }
