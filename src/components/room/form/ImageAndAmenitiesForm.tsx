@@ -10,7 +10,7 @@ interface ImageAndAmenitiesFormProps {
 }
 
 const ImageAndAmenitiesForm = (props: ImageAndAmenitiesFormProps) => {
-  const [fileList, setFileList] = useState<File[]>([]);
+  const [, setFileList] = useState<File[]>([]);
   const [selectedUtilities, setSelectedUtilities] = useState<string[]>([]);
 
   const handleFileChange = (info: any) => {

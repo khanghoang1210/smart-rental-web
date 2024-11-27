@@ -13,6 +13,8 @@ import RoomDetail from "./components/room/RoomDetail";
 import ContractManagementPage from "./pages/ContractManagementPage";
 import InvoicePage from "./pages/invoice/InvoicePage";
 import Payment from "./pages/payment";
+import BillList from "./components/invoice/management/BillList";
+import BillManagementPage from "./pages/invoice/BillManagementPage";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
@@ -22,13 +24,13 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const handleTabClose = () => {
       clearUserInfo();
-      customStorage.removeItem('currentUser');
+      customStorage.removeItem("currentUser");
     };
-    
-    window.addEventListener('beforeunload', handleTabClose);
+
+    window.addEventListener("beforeunload", handleTabClose);
 
     return () => {
-      window.removeEventListener('beforeunload', handleTabClose);
+      window.removeEventListener("beforeunload", handleTabClose);
     };
   }, [clearUserInfo]);
 
@@ -55,9 +57,10 @@ function App() {
         <Route path="filter" element={<Filter />} />
         <Route path="/contract" element={<Contract />} />
         <Route path="/contract/manage" element={<ContractManagementPage />} />
-        <Route path="/invoice/manage" element={<InvoicePage />} />
+        <Route path="/invoice" element={<InvoicePage />} />
+        <Route path="/invoice/manage" element={<BillManagementPage />} />
         <Route path="/payment" element={<Payment />} />
-    
+
         <Route
           path="chat"
           element={

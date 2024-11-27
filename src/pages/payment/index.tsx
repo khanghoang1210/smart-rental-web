@@ -1,12 +1,14 @@
 import Navbar from "@/components/home/Navbar";
-import PaymentInfo from "@/components/payment/PaymentInfo";
-import QRPayment from "@/components/payment/QRPayment";
+// import PaymentInfo from "@/components/payment/PaymentInfo";
+import PaymentSuccess from "@/components/payment/PaymentSuccess";
+// import QRPayment from "@/components/payment/QRPayment";
 
 const Payment = () => {
   return (
     <>
     <Navbar/>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-6  p-6">
+    <PaymentSuccess/>
+      {/* <div className="flex flex-col md:flex-row items-center justify-center gap-6  p-6">
         <PaymentInfo
           address="97 đường số 11, phường Trường Thọ, TP Thủ Đức, TP HCM"
           invoiceId="HD2220"
@@ -21,7 +23,7 @@ const Payment = () => {
           transferAmount="2.000.000đ"
           transferContent="SR01239503942"
         />
-      </div>
+      </div> */}
     </>
   );
 };
