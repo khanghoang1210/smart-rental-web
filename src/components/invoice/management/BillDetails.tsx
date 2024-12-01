@@ -1,5 +1,7 @@
+import React from "react";
 import billImg from "../../../assets/bill.png";
-
+import InvoiceDetails from "../InvoiceDetail";
+import PaymentInfo from "../PaymentInfo";
 
 const BillDetails = ({ bill }: any) => {
   if (!bill) {
@@ -24,46 +26,58 @@ const BillDetails = ({ bill }: any) => {
   }
 
   return (
-    <div className="border rounded-lg shadow-md p-4 flex flex-col space-y-4">
-      <h2 className="text-lg font-semibold">Thông tin hóa đơn</h2>
-      <div className="flex justify-between">
-        <span>Mã hóa đơn</span>
-        <span>{bill.id}</span>
-      </div>
-      <div className="flex justify-between">
-        <span>Tiền phòng</span>
-        <span>{bill.rent}</span>
-      </div>
-      <div className="flex justify-between">
-        <span>Điện</span>
-        <span>{bill.electricity}</span>
-      </div>
-      <div className="flex justify-between">
-        <span>Nước</span>
-        <span>{bill.water}</span>
-      </div>
-      <div className="flex justify-between">
-        <span>Internet</span>
-        <span>{bill.internet}</span>
-      </div>
-      <div className="flex justify-between">
-        <span>Tổng tiền</span>
-        <span className="text-blue-600 font-semibold">{bill.total}</span>
-      </div>
+    <div className="rounded-lg p-4 space-y-6 w-[60%] ">
+      {/* Nếu chưa thanh toán */}
       {bill.statusCode === "not_paid" && (
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">
-          Nhắc thanh toán
-        </button>
+        <div className="flex space-x-8">
+         <InvoiceDetails details={bill} />
+         <PaymentInfo info={bill} />
+        </div>
       )}
+
+      {/* Nếu đã thanh toán */}
       {bill.statusCode === "pending_confirmation" && (
-        <button className="bg-green-600 text-white px-4 py-2 rounded-lg">
-          Xác nhận đã hoàn thành
-        </button>
+        <div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h3 className="font-medium">Mã giao dịch</h3>
+              <p>{bill.transactionId}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Thời gian thanh toán</h3>
+              <p>{bill.paymentTime}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Tên</h3>
+              <p>{bill.name}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Địa chỉ</h3>
+              <p>{bill.address}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Số điện thoại</h3>
+              <p>{bill.phone}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Tổng tiền</h3>
+              <p className="text-blue-600 font-bold">
+                {bill.total.toLocaleString()}đ
+              </p>
+            </div>
+          </div>
+          <div className="mt-4">
+            <h3 className="font-medium">Chứng minh giao dịch</h3>
+            <img
+              src={bill.proofImage}
+              alt="Chứng minh giao dịch"
+              className="w-full mt-2 rounded-lg"
+            />
+          </div>
+        </div>
       )}
     </div>
   );
 };
-
-
 
 export default BillDetails;

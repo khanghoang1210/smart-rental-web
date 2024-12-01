@@ -16,7 +16,7 @@ const InvoiceDetails: React.FC<{ details: InvoiceDetailsProps }> = ({
   details,
 }) => {
   return (
-    <div className="w-[25%] p-4 mt-16 ">
+    <div className="w-[25%] p-4 ">
       <div className="flex space-x-3">
         <h2 className="text-xl font-bold mb-2">Thông tin hoá đơn</h2>
         <div className="flex items-center space-x-2 bg-gray-90 px-3 py-1 rounded-sm text-sm font-medium text-gray-40">

@@ -23,6 +23,7 @@ const BillManagementPage = () => {
       internet: "60,000đ",
       total: "3,560,000đ",
       isSelected: false,
+      tenant: "Le Bao Nhu"
     },
     {
       id: "HD222",
@@ -37,11 +38,12 @@ const BillManagementPage = () => {
       internet: "60,000đ",
       total: "3,560,000đ",
       isSelected: false,
+      tenant: "Le Bao Nhu"
     },
     {
       id: "HD223",
       room: "Phòng số 5",
-      status: "Đã thanh toán chờ chủ nhà xác nhận",
+      status: "Đã thanh toán",
       statusCode: "pending_confirmation",
       statusColor: "text-blue-600",
       amount: "2,560,000đ",
@@ -51,6 +53,7 @@ const BillManagementPage = () => {
       internet: "60,000đ",
       total: "3,560,000đ",
       isSelected: false,
+      tenant: "Le Bao Nhu"
     },
   ];
 
@@ -65,14 +68,14 @@ const BillManagementPage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex ml-64 flex-col p-6">
+      <div className="flex ml-52 flex-col p-6 w-[1100px]">
         <h1 className="text-xl text-gray-20 font-bold mb-4">Hóa đơn thu tiền</h1>
         <BillPeriodSelector
           periods={periods}
           selectedPeriod={selectedPeriod}
           onChange={handlePeriodChange}
         />
-        <div className="flex mt-6 space-x-6">
+        <div className="flex space-x-6">
           <BillList
             bills={bills}
             selectedBillId={selectedBill?.id}
