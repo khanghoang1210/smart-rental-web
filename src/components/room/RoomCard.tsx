@@ -18,10 +18,10 @@ const RoomCard = (prop: RoomCardProps) => {
   };
   return (
     <div
-      className="flex justify-center border border-gray-80 rounded-3xl cursor-pointer p-4 w-[790px] h-[180px]"
+      className="flex justify-center border border-gray-80 rounded-3xl cursor-pointer space-x-5 p-4 w-[790px] h-[180px]"
       onClick={handleCardClick}
     >
-      <div className="w-1/3 mr-4">
+      <div className="mr-4">
         <img src={prop.image} alt={prop.title} className="h-full rounded-lg" />
       </div>
       <div className="flex flex-col justify-between w-2/3">

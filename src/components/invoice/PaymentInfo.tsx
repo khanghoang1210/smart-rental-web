@@ -12,7 +12,7 @@ interface PaymentInfoProps {
 
 const PaymentInfo: React.FC<{ info: PaymentInfoProps }> = ({ info }) => {
   return (
-    <div className="w-[25%] p-4">
+    <div className="w-[25%] p-4 mt-16">
       <ul className="border p-4 rounded-xl border-blue-80">
         <h1 className="text-gray-20 font-medium">Thông tin thanh toán</h1>
         <li className="flex justify-between py-2 ml-8 font-semibold">

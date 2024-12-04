@@ -1,7 +1,7 @@
 import Navbar from "@/components/home/Navbar";
-// import PaymentInfo from "@/components/payment/PaymentInfo";
+import PaymentInfo from "@/components/payment/PaymentInfo";
 import PaymentSuccess from "@/components/payment/PaymentSuccess";
-// import QRPayment from "@/components/payment/QRPayment";
+import QRPayment from "@/components/payment/QRPayment";
 
 const Payment = () => {
   return (

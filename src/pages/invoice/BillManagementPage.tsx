@@ -1,7 +1,6 @@
 import Navbar from "@/components/home/Navbar";
 import BillDetails from "@/components/invoice/management/BillDetails";
 import BillList from "@/components/invoice/management/BillList";
-import BillPeriodSelector from "@/components/invoice/management/BillPeriodSelector";
 import { useState } from "react";
 
 const BillManagementPage = () => {
@@ -68,18 +67,17 @@ const BillManagementPage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex ml-52 flex-col p-6 w-[1100px]">
+      <div className="flex ml-52 flex-col p-6">
         <h1 className="text-xl text-gray-20 font-bold mb-4">Hóa đơn thu tiền</h1>
-        <BillPeriodSelector
-          periods={periods}
-          selectedPeriod={selectedPeriod}
-          onChange={handlePeriodChange}
-        />
+
         <div className="flex space-x-6">
           <BillList
             bills={bills}
             selectedBillId={selectedBill?.id}
             onSelect={handleBillSelect}
+            onChange={handlePeriodChange}
+            selectedPeriod={selectedPeriod}
+            periods={periods}
           />
           <BillDetails bill={selectedBill} />
         </div>
