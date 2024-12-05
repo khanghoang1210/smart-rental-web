@@ -34,6 +34,7 @@ import { UserRes } from "@/models/user";
 import { CreateRentalRequestReq } from "@/models/chat/request";
 import RequestService from "@/services/RequestService";
 import ConversationService from "@/services/ConversationService";
+import { useConversationStore } from "@/store";
 
 const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
@@ -61,6 +62,8 @@ const RoomDetail = () => {
   const [form] = Form.useForm();
   const roomId = id ? parseInt(id, 10) : null;
   const [conversationId, setConversationId] = useState<number | null>(null);
+  const { setSelectedConversationId, setSelectedUserId } =
+    useConversationStore();
   const navigate = useNavigate();
 
   const showModal = () => {
@@ -128,30 +131,30 @@ const RoomDetail = () => {
 
   const handleStartConversation = async () => {
     try {
-      // Nếu conversation đã tồn tại, điều hướng đến trang trò chuyện
-      if (conversationId) {
-        navigate(`/chat/${conversationId}`);
-        return;
+      if (user) {
+        setSelectedUserId(user.id); // Lưu user ID để dùng trong ChatBox
+        setSelectedConversationId(null); // Xoá conversationId để chat tạm
+        navigate("/chat"); 
       }
 
       // Nếu chưa, tạo conversation mới
-      const conversationService = new ConversationService();
-      if (user) {
-        const response = await conversationService.createConversation(
-          token,
-          user?.id
-        );
+      // const conversationService = new ConversationService();
+      // if (user) {
+      //   const response = await conversationService.createConversation(
+      //     token,
+      //     user?.id
+      //   );
 
-        if (response && response.data) {
-          const newConversationId = response.data.id; // ID của conversation mới
-          setConversationId(newConversationId);
+      //   if (response && response.data) {
+      //     const newConversationId = response.data.id; // ID của conversation mới
+      //     setConversationId(newConversationId);
 
-          // Điều hướng đến trang chat
-          navigate(`/chat/${newConversationId}`);
-        } else {
-          toast.error("Không thể tạo cuộc trò chuyện, vui lòng thử lại.");
-        }
-      }
+      //     // Điều hướng đến trang chat
+      //     navigate(`/chat/${newConversationId}`);
+      //   } else {
+      //     toast.error("Không thể tạo cuộc trò chuyện, vui lòng thử lại.");
+      //   }
+      // }
     } catch (error) {
       console.error("Error starting conversation:", error);
       toast.error("Đã xảy ra lỗi khi bắt đầu cuộc trò chuyện.");

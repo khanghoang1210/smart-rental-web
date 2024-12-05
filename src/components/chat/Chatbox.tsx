@@ -10,10 +10,11 @@ import { MessageRes, MessageSend } from "@/models/chat/chat";
 import UserService from "@/services/UserService";
 import { UserInfo } from "@/store/slice/authSlice";
 import MessageCard from "@/ui/MessageCard";
+import ConversationService from "@/services/ConversationService";
 
 const ChatBox = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { selectedConversationId, selectedUserId, addMessage } =
+  const { selectedConversationId, selectedUserId, addMessage, setSelectedConversationId } =
     useConversationStore();
   const { userInfo } = useAppStore();
   const [messages, setMessages] = useState<MessageRes[]>([]); // State để lưu các tin nhắn trong cuộc trò chuyện được chọn
@@ -41,8 +42,25 @@ const ChatBox = () => {
   useEffect(() => {
     if (selectedConversationId) {
       fetchMessagesForConversation(selectedConversationId);
+    } else {
+      if(selectedUserId)
+        fectchUserTemp(selectedUserId)
     }
   }, [selectedConversationId]);
+  console.log(selectedUserId)
+
+  const fectchUserTemp = async(userId: number)=> {
+    try{
+      
+      const token = cookies.token;
+      const sender = await userService.getUserByID(userId, token);
+      setSenderUser(sender.data.data);
+      
+    }
+    catch (error) {
+      console.error("Error fetching conversations:", error);
+    }
+  }
 
   const fetchMessagesForConversation = async (conversationId: number) => {
     try {
@@ -65,6 +83,8 @@ const ChatBox = () => {
       console.error("Error fetching conversations:", error);
     }
   };
+
+  console.log(senderUser)
 
   useEffect(() => {
     if (socket) {
@@ -90,11 +110,25 @@ const ChatBox = () => {
   }, [socket, selectedConversationId]);
 
   const handleSendMessage = async () => {
+
+    const conversationService = new ConversationService();
+    if (!newMessage.trim()) return;
+
+    let conversationIdToUse = selectedConversationId;
+    if (!selectedConversationId && selectedUserId) {
+      const response = await conversationService.createConversation(
+        cookies.token,
+        selectedUserId
+      );
+      conversationIdToUse = response.data.data; 
+      
+      setSelectedConversationId(conversationIdToUse);
+    }
     setNewMessage(newMessage);
     socket?.emit("sendMessage", {
       sender_id: userInfo?.id,
       receiver_id: selectedUserId,
-      conversation_id: selectedConversationId,
+      conversation_id: conversationIdToUse,
       content: newMessage,
       type: 1,
     });
