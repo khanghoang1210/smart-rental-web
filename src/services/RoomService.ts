@@ -46,7 +46,7 @@ export default class RoomService {
       }
     }
   }
-  async getByID(token: string, id: number) {
+  async getByID(token: string, id: number | undefined) {
     const url = ROOM_ENDPOINT + `/${id}`;
     try {
       const res = await apiClient.get(url, {

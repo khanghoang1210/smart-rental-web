@@ -42,7 +42,6 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
 
-  // Nếu đã đăng nhập, chuyển hướng đến trang Home, nếu không thì hiển thị Auth
   return isAuthenticated ? <Navigate to="/" /> : children;
 };
 
@@ -51,7 +50,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/room" element={<Room />} />
+        <Route path="/room/create" element={<Room />} />
         <Route path="/room/:id" element={<RoomDetail />} />
         <Route path="/request" element={<Request />} />
         <Route path="filter" element={<Filter />} />
@@ -70,7 +69,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* Định tuyến con cho Auth */}
         <Route
           path="auth/*"
           element={

@@ -33,7 +33,6 @@ import UserService from "@/services/UserService";
 import { UserRes } from "@/models/user";
 import { CreateRentalRequestReq } from "@/models/chat/request";
 import RequestService from "@/services/RequestService";
-import ConversationService from "@/services/ConversationService";
 import { useConversationStore } from "@/store";
 
 const UtilitiesData = [
@@ -61,7 +60,6 @@ const RoomDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [form] = Form.useForm();
   const roomId = id ? parseInt(id, 10) : null;
-  const [conversationId, setConversationId] = useState<number | null>(null);
   const { setSelectedConversationId, setSelectedUserId } =
     useConversationStore();
   const navigate = useNavigate();
@@ -132,34 +130,19 @@ const RoomDetail = () => {
   const handleStartConversation = async () => {
     try {
       if (user) {
-        setSelectedUserId(user.id); // Lưu user ID để dùng trong ChatBox
-        setSelectedConversationId(null); // Xoá conversationId để chat tạm
-        navigate("/chat"); 
+        setSelectedUserId(user.id);
+        setSelectedConversationId(null);
+        navigate("/chat");
       }
-
-      // Nếu chưa, tạo conversation mới
-      // const conversationService = new ConversationService();
-      // if (user) {
-      //   const response = await conversationService.createConversation(
-      //     token,
-      //     user?.id
-      //   );
-
-      //   if (response && response.data) {
-      //     const newConversationId = response.data.id; // ID của conversation mới
-      //     setConversationId(newConversationId);
-
-      //     // Điều hướng đến trang chat
-      //     navigate(`/chat/${newConversationId}`);
-      //   } else {
-      //     toast.error("Không thể tạo cuộc trò chuyện, vui lòng thử lại.");
-      //   }
-      // }
     } catch (error) {
       console.error("Error starting conversation:", error);
       toast.error("Đã xảy ra lỗi khi bắt đầu cuộc trò chuyện.");
     }
   };
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const closeModal = () => setSelectedImage(null);
   if (!room) {
     return <div>Loading...</div>;
   }
@@ -177,17 +160,17 @@ const RoomDetail = () => {
           </div>
         </div>
 
-        {/* Images Section */}
         <div className="flex grid-cols-3 gap-4 justify-center items-center">
           {/* Main Image */}
-          <div className="col-span-1">
+          <div className="col-span-1 cursor-pointer">
             <img
               src={room?.room_images[0]}
               alt="Main Property"
               className="rounded-lg object-cover w-[570px] h-80"
+              onClick={() => setSelectedImage(room?.room_images[0])}
             />
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-2 cursor-pointer">
             <img
               src={room?.room_images[0]}
               alt="Living Room"
@@ -618,6 +601,18 @@ const RoomDetail = () => {
               </Form>
             </div>
           </div>
+        </Modal>
+        <Modal
+          open={!!selectedImage}
+          onCancel={closeModal}
+          footer={null}
+          centered
+        >
+          <img
+            src={selectedImage}
+            alt="Selected"
+            className="w-full h-full object-cover rounded-lg"
+          />
         </Modal>
       </div>
       <Footer />

@@ -40,16 +40,39 @@ const ChatBox = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (selectedConversationId) {
-      fetchMessagesForConversation(selectedConversationId);
-    } else {
-      if(selectedUserId)
-        fectchUserTemp(selectedUserId)
-    }
-  }, [selectedConversationId]);
-  console.log(selectedUserId)
+    const conversationService = new ConversationService();
+    const handleFetch = async () => {
+      try {
+        const token = cookies.token;
+        console.log(selectedUserId)
+  
+        if (selectedUserId) {
+          const conversationRes = await conversationService.getConversationByUserId(
+            token,
+            selectedUserId
+            
+          );
+  
+          const conversationData = conversationRes.data.data;
+  
+          if (conversationData && conversationData.length > 0) {
+            fetchMessagesForConversation(conversationData[0].id);
+          } else {
+            // Nếu không, fetch thông tin tạm thời của user
+            fetchUserTemp(selectedUserId);
+          }
+        } else if (selectedConversationId) {
+          fetchMessagesForConversation(selectedConversationId);
+        }
+      } catch (error) {
+        console.error("Error handling fetch:", error);
+      }
+    };
+  
+    handleFetch();
+  }, [selectedConversationId, selectedUserId]);
 
-  const fectchUserTemp = async(userId: number)=> {
+  const fetchUserTemp = async(userId: number)=> {
     try{
       
       const token = cookies.token;

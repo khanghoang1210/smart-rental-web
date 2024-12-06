@@ -8,12 +8,17 @@ import q3 from "../../assets/q3.png";
 import thuduc from "../../assets/thuduc.png";
 import UserRating from "./UserRating";
 import FeaturedRooms from "../room/FeaturedRoom";
+import { useNavigate } from "react-router-dom";
 
 // type HomeProps = {
 
 // };
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const handleClickCreateRoom = () => {
+    navigate("/room/create");
+  };
   return (
     <div className="flex flex-col justify-center mt-16">
       <div className="flex justify-center items-center space-x-16">
@@ -72,11 +77,9 @@ const Hero = () => {
         </div>
       </div>
 
-      <div>
-        
-      </div>
-      <FeaturedRooms title="Phòng nổi bật"/>
-      <UserRating/>
+      <div></div>
+      <FeaturedRooms title="Phòng nổi bật" />
+      <UserRating />
 
       <div className="flex justify-center mt-24">
         <div className="bg-gradient-to-b from-blue-40 to-blue-80 relative flex justify-between items-center mt-16 rounded-3xl h-[400px] w-[1050px]">
@@ -88,9 +91,12 @@ const Hero = () => {
               Đăng tin phòng trọ nhanh chóng và dễ dàng, <br /> giúp bạn tiếp
               cận ngay với hàng nghìn người <br /> đang tìm kiếm chỗ ở phù hợp!
             </p>
-            <button className="bg-transparent text-base border-2 border-gray-90 text-gray-90 font-semibold px-4 py-3 rounded-lg shadow-lg">
-            ĐĂNG PHÒNG TRỌ
-          </button>
+            <button
+              onClick={handleClickCreateRoom }
+              className="bg-transparent text-base border-2 border-gray-90 text-gray-90 font-semibold px-4 py-3 rounded-lg shadow-lg"
+            >
+              ĐĂNG PHÒNG TRỌ
+            </button>
           </div>
 
           <div className="absolute right-7 mr-16">

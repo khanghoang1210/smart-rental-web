@@ -31,4 +31,15 @@ export default class ConversationService {
     }
   }
 
+  async getConversationByUserId(token: string, userID: number) {
+    const url = CONVERSATION_ENDPOINT + `/user/${userID}`;
+    try {
+      const res = await apiClient.get(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

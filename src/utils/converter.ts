@@ -62,3 +62,44 @@ export function toCurrencyAbbreviation(value: number | undefined) {
 export function toCurrencyFormat(value: number | undefined) {
   if (value) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Adds a dot as a thousands separator
 }
+
+export const getStatusLabel = (status: number | undefined): string => {
+  switch (status) {
+    case 1:
+      return "Chưa xử lý";
+    case 2:
+      return "Đã tiếp nhận";
+    case 3:
+      return "Đã từ chối";
+    default:
+      return "Không xác định";
+  }
+};
+
+export const formatDateTime = (dateString: string | undefined): string => {
+  if (dateString) {
+    const date = new Date(dateString);
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${hours}:${minutes} ${day}/${month}/${year}`;
+  }
+  return "";
+};
+
+export const formatDate = (dateString: string | undefined): string => {
+  if (dateString) {
+    const date = new Date(dateString);
+
+    // Format the date to DD-MM-YYYY
+    const formattedDate = `${String(date.getDate()).padStart(2, "0")}/${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}/${date.getFullYear()}`;
+    return formattedDate;
+  }
+
+  return "";
+};
