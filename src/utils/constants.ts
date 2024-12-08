@@ -8,3 +8,4 @@ export const MESSAGE_ENDPOINT = "/messages";
 export const ROOM_ENDPOINT = "/rooms";
 export const RENTAL_REQUEST_ENDPOINT = "/requests";
 export const RETURN_REQUEST_ENDPOINT = "/return-requests";
+export const BILLING_ENDPOINT = "/billings";

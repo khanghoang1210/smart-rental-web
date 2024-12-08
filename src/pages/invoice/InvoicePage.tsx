@@ -1,56 +1,53 @@
 import Navbar from "@/components/home/Navbar";
 import InvoiceDetails from "@/components/invoice/InvoiceDetail";
 import InvoiceList from "@/components/invoice/InvoiceList";
-import PaymentInfo from "@/components/invoice/PaymentInfo";
-import { useState } from "react";
+import { BillingRes } from "@/models/billing";
+import BillingtService from "@/services/BillingService";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
 
 const InvoicePage = () => {
-  const [, setSelectedInvoice] = useState<string>("HD221");
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const [selectedInvoice, setSelectedInvoice] = useState<
+    BillingRes | undefined
+  >(null);
+  const [bills, setBills] = useState<BillingRes[]>([]);
 
-  const invoices = [
-    {
-      id: "HD221",
-      date: "13:49 17/09/2023",
-      dueDate: "20/09/2023",
-      address: "Số 9 Nguyễn Văn Huyên, Dịch Vọng, Cầu Giấy, Hà Nội",
-      room: "Phòng số 3.11",
-      total: "3,560,000đ",
-      selected: true,
-      onClick: () => setSelectedInvoice("HD221"),
-    },
-    // Add more invoices here
-  ];
+  useEffect(() => {
+    const billingService = new BillingtService();
 
-  const invoiceDetails = {
-    id: "HD221",
-    roomPrice: "2,500,000đ",
-    electricity: "350,000đ",
-    water: "90,000đ",
-    internet: "60,000đ",
-    parking: "100,000đ",
-    other: "20,000đ",
-    total: "3,560,000đ",
-  };
+    const fetchBillByMonth = async (year: number, month: number) => {
+      try {
+        const roomRes = await billingService.getByMonth(token, month, year);
+        const data = roomRes.data.data;
+        setBills(data);
+      } catch (error) {
+        if (error instanceof Error) toast.error(error.message);
+      }
+    };
+    fetchBillByMonth(2023, 10);
+  }, []);
 
-  const paymentInfo = {
-    name: "Lê Bảo Như",
-    phone: "0823306992",
-    room: "3.11",
-    address: "97 đường số 11, phường Trường Thọ, TP Thủ Đức, TP HCM",
-    month: "Tháng 7/2024",
-    total: "3,560,000đ",
-  };
+  const invoices = bills.map((bill) => ({
+    bill,
+    selected: selectedInvoice?.id === bill.id,
+    onClick: () => setSelectedInvoice(bill),
+  }));
 
   return (
     <>
       <Navbar />
-      <div className="flex min-h-screen bg-gray-100">
+      <div className="flex">
         <InvoiceList
           invoices={invoices}
-          onSelect={(id) => setSelectedInvoice(id)}
+          onSelect={(id) =>
+            setSelectedInvoice(bills.find((b) => b.id === id) || null)
+          }
         />
-        <InvoiceDetails details={invoiceDetails} />
-        <PaymentInfo info={paymentInfo} />
+        <InvoiceDetails bill={selectedInvoice} />
+        {/* <PaymentInfo info={paymentInfo} /> */}
       </div>
     </>
   );

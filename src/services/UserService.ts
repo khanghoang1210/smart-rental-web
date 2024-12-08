@@ -16,7 +16,7 @@ export default class UserService {
     }
   }
 
-  async getUserByID(id: number, token: string) {
+  async getUserByID(id: number | undefined, token: string) {
     const url = USER_ENDPOINT + `/${id}`;
     try {
       const res = await apiClient.get(url, {
