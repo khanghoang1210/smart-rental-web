@@ -15,3 +15,17 @@ export interface RentalRequestRes {
     updated_at: string; // ISO string format
   }
   
+  export interface ReturnRequestRes {
+    id: number;
+    contract_id: number;
+    room_id: number;
+    reason: string;
+    return_date: string; // ISO date format
+    status: number;
+    deduct_amount: number;
+    total_return_deposit: number;
+    created_user: UserInfo;
+    created_at: string; // ISO date format
+    updated_at: string; // ISO date format
+  }
+  

@@ -1,4 +1,4 @@
-import { RENTAL_REQUEST_ENDPOINT } from "@/utils/constants";
+import { RENTAL_REQUEST_ENDPOINT, RETURN_REQUEST_ENDPOINT } from "@/utils/constants";
 import { apiClient, isApiErrorResponse } from "../utils/apiClient";
 import { CreateRentalRequestReq } from "@/models/chat/request";
 
@@ -47,4 +47,24 @@ export default class RequestService {
       }
   }
 
+  async getReturnRequestByLandlordID(token: string, userID: number | undefined) {
+    const url = RETURN_REQUEST_ENDPOINT + `/landlord/${userID}`;
+    try {
+      const res = await apiClient.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res;
+    } catch (error) {
+        if (isApiErrorResponse(error)) {
+          const { message } = error.response.data;
+          throw new Error(message);
+        } else if (!navigator.onLine) {
+          throw new Error("Vui lòng kiểm tra kết nối");
+        } else {
+          throw new Error("Lỗi hệ thống");
+        }
+      }
+  }
 }

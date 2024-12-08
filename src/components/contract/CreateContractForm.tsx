@@ -162,7 +162,7 @@ const CreateContractForm = () => {
     },
     {
       title: "Xem trước",
-      content: <PreviewForm />,
+      content: <PreviewForm formData={{}}/>,
     },
   ];
 

@@ -73,3 +73,9 @@
   background-color: #0077B6 !important ;
 }
 
+@media print {
+  .break-after-page {
+    page-break-after: always;
+  }
+}
+

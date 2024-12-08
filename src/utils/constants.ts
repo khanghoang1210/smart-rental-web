@@ -6,4 +6,5 @@ export const USER_ENDPOINT = "/users";
 export const CONVERSATION_ENDPOINT = "/conversations";
 export const MESSAGE_ENDPOINT = "/messages";
 export const ROOM_ENDPOINT = "/rooms";
-export const RENTAL_REQUEST_ENDPOINT = "/requests"
+export const RENTAL_REQUEST_ENDPOINT = "/requests";
+export const RETURN_REQUEST_ENDPOINT = "/return-requests";

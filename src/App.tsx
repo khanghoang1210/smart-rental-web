@@ -15,6 +15,8 @@ import InvoicePage from "./pages/invoice/InvoicePage";
 import Payment from "./pages/payment";
 import BillManagementPage from "./pages/invoice/BillManagementPage";
 import ProcessTracking from "./pages/process-tracking";
+import ReturnRequestPage from "./pages/request/ReturnRequestPage";
+import ReturnRequestMangement from "./pages/request/ReturnRequestMangement";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = useAppStore();
@@ -53,6 +55,8 @@ function App() {
         <Route path="/room/create" element={<Room />} />
         <Route path="/room/:id" element={<RoomDetail />} />
         <Route path="/request" element={<Request />} />
+        <Route path="/return-request" element={<ReturnRequestPage />} />
+        <Route path="/return-request/manage" element={<ReturnRequestMangement />} />
         <Route path="filter" element={<Filter />} />
         <Route path="/contract" element={<Contract />} />
         <Route path="/contract/manage" element={<ContractManagementPage />} />
