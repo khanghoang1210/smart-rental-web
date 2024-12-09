@@ -1,7 +1,7 @@
 import { ReturnRequestRes } from "@/models/request";
 import RequestService from "@/services/RequestService";
 import { useAppStore } from "@/store";
-import { formatDateTime, getStatusLabel } from "@/utils/converter";
+import { formatDateTime } from "@/utils/converter";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ interface RequestListProps {
 }
 const RequestList = ({ onRequestSelect }: RequestListProps) => {
   const [requests, setRequests] = useState<ReturnRequestRes[]>([]);
-  const {userInfo} = useAppStore();
+  const { userInfo } = useAppStore();
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
 
@@ -33,11 +33,9 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
         if (error instanceof Error) toast.error(error.message);
       }
     };
-    
+
     fetchRequest();
   }, []);
-
-
 
   return (
     <div className="shadow-sm rounded-lg">

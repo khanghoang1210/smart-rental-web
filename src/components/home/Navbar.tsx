@@ -12,10 +12,7 @@ import RoomService from "@/services/RoomService";
 import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
 
-// type TopbarProps = {
-//   name: string;
-//   role: string;
-// };
+
 
 const Navbar = () => {
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);

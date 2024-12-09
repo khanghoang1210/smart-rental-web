@@ -45,9 +45,9 @@ const Hero = () => {
         <h2 className="text-2xl md:text-2xl font-bold mb-6 text-blue-10">
           Khu vực phổ biến
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 ">
           <div className="lg:col-span-1">
-            <div className="">
+            <div className=" hover:cursor-pointer transition duration-300 transform hover:scale-105">
               <img
                 src={binhthanh}
                 alt="Bình Thạnh"
@@ -57,20 +57,20 @@ const Hero = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4 lg:col-span-2">
-            <div className="">
+            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
               <img src={q7} alt="Quận 7" className="rounded-lg shadow-lg" />
             </div>
-            <div className="">
+            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
               <img
                 src={thuduc}
                 alt="Thủ Đức"
                 className="rounded-lg shadow-lg "
               />
             </div>
-            <div className="">
+            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
               <img src={q1} alt="Quận 1" className="rounded-lg shadow-lg" />
             </div>
-            <div className="">
+            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
               <img src={q3} alt="Quận 3" className="rounded-lg shadow-lg " />
             </div>
           </div>
@@ -92,7 +92,7 @@ const Hero = () => {
               cận ngay với hàng nghìn người <br /> đang tìm kiếm chỗ ở phù hợp!
             </p>
             <button
-              onClick={handleClickCreateRoom }
+              onClick={handleClickCreateRoom}
               className="bg-transparent text-base border-2 border-gray-90 text-gray-90 font-semibold px-4 py-3 rounded-lg shadow-lg"
             >
               ĐĂNG PHÒNG TRỌ
