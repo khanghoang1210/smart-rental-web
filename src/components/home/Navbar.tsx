@@ -11,10 +11,12 @@ import wards from "../../assets/data/wards.json";
 import RoomService from "@/services/RoomService";
 import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
+import { useAppStore } from "@/store";
 
 
 
 const Navbar = () => {
+  const {userInfo} = useAppStore();
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
@@ -37,7 +39,7 @@ const Navbar = () => {
 
         setRoomData(response.data);
 
-        navigate("/filter", { state: { roomData: response.data.data } });
+        navigate("/filter", { state: { roomData: response.data.data.rooms } });
       } else {
         console.warn("Không tìm thấy dữ liệu phòng");
         setRoomData([]);
@@ -112,8 +114,8 @@ const Navbar = () => {
         </button>
         <PersonalButton
           avatarUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
-          name="Sang Mỹ"
-          role="Khách thuê"
+          name={userInfo?.full_name}
+          role={userInfo?.role === 1 ? "Chủ nhà" : "Khách thuê"}
         />
       </nav>
     </div>

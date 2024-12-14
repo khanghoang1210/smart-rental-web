@@ -106,7 +106,16 @@ const PostRoomForm = () => {
     form.append("title", formData.title);
     form.append("room_number", formData.roomNumber.toString());
     form.append("description", formData.description);
-    form.append("room_type", formData.roomType);
+    form.append(
+      "room_type",
+      formData.roomType === "homestay"
+        ? "Kí túc xá/Homestay"
+        : formData.roomType === "rentalRoom"
+          ? "Phòng cho thuê"
+          : formData.roomType === "houseRental"
+            ? "Nhà nguyên căn"
+            : "Căn hộ"
+    );
     form.append("owner", userInfo?.id ? userInfo.id.toString() : "");
     form.append("capacity", formData.capacity.toString());
     form.append("gender", formData.gender.toString());

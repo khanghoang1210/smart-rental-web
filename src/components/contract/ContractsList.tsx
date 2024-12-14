@@ -38,7 +38,7 @@ const ContractsList: React.FC<ContractsListProps> = ({ onSelectContract }) => {
   ];
 
   return (
-    <div className="w-[20%] px-8 py-6 ml-24">
+    <div className="w-[30%] px-8 py-6 ml-24">
       <h1 className="text-gray-20 font-medium text-lg">Hợp đồng thuê trọ</h1>
 
       <div className="flex space-x-4 my-4">

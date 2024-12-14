@@ -1,10 +1,11 @@
 import { UserInfo } from "@/store/slice/authSlice";
+import { RoomRes } from "./room";
 
 export interface RentalRequestRes {
     id: number;
     code: string;
     sender: UserInfo;
-    room_id: number;
+    room: RoomRes;
     suggested_price: number;
     num_of_person: number;
     begin_date: string; // ISO string format
@@ -18,7 +19,7 @@ export interface RentalRequestRes {
   export interface ReturnRequestRes {
     id: number;
     contract_id: number;
-    room_id: number;
+    room: RoomRes;
     reason: string;
     return_date: string; // ISO date format
     status: number;

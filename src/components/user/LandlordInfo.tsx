@@ -1,11 +1,11 @@
-
 interface LandlordInfoProps {
   name: string | undefined;
+  totalRoom: number | undefined;
+  totalRating: number | undefined;
 }
 const LandlordInfo = (prop: LandlordInfoProps) => {
   return (
-    <div className="border rounded-lg p-6 shadow-md w-[500px]">  
-
+    <div className="border rounded-lg p-6 shadow-md w-[500px]">
       <div className="flex justify-center items-center">
         {/* Avatar and Name */}
         <div className="flex flex-col items-center mb-4 w-full">
@@ -21,11 +21,15 @@ const LandlordInfo = (prop: LandlordInfoProps) => {
         {/* Room Count and Ratings */}
         <div className="flex flex-col items-center text-center w-full ml-10">
           <div className="w-full pb-10">
-            <h3 className="text-[40px] font-medium text-blue-10">9</h3>
+            <h3 className="text-[40px] font-medium text-blue-10">
+              {prop.totalRoom}
+            </h3>
             <p className="text-gray-20 text-2xl font-medium">Phòng trọ</p>
           </div>
           <div className="w-full border-t pt-4">
-            <h3 className="text-[40px] font-medium text-blue-10">12</h3>
+            <h3 className="text-[40px] font-medium text-blue-10">
+              {prop.totalRating}
+            </h3>
             <p className="text-gray-20 text-2xl font-medium">Đánh giá</p>
           </div>
         </div>

@@ -26,7 +26,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
       try {
         const roomRes = await roomService.getByID(token, bill.bill?.room_id);
         const data = roomRes.data.data;
-        setRoom(data);
+        setRoom(data.rooms);
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);
       }

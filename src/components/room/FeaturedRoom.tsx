@@ -21,7 +21,7 @@ const FeaturedRooms = (prop: FeaturedRoomsProps) => {
     const fetchRoom = async () => {
       try {
         const res = await roomService.getAll(token);
-        const data = res.data.data;
+        const data = res.data.data.rooms;
         const roomsResponse = data.map((room: RoomRes) => ({
           ...room,
           

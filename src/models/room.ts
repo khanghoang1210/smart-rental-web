@@ -1,3 +1,6 @@
+import { UserInfo } from "@/store/slice/authSlice";
+import { UserRes } from "./user";
+
 export interface CreateRoomForm {
   title: string;
   address: string[] | undefined[];
@@ -30,7 +33,7 @@ export interface RoomRes {
   utilities: string[];
   description: string;
   room_type: string;
-  owner: number;
+  owner: UserRes;
   capacity: number;
   gender: number;
   area: number;

@@ -30,10 +30,10 @@ import Footer from "@/ui/Footer";
 import Navbar from "../home/Navbar";
 import { toCurrencyAbbreviation, toCurrencyFormat } from "@/utils/converter";
 import UserService from "@/services/UserService";
-import { UserRes } from "@/models/user";
 import { CreateRentalRequestReq } from "@/models/chat/request";
 import RequestService from "@/services/RequestService";
 import { useConversationStore } from "@/store";
+import { UserInfo } from "@/store/slice/authSlice";
 
 const UtilitiesData = [
   { id: 1, name: "WC riêng", icon: wc },
@@ -56,7 +56,7 @@ const RoomDetail = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const [room, setRoom] = useState<RoomRes>();
-  const [user, setUser] = useState<UserRes>();
+  const [user, setUser] = useState<UserInfo>();
   const { id } = useParams<{ id: string }>();
   const [form] = Form.useForm();
   const roomId = id ? parseInt(id, 10) : null;
@@ -116,16 +116,18 @@ const RoomDetail = () => {
         const roomRes = await roomService.getByID(token, id);
         const data = roomRes.data.data;
         setRoom(data);
-        if (room?.owner) {
-          const landlord = await userSerivce.getUserByID(room?.owner, token);
+        if (data?.owner) {
+          const landlord = await userSerivce.getUserByID(data.owner.id, token);
           setUser(landlord.data.data);
+
+          console.log(user)
         }
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);
       }
     };
     fetchRoomByID(roomId);
-  }, [id, token, room?.owner]);
+  }, [id, token]);
 
   const handleStartConversation = async () => {
     try {
@@ -291,7 +293,7 @@ const RoomDetail = () => {
         <FeaturedRooms title="Đề xuất" />
         <div className="flex items-center justify-center">
           <div className="flex justify-start items-center space-x-12 mr-24">
-            <LandlordInfo name={user?.full_name} />
+            <LandlordInfo name={user?.full_name} totalRoom={user?.total_room} totalRating={user?.total_rating}/>
             <button
               onClick={handleStartConversation}
               className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]"
@@ -609,7 +611,7 @@ const RoomDetail = () => {
           centered
         >
           <img
-            src={selectedImage}
+            src={selectedImage || ""}
             alt="Selected"
             className="w-full h-full object-cover rounded-lg"
           />

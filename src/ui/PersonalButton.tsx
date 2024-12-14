@@ -1,7 +1,7 @@
 type PersonalButtonProps = {
-  name: string;
-  avatarUrl: string;
-  role: string;
+  name?: string;
+  avatarUrl?: string;
+  role?: string;
 };
 
 const PersonalButton = (props: PersonalButtonProps) => {

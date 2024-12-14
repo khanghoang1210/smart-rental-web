@@ -7,7 +7,7 @@ import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 
 interface RequestListProps {
-  onRequestSelect: (request: ReturnRequestRes) => void; // Hàm truyền yêu cầu được chọn
+  onRequestSelect: (request: ReturnRequestRes) => void; 
 }
 const RequestList = ({ onRequestSelect }: RequestListProps) => {
   const [requests, setRequests] = useState<ReturnRequestRes[]>([]);

@@ -1,14 +1,16 @@
-import { useState } from "react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { Input } from "antd";
 
-const PriceRange = () => {
-  const [price, setPrice] = useState([0, 1000000]);
+type PriceRangeProps = {
+  priceRange: [number, number];
+  onPriceChange: (price: [number, number]) => void;
+};
 
+const PriceRange = ({ priceRange, onPriceChange }: PriceRangeProps) => {
   const handleSliderChange = (newPrice: number | number[]) => {
     if (Array.isArray(newPrice)) {
-      setPrice(newPrice);
+      onPriceChange([newPrice[0], newPrice[1]]);
     }
   };
 
@@ -19,10 +21,10 @@ const PriceRange = () => {
         <div>
           <label className="block mb-2 font-semibold  text-gray-20">Từ</label>
           <Input
-            value={price[0]}
+            value={priceRange[0]}
             suffix="đ"
             onChange={(e) =>
-              handleSliderChange([Number(e.target.value), price[1]])
+              onPriceChange([Number(e.target.value), priceRange[1]])
             }
             className="w-[160px] px-3 py-2 border border-gray-20 rounded"
           />
@@ -30,10 +32,10 @@ const PriceRange = () => {
         <div>
           <label className="block mb-2 font-semibold text-gray-20">Đến</label>
           <Input
-            value={price[1]}
+            value={priceRange[1]}
             suffix="đ"
             onChange={(e) =>
-              handleSliderChange([price[0], Number(e.target.value)])
+              onPriceChange([priceRange[0], Number(e.target.value)])
             }
             className="w-[160px] px-3 py-2 border border-gray-20 rounded"
           />
@@ -46,7 +48,7 @@ const PriceRange = () => {
           min={0}
           max={10000000}
           step={100000}
-          value={price}
+          value={priceRange}
           onChange={handleSliderChange}
           styles={{
             track: { backgroundColor: "#0077B6", height: 8 },

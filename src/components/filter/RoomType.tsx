@@ -1,8 +1,9 @@
-import { useState } from "react";
+type RoomTypeProps = {
+  selectedType: string;
+  onTypeChange: (type: string) => void;
+};
 
-const RoomType = () => {
-  const [selectedType, setSelectedType] = useState("Kí túc xá/Homestay");
-
+const RoomType = ({ selectedType, onTypeChange }: RoomTypeProps) => {
   const roomTypes = [
     "Kí túc xá/Homestay",
     "Phòng cho thuê",
@@ -22,7 +23,7 @@ const RoomType = () => {
                 name="roomType"
                 value={type}
                 checked={selectedType === type}
-                onChange={(e) => setSelectedType(e.target.value)}
+                onChange={(e) => onTypeChange(e.target.value)}
                 className="form-radio mb-3 text-blue-40 accent-blue-40"
               />
               <span className="ml-2 mb-3">{type}</span>

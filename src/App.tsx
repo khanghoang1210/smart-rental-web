@@ -1,4 +1,11 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useParams,
+} from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import Home from "./pages/home";
 import Filter from "./pages/Filter";
 import Chat from "./pages/chat";
@@ -17,46 +24,81 @@ import BillManagementPage from "./pages/invoice/BillManagementPage";
 import ProcessTracking from "./pages/process-tracking";
 import ReturnRequestPage from "./pages/request/ReturnRequestPage";
 import ReturnRequestMangement from "./pages/request/ReturnRequestMangement";
+import { useCookies } from "react-cookie";
+
+type DecodedToken = {
+  exp: number; // expiration timestamp
+};
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { userInfo } = useAppStore();
-  const isAuthenticated = !!userInfo;
+  const [cookies, , removeCookie] = useCookies(["token"]);
+  const token = cookies.token;
+  const isAuthenticated = !!token;
   const { clearUserInfo } = useAppStore();
 
   useEffect(() => {
-    const handleTabClose = () => {
-      clearUserInfo();
-      customStorage.removeItem("currentUser");
-    };
+    // Check token expiration
+    if (token) {
+      try {
+        const decoded: DecodedToken = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+        if (decoded.exp < currentTime) {
+          removeCookie("token");
+          clearUserInfo();
+          customStorage.removeItem("currentUser");
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
+        removeCookie("token");
+        clearUserInfo();
+        customStorage.removeItem("currentUser");
+      }
+    }
+  }, [token, removeCookie, clearUserInfo]);
 
-    window.addEventListener("beforeunload", handleTabClose);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleTabClose);
-    };
-  }, [clearUserInfo]);
-
-  // Nếu đã đăng nhập, cho phép truy cập (các route bảo mật như Chat)
   return isAuthenticated ? children : <Navigate to="/auth/login" />;
 };
 
 const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const { userInfo } = useAppStore();
-  const isAuthenticated = !!userInfo;
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const isAuthenticated = !!token;
 
   return isAuthenticated ? <Navigate to="/" /> : children;
 };
 
 function App() {
+  const RequestWithID = () => {
+    const { id } = useParams<{ id: string }>();
+    return <Request requestID={id ? parseInt(id) : null} />;
+  };
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/room/create" element={<Room />} />
         <Route path="/room/:id" element={<RoomDetail />} />
-        <Route path="/request" element={<Request />} />
+        <Route
+          path="/request"
+          element={
+            <PrivateRoute>
+              <Request />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/request/:id"
+          element={
+            <PrivateRoute>
+              <RequestWithID />
+            </PrivateRoute>
+          }
+        />
         <Route path="/return-request" element={<ReturnRequestPage />} />
-        <Route path="/return-request/manage" element={<ReturnRequestMangement />} />
+        <Route
+          path="/return-request/manage"
+          element={<ReturnRequestMangement />}
+        />
         <Route path="filter" element={<Filter />} />
         <Route path="/contract" element={<Contract />} />
         <Route path="/contract/manage" element={<ContractManagementPage />} />

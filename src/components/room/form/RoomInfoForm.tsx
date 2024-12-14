@@ -39,7 +39,7 @@ const RoomInfoForm: React.FC<RoomInfoFormProps> = (props) => {
             </div>
             <div className="flex flex-col space-y-4 w-[350px]">
               <Radio value="houseRental" className="text-gray-20 w-full text-center px-6 py-4 border rounded-lg">
-                Nhà cho thuê
+                Nhà nguyên căn
               </Radio>
               <Radio value="apartment" className="text-gray-20 w-full text-center px-6 py-4 border rounded-lg">
                 Căn hộ

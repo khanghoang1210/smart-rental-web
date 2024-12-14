@@ -18,11 +18,8 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
 
     const fetchRequest = async () => {
       try {
-        const messageRes = await requestService.getRentalRequestByRoomID(
-          token,
-          48
-        );
-        const data = messageRes.data.data;
+        const messageRes = await requestService.getAllRentalRequest(token);
+        const data = messageRes.data.data.requests;
         const requestsResponse = data.map((request: RentalRequestRes) => ({
           ...request,
         }));
@@ -31,11 +28,9 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
         if (error instanceof Error) toast.error(error.message);
       }
     };
-    
+
     fetchRequest();
   }, []);
-
-
 
   return (
     <div className="shadow-sm rounded-lg">

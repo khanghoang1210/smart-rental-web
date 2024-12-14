@@ -1,7 +1,10 @@
-import { useState } from 'react';
 
-const SortOptions = () => {
-  const [selectedOption, setSelectedOption] = useState("Liên quan nhất");
+type SortOptionsProps = {
+  selectedOption: string;
+  onSort: (option: string) => void;
+};
+
+const SortOptions = ({ selectedOption, onSort }: SortOptionsProps) => {
 
   const sortOptions = [
     "Liên quan nhất",
@@ -17,11 +20,11 @@ const SortOptions = () => {
       {sortOptions.map((option) => (
         <button
           key={option}
-          onClick={() => setSelectedOption(option)}
+          onClick={() => onSort(option)}
           className={`px-6 py-2 rounded-lg text-sm font-semibold ${
             selectedOption === option
-              ? 'bg-blue-40 text-[#FFFFFF]'
-              : 'bg-gray-90 text-gray-40'
+              ? "bg-blue-40 text-[#FFFFFF]"
+              : "bg-gray-90 text-gray-40"
           }`}
         >
           {option}

@@ -28,7 +28,7 @@ const InvoiceList: React.FC<{
     const fetchRoom = async (roomId: number) => {
       try {
         const roomRes = await roomService.getByID(token, roomId);
-        const data = roomRes.data.data;
+        const data = roomRes.data.data.rooms;
         setRooms((prev) => ({ ...prev, [roomId]: data })); // Lưu phòng vào state theo room_id
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);

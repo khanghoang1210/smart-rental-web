@@ -19,6 +19,6 @@ export interface BillingRes {
   internet_cost: number;
   parking_fee: number;
   status: number;
-  created_at: string; // ISO timestamp
-  updated_at: string; // ISO timestamp
+  created_at: string; 
+  updated_at: string;
 }
