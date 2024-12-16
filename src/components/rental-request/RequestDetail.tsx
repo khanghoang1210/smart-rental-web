@@ -32,6 +32,9 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
 
+  const handleCreateContract = async () => {
+    navigate("/contract/create",{ state: request });
+  };
   const handleAcceptRequest = async () => {
     try {
       if (!request) {
@@ -150,7 +153,10 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         </div>
 
         {request.status == 2 && (
-          <Button className="ml-36 mr-0 px-6 items-center h-10 py-3 font-semibold border border-blue-60 text-blue-60 rounded-[100px]">
+          <Button
+            onClick={handleCreateContract}
+            className="ml-36 mr-0 px-6 items-center h-10 py-3 font-semibold border border-blue-60 text-blue-60 rounded-[100px]"
+          >
             <img src={edit_note} alt="" className="w-8 h-8" />
             Soạn thảo hợp đồng
           </Button>
@@ -251,9 +257,11 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
               <span className="font-semibold text-xs text-gray-20">
                 {request?.num_of_person} người
               </span>
-             {request?.num_of_person  > request.room.capacity &&( <p className="text-[#FF5050] text-[10px]">
-                Vượt quá sức chứa phòng
-              </p>)}
+              {request?.num_of_person > request.room.capacity && (
+                <p className="text-[#FF5050] text-[10px]">
+                  Vượt quá sức chứa phòng
+                </p>
+              )}
             </div>
           </li>
           <li className="flex justify-between">

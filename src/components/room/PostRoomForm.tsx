@@ -101,6 +101,7 @@ const PostRoomForm = () => {
       addressData.district,
       addressData.city,
     ].filter(Boolean); // Use .filter(Boolean) to remove any empty strings
+    console.log(address);
 
     const form = new FormData();
     form.append("title", formData.title);
@@ -144,10 +145,10 @@ const PostRoomForm = () => {
     });
 
     try {
-      console.log("form", form.getAll);
-      const roomService = new RoomService();
-      const response = await roomService.createRoom(token, form);
-      console.log(response.data);
+      console.log("form", form);
+      // const roomService = new RoomService();
+      // const response = await roomService.createRoom(token, form);
+      // console.log(response.data);
       toast.success("Tạo phòng thành công");
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);

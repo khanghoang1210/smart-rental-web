@@ -100,8 +100,8 @@ function App() {
           element={<ReturnRequestMangement />}
         />
         <Route path="filter" element={<Filter />} />
-        <Route path="/contract" element={<Contract />} />
-        <Route path="/contract/manage" element={<ContractManagementPage />} />
+        <Route path="/contract/create" element={<Contract />} />
+        <Route path="/contract" element={<ContractManagementPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/invoice/manage" element={<BillManagementPage />} />
         <Route path="/payment" element={<Payment />} />

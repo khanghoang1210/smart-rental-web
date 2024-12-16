@@ -40,24 +40,45 @@ const AddressForm = (prop: AddressFormProps) => {
 
   useEffect(() => {
     if (selectedCity) {
-      const filteredDistricts = districts.filter(
-        (district) => district.parent_code === selectedCity
-      );
-      setDistrictOptions(filteredDistricts); // TypeScript giờ sẽ hiểu kiểu dữ liệu
-      setSelectedDistrict(null); // Reset quận/huyện
-      setWardOptions([]); // Reset phường/xã
+      // Tìm mã code của thành phố từ tên thành phố
+      const city = cities.find((c) => c.name_with_type === selectedCity);
+      if (city) {
+        const filteredDistricts = districts.filter(
+          (district) => district.parent_code === city.code
+        );
+        setDistrictOptions(filteredDistricts); // Cập nhật danh sách quận/huyện
+
+        // Reset state phụ thuộc
+        setSelectedDistrict(null); // Reset quận/huyện
+        setWardOptions([]); // Reset phường/xã
+      } else {
+        // Nếu không tìm thấy city, xóa các tùy chọn hiện có
+        setDistrictOptions([]);
+        setWardOptions([]);
+      }
     } else {
+      // Nếu không chọn thành phố, xóa các tùy chọn hiện có
       setDistrictOptions([]);
+      setWardOptions([]);
     }
   }, [selectedCity]);
 
   useEffect(() => {
     if (selectedDistrict) {
-      const filteredWards = wards.filter(
-        (ward) => ward.parent_code === selectedDistrict
+      // Tìm mã code của quận/huyện từ tên quận/huyện
+      const district = districts.find(
+        (d) => d.name_with_type === selectedDistrict
       );
-      setWardOptions(filteredWards);
+      if (district) {
+        const filteredWards = wards.filter(
+          (ward) => ward.parent_code === district.code
+        );
+        setWardOptions(filteredWards); // Cập nhật danh sách phường/xã
+      } else {
+        setWardOptions([]);
+      }
     } else {
+      // Nếu không chọn quận/huyện, xóa danh sách phường/xã
       setWardOptions([]);
     }
   }, [selectedDistrict]);
@@ -84,7 +105,7 @@ const AddressForm = (prop: AddressFormProps) => {
           value={prop.formData?.city}
         >
           {cities.map((city) => (
-            <Option key={city.code} value={city.code}>
+            <Option key={city.code} value={city.name_with_type}>
               {city.name_with_type}
             </Option>
           ))}
@@ -107,7 +128,7 @@ const AddressForm = (prop: AddressFormProps) => {
           value={prop.formData?.district}
         >
           {districtOptions.map((district) => (
-            <Option key={district.code} value={district.code}>
+            <Option key={district.code} value={district.name_with_type}>
               {district.name_with_type}
             </Option>
           ))}
@@ -127,7 +148,7 @@ const AddressForm = (prop: AddressFormProps) => {
           value={prop.formData?.ward}
         >
           {wardOptions.map((ward) => (
-            <Option key={ward.code} value={ward.code}>
+            <Option key={ward.code} value={ward.name_with_type}>
               {ward.name_with_type}
             </Option>
           ))}

@@ -24,9 +24,10 @@ const ResponsibityForm = (prop:ContractInfoFormProps) => {
       >
         <Input.TextArea
           placeholder="Môi trường sống sạch, khu phố an ninh..."
+          name="responsibilityA"
           rows={6}
           maxLength={500}
-          onChange={() => prop.handleInputChange}
+          onChange={prop.handleInputChange}
         />
       </Form.Item>
       <Form.Item
@@ -37,9 +38,10 @@ const ResponsibityForm = (prop:ContractInfoFormProps) => {
       >
         <Input.TextArea
           placeholder="Môi trường sống sạch, khu phố an ninh..."
+          name="responsibilityB"
           rows={6}
           maxLength={500}
-          onChange={() => prop.handleInputChange}
+          onChange={prop.handleInputChange}
         />
       </Form.Item>
       <Form.Item
@@ -49,10 +51,11 @@ const ResponsibityForm = (prop:ContractInfoFormProps) => {
         className="mb-4"
       >
         <Input.TextArea
+          name="generalResponsibility"
           placeholder="Môi trường sống sạch, khu phố an ninh..."
           rows={6}
           maxLength={500}
-          onChange={() => prop.handleInputChange}
+          onChange={prop.handleInputChange}
         />
       </Form.Item>
     </Form>
