@@ -2,23 +2,16 @@
 import ContractDetail from "@/components/contract/ContractDetail";
 import ContractsList from "@/components/contract/ContractsList";
 import Navbar from "@/components/home/Navbar";
+import { ContractRes } from "@/models/contract";
 import React, { useState } from "react";
 
-interface Contract {
-  id: string;
-  room: string;
-  address: string;
-  tenant: string;
-  startDate: string;
-  endDate: string;
-}
 
 const ContractManagementPage: React.FC = () => {
-  const [selectedContract, setSelectedContract] = useState<Contract | null>(
+  const [selectedContract, setSelectedContract] = useState<ContractRes | null>(
     null
   );
 
-  const handleSelectContract = (contract: Contract) => {
+  const handleSelectContract = (contract: ContractRes) => {
     setSelectedContract(contract);
   };
 

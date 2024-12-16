@@ -1,21 +1,15 @@
-// ContractDetail.tsx
 import React from "react";
 import { Button } from "antd";
-
-interface Contract {
-  id: string;
-  room: string;
-  address: string;
-  tenant: string;
-  startDate: string;
-  endDate: string;
-}
+import { ContractRes } from "@/models/contract";
+import { formatTimestampToDate } from "@/utils/converter";
+import { useAppStore } from "@/store";
 
 interface ContractDetailProps {
-  contract?: Contract;
+  contract?: ContractRes;
 }
 
 const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
+  const { userInfo } = useAppStore();
   if (!contract) {
     return <div className="w-[50%] p-4">Chọn một hợp đồng để xem chi tiết</div>;
   }
@@ -23,16 +17,16 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
   return (
     <div className="w-[50%] p-8">
       <div className="mt-8 mb-5 space-y-2">
-        <h2 className="text-lg font-medium text-gray-20">
-          Thông tin hợp đồng
-        </h2>
-        <h3 className="text-xs text-gray-40">13:49 17/09/2023</h3>
+        <h2 className="text-lg font-medium text-gray-20">Thông tin hợp đồng</h2>
+        <h3 className="text-xs text-gray-40">
+          Ngày tạo: {formatTimestampToDate(contract.created_at)}
+        </h3>
       </div>
 
       <div className="space-y-2 border border-blue-95 p-7 rounded-xl">
         <div className="pb-4 mb-6 flex justify-between border-b">
           <div className="text-gray-40 text-sm">Mã hợp đồng</div>
-          <div className="font-medium text-gray-20">{contract.id}</div>
+          <div className="font-medium text-gray-20">{contract.code}</div>
         </div>
 
         <div className="pb-4 mb-6 flex justify-between border-b">
@@ -43,7 +37,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
         <div className="mb-6 mt-6 flex justify-between border-b pb-4">
           <div className="text-gray-500 text-sm">Địa chỉ</div>
           <div className="font-medium text-gray-20 text-right break-words w-2/3">
-            {contract.address}
+            {contract.room_address}
           </div>
         </div>
 
@@ -55,14 +49,16 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
           <div className="pb-4 flex justify-between border-b">
             <div className="space-y-1">
               <div className="text-gray-40 text-sm">Tên người ký</div>
-
               <div className="text-gray-40 text-sm">Thời gian ký</div>
             </div>
             <div>
-              <div className="font-medium text-gray-20">{contract.tenant}</div>
-
               <div className="font-medium text-gray-20">
-                14:05:03 10/12/2023
+                {contract.landlord_name}
+              </div>
+              <div className="font-medium text-gray-20">
+                {contract.signature_time_a
+                  ? formatTimestampToDate(contract.signature_time_a)
+                  : "Chưa ký"}
               </div>
             </div>
           </div>
@@ -75,23 +71,27 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
           <div className="pb-4 flex justify-between">
             <div className="space-y-1">
               <div className="text-gray-40 text-sm">Tên người ký</div>
-
               <div className="text-gray-40 text-sm">Thời gian ký</div>
             </div>
             <div>
-              <div className="font-medium text-gray-20">{contract.tenant}</div>
-
               <div className="font-medium text-gray-20">
-                14:05:03 10/12/2023
+                {contract.tenant_name}
+              </div>
+              <div className="font-medium text-gray-20">
+                {contract.signature_b
+                  ? formatTimestampToDate(contract.signature_time_a)
+                  : "Chưa ký"}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <Button className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
-        Ký hợp đồng
-      </Button>
+      {userInfo?.role === 1 && (
+        <Button className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
+          Ký hợp đồng
+        </Button>
+      )}
     </div>
   );
 };

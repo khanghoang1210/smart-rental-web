@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+
+
 export function timeAgo(date: string): string {
   const now = new Date();
   const past = new Date(date.replace("Z", ""));
@@ -103,3 +106,8 @@ export const formatDate = (dateString: string | undefined): string => {
 
   return "";
 };
+
+
+export function formatTimestampToDate(timestamp: number): string {
+  return dayjs.unix(timestamp).format("DD/MM/YYYY");
+}

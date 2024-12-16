@@ -1,5 +1,5 @@
 interface ContractTemplateProps {
-  formData: {
+  formData?: {
     lessorName?: string;
     lessorBirthYear?: string;
     lessorID?: string;
@@ -23,29 +23,54 @@ interface ContractTemplateProps {
   };
 }
 
-const ContractTemplate = ({ formData }: ContractTemplateProps) => {
+const ContractTemplate: React.FC<ContractTemplateProps> = ({ formData }) => {
+  // Merge dữ liệu với giá trị mặc định
+  const defaultFormData = {
+    lessorName: "…………………………………….",
+    lessorBirthYear: "………………..",
+    lessorID: "…………",
+    lessorIssueDate: "……………..",
+    lessorIssuePlace: "……………",
+    lessorAddress: "……………………………………………………………………",
+    lessorPhone: "……………………………………………………………………",
+    lesseeName: "………………………………….",
+    lesseeBirthYear: "………………..",
+    lesseeID: "…………",
+    lesseeIssueDate: "……………..",
+    lesseeIssuePlace: "……………",
+    lesseeAddress: "……………………………………………………………………",
+    lesseePhone: "……………………………………………………………………",
+    rentalPrice: "……………. ",
+    paymentMethod: "………………….",
+    contractDuration: "………. ",
+    handoverDate: "………. ",
+    lessorResponsibilities: "…………………",
+    lesseeResponsibilities: "…………………",
+    ...formData, // Dữ liệu được truyền vào sẽ ghi đè giá trị mặc định
+  };
+
   const {
-    lessorName = "…………………………………….",
-    lessorBirthYear = "………………..",
-    lessorID = "…………",
-    lessorIssueDate = "……………..",
-    lessorIssuePlace = "……………",
-    lessorAddress = "……………………………………………………………………",
-    lessorPhone = "……………………………………………………………………",
-    lesseeName = "………………………………….",
-    lesseeBirthYear = "………………..",
-    lesseeID = "…………",
-    lesseeIssueDate = "……………..",
-    lesseeIssuePlace = "……………",
-    lesseeAddress = "……………………………………………………………………",
-    lesseePhone = "……………………………………………………………………",
-    rentalPrice = "……………. ",
-    paymentMethod = "………………….",
-    contractDuration = "………. ",
-    handoverDate = "………. ",
-    lessorResponsibilities = "…………………",
-    lesseeResponsibilities = "…………………",
-  } = formData;
+    lessorName,
+    lessorBirthYear,
+    lessorID,
+    lessorIssueDate,
+    lessorIssuePlace,
+    lessorAddress,
+    lessorPhone,
+    lesseeName,
+    lesseeBirthYear,
+    lesseeID,
+    lesseeIssueDate,
+    lesseeIssuePlace,
+    lesseeAddress,
+    lesseePhone,
+    rentalPrice,
+    paymentMethod,
+    contractDuration,
+    handoverDate,
+    lessorResponsibilities,
+    lesseeResponsibilities,
+  } = defaultFormData;
 
   return (
     <div className="p-20 bg-gray-50 border rounded-lg text-gray-700">

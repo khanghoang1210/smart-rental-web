@@ -25,6 +25,7 @@ import ProcessTracking from "./pages/process-tracking";
 import ReturnRequestPage from "./pages/request/ReturnRequestPage";
 import ReturnRequestMangement from "./pages/request/ReturnRequestMangement";
 import { useCookies } from "react-cookie";
+import ContractTemplate from "./components/contract/form/PreviewForm";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -101,6 +102,7 @@ function App() {
         />
         <Route path="filter" element={<Filter />} />
         <Route path="/contract/create" element={<Contract />} />
+        <Route path="/contract/preview" element={<ContractTemplate />} />
         <Route path="/contract" element={<ContractManagementPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/invoice/manage" element={<BillManagementPage />} />

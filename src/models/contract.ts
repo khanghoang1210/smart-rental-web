@@ -22,3 +22,16 @@ export interface CreateContractRequest {
   signature_a: string; // Base64 string
   signed_time_a: string; // ISO string for pgtype.Timestamptz
 }
+
+export interface ContractRes {
+    code: string; // Mã hợp đồng
+    created_at: number; // Thời điểm tạo (timestamp)
+    expired_at: number; // Thời điểm hết hạn (timestamp)
+    id: number; // ID hợp đồng
+    landlord_name: string; // Tên chủ nhà
+    room_address: string; // Địa chỉ phòng
+    room_number: number; // Số phòng
+    signature_b: string; // Chữ ký bên B (Base64 string)
+    signature_time_a: number; // Thời gian chữ ký bên A (timestamp)
+    tenant_name: string; // Tên người thuê
+  }
