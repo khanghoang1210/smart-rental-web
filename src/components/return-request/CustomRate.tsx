@@ -26,7 +26,7 @@ const CustomRate: React.FC<CustomRateProps> = ({ onChange }) => {
         <div className="flex flex-col items-center">
           <div
             key={index}
-            className={`rounded-full p-2 cursor-pointer transition-colors duration-300 ${
+            className={`rounded-full p-2 cursor-pointer transition-colors hover:bg-blue-80 duration-300 ${
               selected === index ? "bg-blue-80" : "bg-gray-90"
             }`}
             onClick={() => handleClick(index)}
