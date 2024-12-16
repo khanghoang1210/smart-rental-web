@@ -26,6 +26,7 @@ import ReturnRequestPage from "./pages/request/ReturnRequestPage";
 import ReturnRequestMangement from "./pages/request/ReturnRequestMangement";
 import { useCookies } from "react-cookie";
 import ContractTemplate from "./components/contract/form/PreviewForm";
+import ConfirmationSuccess from "./components/return-request/ConfirmationSuccess";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -96,6 +97,7 @@ function App() {
           }
         />
         <Route path="/return-request" element={<ReturnRequestPage />} />
+        <Route path="/return-request/success" element={<ConfirmationSuccess />} />
         <Route
           path="/return-request/manage"
           element={<ReturnRequestMangement />}

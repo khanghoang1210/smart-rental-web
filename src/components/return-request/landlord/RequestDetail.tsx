@@ -4,10 +4,7 @@ import phone from "../../../assets/phone.svg";
 import message_white from "../../../assets/message_white.svg";
 import { StarFilled } from "@ant-design/icons";
 import { ReturnRequestRes } from "@/models/request";
-import {
-  formatDate,
-  toCurrencyFormat,
-} from "@/utils/converter";
+import { formatDate, toCurrencyFormat } from "@/utils/converter";
 import { useEffect, useState } from "react";
 import RoomService from "@/services/RoomService";
 import { useCookies } from "react-cookie";
@@ -21,6 +18,9 @@ interface RequestDetailsProps {
 }
 
 const RequestDetails = ({ request }: RequestDetailsProps) => {
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
+
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const [room, setRoom] = useState<RoomRes>();
@@ -55,6 +55,9 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
     }
   };
   if (!request) return <div></div>;
+
+
+  
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
       <div className="flex justify-start">
@@ -161,7 +164,12 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
             nhận tình trạng phòng cũng như ghi nhận hư hại (nếu có). Sau thời
             gian này, hệ thống sẽ tự động xác nhận việc trả phòng đã hoàn tất.
           </h3>
-          <Button className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4">Xác nhận</Button>
+          <Button
+            onClick={() => navigate("/return-request/success")}
+            className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
+          >
+            Xác nhận
+          </Button>
         </div>
         <div className="w-1/2">
           <div className="mt-4 border border-blue-95 p-5 rounded-xl ">

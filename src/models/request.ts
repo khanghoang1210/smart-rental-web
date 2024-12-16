@@ -19,6 +19,7 @@ export interface RentalRequestRes {
   export interface ReturnRequestRes {
     id: number;
     contract_id: number;
+    room_id: number;
     room: RoomRes;
     reason: string;
     return_date: string; // ISO date format

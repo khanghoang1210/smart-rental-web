@@ -79,3 +79,8 @@
   }
 }
 
+.ant-upload-drag {
+  height: 130px !important; /* Ghi đè chiều cao */
+  overflow: hidden; /* Ẩn nội dung bị tràn */
+}
+
