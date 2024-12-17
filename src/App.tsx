@@ -27,6 +27,7 @@ import ReturnRequestMangement from "./pages/request/ReturnRequestMangement";
 import { useCookies } from "react-cookie";
 import ContractTemplate from "./components/contract/form/PreviewForm";
 import ConfirmationSuccess from "./components/return-request/ConfirmationSuccess";
+import AccountPage from "./pages/account";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -110,6 +111,7 @@ function App() {
         <Route path="/invoice/manage" element={<BillManagementPage />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/process-tracking" element={<ProcessTracking />} />
+        <Route path="/account" element={<AccountPage />} />
 
         <Route
           path="chat"

@@ -160,7 +160,7 @@ const Navbar = () => {
           {dropdownVisible && (
             <div
               ref={dropdownRef}
-              className="absolute -right-50 top-14 text-gray-20 text-sm font-medium shadow-lg rounded-[20px] px-1 py-2 z-10 w-[235px]"
+              className="absolute -right-50 top-14 text-gray-20 text-sm font-medium shadow-lg rounded-[20px] px-1 py-2 z-10 w-[235px] bg-[#fff]"
             >
               <div
                 className="flex border-b items-center space-x-2 px-2 py-3 cursor-pointer rounded-lg hover:bg-gray-90"
@@ -178,7 +178,7 @@ const Navbar = () => {
               </div>
               <div
                 className="border-b flex space-x-2 items-center  px-2 py-3 cursor-pointer rounded-lg hover:bg-gray-90"
-                onClick={() => handleMenuClick("/tracking")}
+                onClick={() => handleMenuClick("/process-tracking")}
               >
                 <img src={eye} alt="Theo dõi" className="w-5 h-4 mr-2" />
                 <span>Theo dõi quá trình thuê trọ</span>
