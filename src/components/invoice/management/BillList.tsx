@@ -1,8 +1,9 @@
 import { useState } from "react";
-import address from "../../../assets/address.svg";
+import addressimg from "../../../assets/address.svg";
 
 const BillList = ({
   bills,
+  address,
   selectedBillId,
   onSelect,
   periods,
@@ -13,6 +14,7 @@ const BillList = ({
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  console.log(bills)
   // Open the modal
   const handleOpenModal = () => {
     if (selectedBills.length > 0) {
@@ -92,14 +94,14 @@ const BillList = ({
       </div>
       <div className="border-gray-80 border rounded-lg p-4">
         <div className="flex space-x-3">
-          <img src={address} alt="" />
+          <img src={addressimg} alt="" />
           <h1 className="font-semibold text-base text-gray-20">
-            Số 9 Nguyễn Văn Huyên, Dịch Vọng, Cầu Giấy, Hà Nội
+            {address}
           </h1>
         </div>
-        {bills.map((bill: any, index: number) => (
+        {bills.map((bill: any) => (
           <div
-            key={index}
+            key={bill.id}
             className={`p-4 rounded-lg cursor-pointer mb-2 flex items-center ${
               showCheckboxes && bill.statusCode === "not_created"
                 ? selectedBills.includes(bill.id)
@@ -127,14 +129,14 @@ const BillList = ({
               />
             )}
             <div className="flex-1">
-              <p className={`text-sm ${bill.statusColor}`}>{bill.status}</p>
+              <p className={`text-sm ${bill.status === 1 ? "text-red": "text-blue-40"}`}>{bill.status === 1 ? "Chưa thanh toán" : "Đã thanh toán"}</p>
               <h3 className="font-semibold text-xs text-gray-60">
-                {bill.room}
+                Phòng số {bill.room_number}
               </h3>
-              <p className="font-semibold text-gray">{bill.tenant}</p>
+              <p className="font-semibold text-gray">{bill.tenant_name || "Le Bao Nhu"}</p>
             </div>
             {bill.statusCode !== "not_created" && (
-              <span className="font-semibold">{bill.amount}</span>
+              <span className="font-semibold text-gray-20">{bill.total_amount}đ</span>
             )}
           </div>
         ))}

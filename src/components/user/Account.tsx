@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button, Select, message, Upload, Spin, Modal } from "antd";
-import { EditFilled, EditOutlined, UploadOutlined } from "@ant-design/icons";
+import { Input, Button, message, Upload, Spin, Modal } from "antd";
+import { EditFilled } from "@ant-design/icons";
 import { BankRes } from "@/models/payment";
 import PaymentService from "@/services/PaymentService";
 import { toast } from "sonner";
 import { useCookies } from "react-cookie";
 
-const { Option } = Select;
 
 const Account: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

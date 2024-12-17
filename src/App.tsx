@@ -108,7 +108,7 @@ function App() {
         <Route path="/contract/preview" element={<ContractTemplate />} />
         <Route path="/contract" element={<ContractManagementPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
-        <Route path="/invoice/manage" element={<BillManagementPage />} />
+        <Route path="/invoice/manage" element={<PrivateRoute><BillManagementPage /></PrivateRoute>} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/process-tracking" element={<ProcessTracking />} />
         <Route path="/account" element={<AccountPage />} />
