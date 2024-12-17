@@ -1,4 +1,5 @@
-export const API_URL = "http://localhost:8080/api/v1";
+// export const API_URL = "http://localhost:8080/api/v1";
+export const API_URL = "http://54.151.243.111:8080/api/v1";
 
 export const SOCKET_URL = "http://localhost:3000";
 export const AUTH_ENDPOINT = "/authen";
