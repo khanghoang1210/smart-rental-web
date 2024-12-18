@@ -111,3 +111,20 @@ export const formatDate = (dateString: string | undefined): string => {
 export function formatTimestampToDate(timestamp: number): string {
   return dayjs.unix(timestamp).format("DD/MM/YYYY");
 }
+
+export const convertToReadableNumber = (num: number): string => {
+  const units: { [key: string]: number } = {
+    "tỷ": 1_000_000_000,
+    "triệu": 1_000_000,
+    "nghìn": 1_000,
+  };
+
+  for (const [unit, value] of Object.entries(units)) {
+    if (num >= value) {
+      const result = (num / value).toFixed(1).replace(/\.0$/, ""); // Giữ 1 số thập phân nếu cần
+      return `${result} ${unit}`;
+    }
+  }
+
+  return num.toString(); // Trả về nguyên số nếu không cần chuyển đổi
+};

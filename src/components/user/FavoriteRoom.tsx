@@ -6,46 +6,40 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-
-type FeaturedRoomsProps = {
-  title: string;
-};
-const FeaturedRooms = (prop: FeaturedRoomsProps) => {
+const FavoriteRoom = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
-  const [rooms, setRooms] = useState<RoomRes[]>()
+  const [rooms, setRooms] = useState<RoomRes[]>();
 
   useEffect(() => {
-  const roomService = new RoomService();
+    const roomService = new RoomService();
 
     const fetchRoom = async () => {
       try {
-        const res = await roomService.getAll(token);
-        const data = res.data.data.rooms;
+        const res = await roomService.getFavoriteRoom(token);
+        const data = res.data.data;
         const roomsResponse = data.map((room: RoomRes) => ({
           ...room,
-          
         }));
-        setRooms(roomsResponse)
-        console.log("rooms", rooms)
+        setRooms(roomsResponse);
+        console.log("rooms", rooms);
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);
       }
     };
     fetchRoom();
   }, []);
-  
 
   const handleRoomClick = (roomId: number) => {
     navigate(`/room/${roomId}`); // Navigate to the dynamic route
   };
   return (
     <div className="container mx-auto py-8 px-8 max-w-[1100px]">
-      <h2 className="text-2xl md:text-2xl font-bold mb-6 text-blue-10">
-        {prop.title}
+      <h2 className="text-2xl md:text-2xl font-bold mb-6 text-gray-20">
+        Phòng yêu thích
       </h2>
-      <div  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
         {rooms?.slice(0, 4).map((room) => (
           <div
             key={room.id}
@@ -73,4 +67,4 @@ const FeaturedRooms = (prop: FeaturedRoomsProps) => {
   );
 };
 
-export default FeaturedRooms;
+export default FavoriteRoom;

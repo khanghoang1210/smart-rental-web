@@ -8,6 +8,8 @@ import RoomService from "@/services/RoomService";
 import UserService from "@/services/UserService";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import PaymentService from "@/services/PaymentService";
 
 interface InvoiceDetailsProps {
   bill: BillingRes | undefined;
@@ -15,10 +17,10 @@ interface InvoiceDetailsProps {
 
 const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
   const [cookies] = useCookies(["token"]);
+  const navigate = useNavigate();
   const token = cookies.token;
   const [tenant, setTenant] = useState<UserInfo>();
   const [room, setRoom] = useState<RoomRes>();
-  console.log(bill.bill);
   useEffect(() => {
     const roomService = new RoomService();
     const userService = new UserService();
@@ -44,6 +46,28 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
     if (bill.bill?.room_id) fetchRoom();
     if (bill.bill?.tenant_id) fetchTenant();
   }, []);
+
+  const handlePaymentClick = async () => {
+    try {
+      const billingService = new PaymentService();
+      const res = await billingService.getDetailInfo(
+        token,
+        "bill",
+        bill.bill?.id
+      );
+
+      console.log(bill);
+
+      // Chuyển dữ liệu sang trang payment/info
+      navigate("/payment/info", {
+        state: { payment: res.data.data, bill },
+      });
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error("Không thể tải dữ liệu thanh toán");
+    }
+  };
+
   if (!bill.bill) return <div>Loading...</div>;
 
   return (
@@ -146,7 +170,10 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
             {bill.bill.total_amount}đ
           </span>
         </div>
-        <Button className="w-full bg-blue-60 text-xl text-[#fff] py-6  mt-6 rounded-[100px]">
+        <Button
+          onClick={handlePaymentClick}
+          className="w-full bg-blue-60 text-xl text-[#fff] py-6  mt-6 rounded-[100px]"
+        >
           Thanh toán
         </Button>
       </div>

@@ -39,7 +39,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     fetchBill();
   }, [billId]);
 
-  console.log(bill)
+  console.log(bill);
   if (!billId) {
     return <div></div>;
   }
@@ -96,20 +96,36 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                 <span className="text-gray-40">Điện</span>
                 <span className="text-right text-black font-bold text-gray-20">
                   <div className="text-sm text-gray-500 mt-1">
-                    <div>số cũ: {bill.old_electricity_index} - số mới: {bill.new_electricity_index}</div>
-                    <div> {bill.electricity_cost}đ x{bill.new_electricity_index - bill.old_electricity_index}</div>
+                    <div>
+                      số cũ: {bill.old_electricity_index} - số mới:{" "}
+                      {bill.new_electricity_index}
+                    </div>
+                    <div>
+                      {" "}
+                      {bill.electricity_cost}đ x
+                      {bill.new_electricity_index - bill.old_electricity_index}
+                    </div>
                   </div>
-                  {bill.electricity_cost *(bill.new_electricity_index - bill.old_electricity_index)}
+                  {bill.electricity_cost *
+                    (bill.new_electricity_index - bill.old_electricity_index)}
                 </span>
               </li>
               <li className="flex justify-between py-4 font-semibold ml-8 items-start">
                 <span className="text-gray-40">Nước</span>
                 <span className="text-right text-black font-bold text-gray-20">
                   <div className="text-sm text-gray-500 mt-1">
-                  <div>số cũ: {bill.old_water_index} - số mới: {bill.new_water_index}</div>
-                    <div> {bill.water_cost}đ x{bill.new_water_index - bill.old_water_index}</div>
+                    <div>
+                      số cũ: {bill.old_water_index} - số mới:{" "}
+                      {bill.new_water_index}
+                    </div>
+                    <div>
+                      {" "}
+                      {bill.water_cost}đ x
+                      {bill.new_water_index - bill.old_water_index}
+                    </div>
                   </div>
-                  {bill.water_cost *(bill.new_water_index - bill.old_water_index)}
+                  {bill.water_cost *
+                    (bill.new_water_index - bill.old_water_index)}
                 </span>
               </li>
 
@@ -134,7 +150,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               </Button>
             </div>
             <ul className="border p-4 rounded-xl border-blue-80">
-              <h1 className="text-gray-20 font-semibold">Thông tin thanh toán</h1>
+              <h1 className="text-gray-20 font-semibold">
+                Thông tin thanh toán
+              </h1>
               <li className="flex justify-between py-2 ml-8 font-semibold">
                 <span className="text-gray-40">Tên</span>
                 <span className="text-gray-20">{bill.info.tenant_name}</span>
@@ -156,7 +174,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
 
               <li className="flex justify-between ml-8 py-2 font-semibold">
                 <span className="text-gray-40">Kỳ</span>
-                <span className="text-gray-20">Tháng {bill.info.month}/{bill.info.year}</span>
+                <span className="text-gray-20">
+                  Tháng {bill.info.month}/{bill.info.year}
+                </span>
               </li>
             </ul>
             <div className="mt-4 flex justify-between items-center">
@@ -246,7 +266,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
           <div className="flex gap-16 mt-6">
             <div className="w-[50%]">
               <ul className="border p-4 rounded-xl border-blue-80">
-                <h1 className="text-gray-20 font-semibold">Thông tin hóa đơn</h1>
+                <h1 className="text-gray-20 font-semibold">
+                  Thông tin hóa đơn
+                </h1>
                 <li className="flex justify-between py-2 ml-8 font-semibold">
                   <span className="text-gray-40">Mã hoá đơn</span>
                   <span className="text-gray-20">{bill.id}</span>
@@ -259,20 +281,37 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                   <span className="text-gray-40">Điện</span>
                   <span className="text-right text-black font-bold text-gray-20">
                     <div className="text-sm text-gray-500 mt-1">
-                    <div>số cũ: {bill.old_electricity_index} - số mới: {bill.new_electricity_index}</div>
-                    <div> {bill.electricity_cost}đ x{bill.new_electricity_index - bill.old_electricity_index}</div>
-                  </div>
-                  {bill.electricity_cost *(bill.new_electricity_index - bill.old_electricity_index)}
+                      <div>
+                        số cũ: {bill.old_electricity_index} - số mới:{" "}
+                        {bill.new_electricity_index}
+                      </div>
+                      <div>
+                        {" "}
+                        {bill.electricity_cost}đ x
+                        {bill.new_electricity_index -
+                          bill.old_electricity_index}
+                      </div>
+                    </div>
+                    {bill.electricity_cost *
+                      (bill.new_electricity_index - bill.old_electricity_index)}
                   </span>
                 </li>
                 <li className="flex justify-between py-4 font-semibold ml-8 items-start">
                   <span className="text-gray-40">Nước</span>
                   <span className="text-right text-black font-bold text-gray-20">
                     <div className="text-sm text-gray-500 mt-1">
-                    <div>số cũ: {bill.old_water_index} - số mới: {bill.new_water_index}</div>
-                    <div> {bill.water_cost}đ x{bill.new_water_index - bill.old_water_index}</div>
-                  </div>
-                  {bill.water_cost *(bill.new_water_index - bill.old_water_index)}
+                      <div>
+                        số cũ: {bill.old_water_index} - số mới:{" "}
+                        {bill.new_water_index}
+                      </div>
+                      <div>
+                        {" "}
+                        {bill.water_cost}đ x
+                        {bill.new_water_index - bill.old_water_index}
+                      </div>
+                    </div>
+                    {bill.water_cost *
+                      (bill.new_water_index - bill.old_water_index)}
                   </span>
                 </li>
 
@@ -316,7 +355,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
 
                 <li className="flex justify-between ml-8 py-2 font-semibold">
                   <span className="text-gray-40">Kỳ</span>
-                  <span className="text-gray-20">Tháng {bill.info.month}/{bill.info.year}</span>
+                  <span className="text-gray-20">
+                    Tháng {bill.info.month}/{bill.info.year}
+                  </span>
                 </li>
               </ul>
               <div className="mt-4 flex justify-between items-center">

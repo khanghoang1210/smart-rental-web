@@ -171,7 +171,7 @@ const Navbar = () => {
               </div>
               <div
                 className="flex border-b items-center  space-x-2  px-2 py-3 cursor-pointer rounded-lg hover:bg-gray-90"
-                onClick={() => handleMenuClick("/rooms")}
+                onClick={() => handleMenuClick("/dashboard")}
               >
                 <img src={home} alt="Phòng" className="w-5 h-5 mr-2" />
                 <span>Phòng của bạn</span>

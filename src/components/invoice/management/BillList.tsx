@@ -14,7 +14,7 @@ const BillList = ({
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  console.log(bills)
+  console.log(bills);
   // Open the modal
   const handleOpenModal = () => {
     if (selectedBills.length > 0) {
@@ -95,9 +95,7 @@ const BillList = ({
       <div className="border-gray-80 border rounded-lg p-4">
         <div className="flex space-x-3">
           <img src={addressimg} alt="" />
-          <h1 className="font-semibold text-base text-gray-20">
-            {address}
-          </h1>
+          <h1 className="font-semibold text-base text-gray-20">{address}</h1>
         </div>
         {bills.map((bill: any) => (
           <div
@@ -129,14 +127,22 @@ const BillList = ({
               />
             )}
             <div className="flex-1">
-              <p className={`text-sm ${bill.status === 1 ? "text-red": "text-blue-40"}`}>{bill.status === 1 ? "Chưa thanh toán" : "Đã thanh toán"}</p>
+              <p
+                className={`text-sm ${bill.status === 1 ? "text-red" : "text-blue-40"}`}
+              >
+                {bill.status === 1 ? "Chưa thanh toán" : "Đã thanh toán"}
+              </p>
               <h3 className="font-semibold text-xs text-gray-60">
                 Phòng số {bill.room_number}
               </h3>
-              <p className="font-semibold text-gray">{bill.tenant_name || "Le Bao Nhu"}</p>
+              <p className="font-semibold text-gray">
+                {bill.tenant_name || "Le Bao Nhu"}
+              </p>
             </div>
             {bill.statusCode !== "not_created" && (
-              <span className="font-semibold text-gray-20">{bill.total_amount}đ</span>
+              <span className="font-semibold text-gray-20">
+                {bill.total_amount}đ
+              </span>
             )}
           </div>
         ))}

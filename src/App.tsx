@@ -28,6 +28,10 @@ import { useCookies } from "react-cookie";
 import ContractTemplate from "./components/contract/form/PreviewForm";
 import ConfirmationSuccess from "./components/return-request/ConfirmationSuccess";
 import AccountPage from "./pages/account";
+import DashboardPage from "./pages/dashboard";
+import FavoriteRoomPage from "./pages/room/FavoriteRoomPage";
+import PaymentInfo from "./pages/payment/PaymentInfo";
+import PaymentInfoPage from "./pages/payment/PaymentInfo";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -98,7 +102,10 @@ function App() {
           }
         />
         <Route path="/return-request" element={<ReturnRequestPage />} />
-        <Route path="/return-request/success" element={<ConfirmationSuccess />} />
+        <Route
+          path="/return-request/success"
+          element={<ConfirmationSuccess />}
+        />
         <Route
           path="/return-request/manage"
           element={<ReturnRequestMangement />}
@@ -108,10 +115,35 @@ function App() {
         <Route path="/contract/preview" element={<ContractTemplate />} />
         <Route path="/contract" element={<ContractManagementPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
-        <Route path="/invoice/manage" element={<PrivateRoute><BillManagementPage /></PrivateRoute>} />
+        <Route
+          path="/invoice/manage"
+          element={
+            <PrivateRoute>
+              <BillManagementPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/room/favorite"
+          element={
+            <PrivateRoute>
+              <FavoriteRoomPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/payment/info" element={<PaymentInfoPage />} />
         <Route path="/process-tracking" element={<ProcessTracking />} />
-        <Route path="/account" element={<AccountPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/account"
+          element={
+            <PrivateRoute>
+              <AccountPage />
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="chat"

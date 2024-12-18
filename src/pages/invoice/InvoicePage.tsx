@@ -11,8 +11,10 @@ const InvoicePage = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const [bills, setBills] = useState<BillingRes[]>([]);
-  const [selectedInvoice, setSelectedInvoice] = useState<BillingRes | undefined>();
-  const [statusFilter, setStatusFilter] = useState<1| 2>(1);
+  const [selectedInvoice, setSelectedInvoice] = useState<
+    BillingRes | undefined
+  >();
+  const [statusFilter, setStatusFilter] = useState<1 | 2>(1);
 
   const billingService = new BillingService();
 

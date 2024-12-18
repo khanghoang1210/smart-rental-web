@@ -7,6 +7,7 @@ interface QRPaymentProps {
   accountNumber: string;
   transferAmount: string;
   transferContent: string;
+  qrUrl: string;
 }
 
 const QRPayment: React.FC<QRPaymentProps> = ({
@@ -15,7 +16,18 @@ const QRPayment: React.FC<QRPaymentProps> = ({
   accountNumber,
   transferAmount,
   transferContent,
+  qrUrl,
 }) => {
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log("Đã sao chép:", text);
+      })
+      .catch((err) => {
+        console.error("Sao chép thất bại:", err);
+      });
+  };
   return (
     <div className="bg-gradient-to-b from-blue-40 to-blue-80 text-white rounded-[30px] py-[70px] mt-14 w-full md:w-[40%]">
       <div className="flex w-full space-x-10 items-end justify-center">
@@ -24,11 +36,7 @@ const QRPayment: React.FC<QRPaymentProps> = ({
             Quét mã QR để thanh toán
           </h2>
           <div className="bg-[#FFF] p-3 w-full h-[275px] rounded-[20px]">
-            <img
-              src="/qr-code-placeholder.png"
-              alt="QR Code"
-              className="w-48 h-48"
-            />
+            <img src={qrUrl} alt="QR Code" className="w-full h-60" />
           </div>
         </div>
 
@@ -53,7 +61,10 @@ const QRPayment: React.FC<QRPaymentProps> = ({
                   {accountNumber}
                 </span>
               </div>
-              <Button className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]">
+              <Button
+                onClick={() => copyToClipboard(accountNumber)}
+                className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]"
+              >
                 Sao chép
               </Button>
             </li>
@@ -65,7 +76,10 @@ const QRPayment: React.FC<QRPaymentProps> = ({
                 </span>
               </div>
 
-              <Button className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]">
+              <Button
+                onClick={() => copyToClipboard(accountNumber)}
+                className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]"
+              >
                 Sao chép
               </Button>
             </li>
@@ -79,14 +93,17 @@ const QRPayment: React.FC<QRPaymentProps> = ({
                 </span>
               </div>
 
-              <Button className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]">
+              <Button
+                onClick={() => copyToClipboard(accountNumber)}
+                className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]"
+              >
                 Sao chép
               </Button>
             </li>
           </ul>
         </div>
       </div>
-      <p className="bg-red-100 text-red text-center rounded-lg p-3 mt-8">
+      <p className="bg-[#FFF0F1] border border-red text-red text-center mx-3 rounded-lg p-3 mt-8 text-[13px]">
         *Lưu ý: Bạn sẽ không được ghi nhận giao dịch nếu thiếu hoặc sai nội dung
         chuyển khoản
       </p>

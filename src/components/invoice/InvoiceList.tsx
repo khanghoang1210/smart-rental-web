@@ -36,7 +36,10 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       if (roomId && !rooms[roomId]) {
         try {
           const res = await roomService.getByID(token, roomId);
-          setRooms((prev) => ({ ...prev, [roomId]: res.data.data.rooms.address }));
+          setRooms((prev) => ({
+            ...prev,
+            [roomId]: res.data.data.rooms.address,
+          }));
         } catch (error) {
           if (error instanceof Error) toast.error(error.message);
         }
@@ -50,7 +53,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       <div className="flex gap-4 mb-4">
         <Button
           className={`px-4 py-2 rounded-lg ${
-            currentFilter === 1 ? "bg-blue-40 text-[#fff]" : "bg-gray-90 text-gray-40"
+            currentFilter === 1
+              ? "bg-blue-40 text-[#fff]"
+              : "bg-gray-90 text-gray-40"
           }`}
           onClick={() => onFilterChange(1)}
         >
@@ -58,7 +63,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         </Button>
         <Button
           className={`px-4 py-2 rounded-lg ${
-            currentFilter === 2 ? "bg-blue-40 text-[#fff]" : "bg-gray-90 text-gray-40"
+            currentFilter === 2
+              ? "bg-blue-40 text-[#fff]"
+              : "bg-gray-90 text-gray-40"
           }`}
           onClick={() => onFilterChange(2)}
         >
