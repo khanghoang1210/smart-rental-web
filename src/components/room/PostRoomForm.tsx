@@ -146,9 +146,9 @@ const PostRoomForm = () => {
 
     try {
       console.log("form", form);
-      // const roomService = new RoomService();
-      // const response = await roomService.createRoom(token, form);
-      // console.log(response.data);
+      const roomService = new RoomService();
+      const response = await roomService.createRoom(token, form);
+      console.log(response.data);
       toast.success("Tạo phòng thành công");
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
