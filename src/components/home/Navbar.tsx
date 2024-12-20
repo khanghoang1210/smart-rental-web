@@ -17,7 +17,10 @@ import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
 import { useAppStore } from "@/store";
 
-const Navbar = () => {
+interface NavbarProps {
+  searchKey?: string;
+}
+const Navbar = (prop: NavbarProps) => {
   const { userInfo } = useAppStore();
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -34,6 +37,7 @@ const Navbar = () => {
 
   const callApiAndNavigate = async (value: string) => {
     console.log("Call API with value:", value);
+    setRoomData([]);
     try {
       const roomService = new RoomService();
       const response = await roomService.searchByAddress(value);
@@ -43,7 +47,10 @@ const Navbar = () => {
 
         setRoomData(response.data);
 
-        navigate("/filter", { state: { roomData: response.data.data.rooms } });
+        navigate(`/filter?search=${encodeURIComponent(value)}`, {
+          state: { roomData: response.data.data.rooms },
+          replace: true,
+        });
       } else {
         console.warn("Không tìm thấy dữ liệu phòng");
         setRoomData([]);
@@ -53,6 +60,13 @@ const Navbar = () => {
     }
   };
 
+  useEffect(() => {
+    if (prop.searchKey !== undefined) {
+      setSearchText(prop.searchKey);
+    }
+  }, [prop.searchKey]);
+
+  
   const onSearch = (text: string) => {
     setSearchText(text);
     if (text.trim() === "") {
@@ -80,6 +94,7 @@ const Navbar = () => {
   const onSelect = async (value: string) => {
     console.log("onSelect", value);
     await callApiAndNavigate(value);
+    setSearchText(value)
   };
 
   const onPressEnter = async () => {
@@ -121,6 +136,7 @@ const Navbar = () => {
   const handleButtonClick = () => {
     setDropdownVisible((prev) => !prev);
   };
+  console.log(searchText);
   return (
     <div>
       <nav className="relative flex justify-center items-center w-full mt-4 pb-2 border-b border-gray-80">
@@ -134,6 +150,7 @@ const Navbar = () => {
           onSelect={onSelect}
           options={options}
           onPressEnter={onPressEnter}
+          value={searchText}
         />
 
         <button>

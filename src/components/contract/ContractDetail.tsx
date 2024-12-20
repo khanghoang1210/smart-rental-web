@@ -35,7 +35,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
         </div>
 
         <div className="mb-6 mt-6 flex justify-between border-b pb-4">
-          <div className="text-gray-500 text-sm">Địa chỉ</div>
+          <div className="text-gray-20 text-sm">Địa chỉ</div>
           <div className="font-medium text-gray-20 text-right break-words w-2/3">
             {contract.room_address}
           </div>

@@ -5,15 +5,20 @@ import letter from "../../assets/letter.png";
 import term from "../../assets/terms.png";
 import credit_card from "../../assets/credit_card.png";
 import rating from "../../assets/rating.png";
+import RequestService from "@/services/RequestService";
+import { CreateReturnRequestReq } from "@/models/chat/request";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
 
 interface FormValues {
-  suggested_price: string;
-  num_of_person: string;
-  begin_date: Date;
-  end_date: Date;
-  addition_request: string;
+  reason: string;
+  return_date: Date;
+  deduct_amount: number;
+  total_return_deposit: number;
 }
 const ContractDetail = () => {
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSecondModalVisible, setIsSecondModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -38,9 +43,30 @@ const ContractDetail = () => {
     setIsSecondModalVisible(false);
   };
 
-  const handleSubmit = () => {
-    throw new Error("Function not implemented.");
-  }
+  const handleSubmit = async (values: FormValues) => {
+    try {
+      // Dữ liệu từ form
+      const payload: CreateReturnRequestReq = {
+        contract_id: 16, // Thay bằng giá trị thực tế
+        reason: values.reason,
+        return_date: values.return_date,
+        status: 1,
+        deduct_amount: values.deduct_amount || 0,
+        total_return_deposit: values.total_return_deposit || 2000000,
+      };
+      const requestService = new RequestService();
+
+      // Gửi yêu cầu API
+      await requestService.createReturnRequest(token, payload);
+
+      // Thông báo thành công và đóng modal
+      setIsSecondModalVisible(false);
+      toast.success("Yêu cầu trả phòng đã được gửi thành công!");
+    } catch (error) {
+      console.error("Error submitting return request:", error);
+      toast.error("Có lỗi xảy ra khi gửi yêu cầu trả phòng.");
+    }
+  };
 
   return (
     <div>
@@ -89,7 +115,7 @@ const ContractDetail = () => {
           </div>
         </div>
       )}
-      
+
       <Modal
         className="flex flex-row justify-center items-center h-[600px] "
         title={
@@ -135,7 +161,7 @@ const ContractDetail = () => {
                   2
                 </div>
                 <div>
-                  <img src={term} alt="" className="w-10 h-10"  />
+                  <img src={term} alt="" className="w-10 h-10" />
                 </div>
                 <div className="flex flex-col">
                   <h1 className="text-sm">Kiểm tra phòng và xác nhận</h1>
@@ -149,7 +175,7 @@ const ContractDetail = () => {
                   3
                 </div>
                 <div>
-                  <img src={credit_card} alt="" className="w-10 h-10"  />
+                  <img src={credit_card} alt="" className="w-10 h-10" />
                 </div>
                 <div className="flex flex-col">
                   <h1 className="text-sm">Hoàn tiền đặt cọc</h1>
@@ -163,7 +189,7 @@ const ContractDetail = () => {
                   4
                 </div>
                 <div>
-                  <img src={rating} alt=""  className="w-10 h-10" />
+                  <img src={rating} alt="" className="w-10 h-10" />
                 </div>
                 <div className="flex flex-col">
                   <h1 className="text-sm">Đánh giá chủ nhà</h1>
@@ -182,44 +208,40 @@ const ContractDetail = () => {
               onFinish={handleSubmit}
               layout="vertical"
             >
-              
-                <Form.Item
-                  name="begin_date"
-                  label={
-                    <label
-                      style={{
-                        color: "#878787",
-                        fontWeight: "800px",
-                        fontSize: "16px",
-                      }}
-                    >
-                      Ngày trả phòng
-                    </label>
+              <Form.Item
+                name="return_date"
+                label={
+                  <label
+                    style={{
+                      color: "#878787",
+                      fontWeight: "800px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Ngày trả phòng
+                  </label>
+                }
+                rules={[
+                  { required: true, message: "Vui lòng chọn ngày trả phòng" },
+                ]}
+              >
+                <Checkbox className="mb-3 text-gray-40">
+                  Theo thời hạn hợp đồng
+                </Checkbox>
+                <DatePicker
+                  className=" rounded-[10px]"
+                  placeholder="Chọn ngày"
+                  style={{ width: "100%", height: "50px" }}
+                  onChange={(date) =>
+                    form.setFieldsValue({
+                      return_date: date?.toDate() ?? null,
+                    })
                   }
-                  rules={[
-                    { required: true, message: "Vui lòng chọn ngày dọn vào" },
-                  ]}
-                  
-                >
-                  <Checkbox className="mb-3 text-gray-40">
-                    Theo thời hạn hợp đồng
-                  </Checkbox>
-                  <DatePicker
-                    className=" rounded-[10px]"
-                    placeholder="Chọn ngày"
-                    style={{ width: "100%", height: "50px" }}
-                    onChange={(date) =>
-                      form.setFieldsValue({
-                        begin_date: date?.toDate() ?? null,
-                      })
-                    }
-                  />
-                </Form.Item>
-
-                
+                />
+              </Form.Item>
 
               <Form.Item
-                name="addition_request"
+                name="reason"
                 label={
                   <label
                     style={{
@@ -233,6 +255,7 @@ const ContractDetail = () => {
                 }
               >
                 <Input.TextArea
+                  name="reason"
                   className=" rounded-[10px]"
                   rows={4}
                   placeholder="Nhập lý do"
@@ -264,7 +287,6 @@ const ContractDetail = () => {
           </div>
         </div>
       </Modal>
-      
     </div>
   );
 };

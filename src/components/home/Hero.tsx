@@ -9,6 +9,10 @@ import thuduc from "../../assets/thuduc.png";
 import UserRating from "./UserRating";
 import FeaturedRooms from "../room/FeaturedRoom";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
+import RoomService from "@/services/RoomService";
+import { RoomRes } from "@/models/room";
 
 // type HomeProps = {
 
@@ -18,6 +22,36 @@ const Hero = () => {
   const navigate = useNavigate();
   const handleClickCreateRoom = () => {
     navigate("/room/create");
+  };
+  const [, setRoomData] = useState<RoomRes[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
+
+  const handleClickRegion = (region: string) => {
+    setSearchText(region); // Cập nhật text tìm kiếm
+    handleSearch(region); // Gọi API tìm kiếm
+  };
+
+  const handleSearch = async (region: string) => {
+    console.log("Call API with value:", region);
+    try {
+      const roomService = new RoomService();
+      const response = await roomService.searchByAddress(region);
+
+      if (response && response.data) {
+        console.log("Room Data:", response.data);
+
+        setRoomData(response.data);
+
+        navigate(`/filter?search=${encodeURIComponent(region)}`, {
+          state: { roomData: response.data.data.rooms },
+        });
+      } else {
+        console.warn("Không tìm thấy dữ liệu phòng");
+        setRoomData([]);
+      }
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    }
   };
   return (
     <div className="flex flex-col justify-center mt-16">
@@ -47,7 +81,10 @@ const Hero = () => {
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 ">
           <div className="lg:col-span-1">
-            <div className=" hover:cursor-pointer transition duration-300 transform hover:scale-105">
+            <div
+              onClick={() => handleClickRegion("Bình Thạnh")}
+              className=" hover:cursor-pointer transition duration-300 transform hover:scale-105"
+            >
               <img
                 src={binhthanh}
                 alt="Bình Thạnh"
@@ -57,20 +94,32 @@ const Hero = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4 lg:col-span-2">
-            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
+            <div
+              onClick={() => handleClickRegion("Quận 7")}
+              className="hover:cursor-pointer transition duration-300 transform hover:scale-105"
+            >
               <img src={q7} alt="Quận 7" className="rounded-lg shadow-lg" />
             </div>
-            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
+            <div
+              onClick={() => handleClickRegion("Thủ Đức")}
+              className="hover:cursor-pointer transition duration-300 transform hover:scale-105"
+            >
               <img
                 src={thuduc}
                 alt="Thủ Đức"
                 className="rounded-lg shadow-lg "
               />
             </div>
-            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
+            <div
+              onClick={() => handleClickRegion("Quận 1")}
+              className="hover:cursor-pointer transition duration-300 transform hover:scale-105"
+            >
               <img src={q1} alt="Quận 1" className="rounded-lg shadow-lg" />
             </div>
-            <div className="hover:cursor-pointer transition duration-300 transform hover:scale-105">
+            <div
+              onClick={() => handleClickRegion("Quận 3")}
+              className="hover:cursor-pointer transition duration-300 transform hover:scale-105"
+            >
               <img src={q3} alt="Quận 3" className="rounded-lg shadow-lg " />
             </div>
           </div>

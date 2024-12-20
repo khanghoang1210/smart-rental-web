@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import clock from "../../../assets/clock.svg";
 import phone from "../../../assets/phone.svg";
+import checked from "../../../assets/checked.png";
 import message_white from "../../../assets/message_white.svg";
 import { StarFilled } from "@ant-design/icons";
 import { ReturnRequestRes } from "@/models/request";
@@ -12,6 +13,7 @@ import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
 import { useConversationStore } from "@/store";
 import { useNavigate } from "react-router-dom";
+import RequestService from "@/services/RequestService";
 
 interface RequestDetailsProps {
   request: ReturnRequestRes | null;
@@ -19,7 +21,6 @@ interface RequestDetailsProps {
 
 const RequestDetails = ({ request }: RequestDetailsProps) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
-
 
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
@@ -54,18 +55,43 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
       toast.error("Đã xảy ra lỗi khi bắt đầu cuộc trò chuyện.");
     }
   };
+
+  const handleAcceptRequest = async () => {
+    try {
+      if (!request) {
+        toast.error("Thông tin không đủ để xử lý yêu cầu.");
+        return;
+      }
+
+      const requestService = new RequestService();
+      await requestService.approveReturnRequest(cookies.token, request.id);
+
+      toast.success("Yêu cầu trả phòng đã được tiếp nhận!");
+
+      setTimeout(() => {
+        navigate("/return-request/success");
+      }, 500);
+    } catch (error) {
+      console.error("Error accepting request:", error);
+      toast.error("Đã xảy ra lỗi khi tiếp nhận yêu cầu.");
+    }
+  };
   if (!request) return <div></div>;
 
-
-  
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
       <div className="flex justify-start">
         <h3 className="font-bold text-gray-20 text-lg mr-8">
           Yêu cầu #{request.created_at}
         </h3>
-        <div className="flex space-x-2 bg-gray-90 px-5 py-1 rounded-sm text-sm font-medium text-gray-40">
-          <img src={clock} className="w-5" alt="" />
+        <div
+          className={`flex items-center space-x-2 ${request.status === 1 ? "bg-gray-90 text-gray-40" : "bg-[#E9FFE8] text-[#3FA836]"}  px-5 py-1 rounded-sm text-sm font-medium `}
+        >
+          {request.status === 1 ? (
+            <img src={clock} className="w-5" alt="" />
+          ) : (
+            <img src={checked} className="w-3 h-3" alt="" />
+          )}
           <p>{request.status === 1 ? "Chưa xử lý" : "Đã xác nhận"}</p>
         </div>
       </div>
@@ -164,12 +190,14 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
             nhận tình trạng phòng cũng như ghi nhận hư hại (nếu có). Sau thời
             gian này, hệ thống sẽ tự động xác nhận việc trả phòng đã hoàn tất.
           </h3>
-          <Button
-            onClick={() => navigate("/return-request/success")}
-            className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
-          >
-            Xác nhận
-          </Button>
+          {request.status === 1 && (
+            <Button
+              onClick={handleAcceptRequest}
+              className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
+            >
+              Xác nhận
+            </Button>
+          )}
         </div>
         <div className="w-1/2">
           <div className="mt-4 border border-blue-95 p-5 rounded-xl ">

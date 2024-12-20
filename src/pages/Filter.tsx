@@ -7,17 +7,29 @@ import UtilitiesList from "../components/filter/UtilitiesList";
 import RoomSearchList from "../components/room/RoomSearchList";
 import Navbar from "@/components/home/Navbar";
 import { RoomRes } from "@/models/room";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Filter = () => {
   const location = useLocation();
   const [roomData, setRoomData] = useState<RoomRes[]>(
     location.state?.roomData || []
   );
+  const [searchParams] = useSearchParams();
+  const searchKey = searchParams.get("search") || ""; // Lấy giá trị từ URL
+
+  const [searchText, ] = useState<string>(searchKey);
   const [roomType, setRoomType] = useState("Kí túc xá/Homestay");
   const [sortOption, setSortOption] = useState("Liên quan nhất");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
+  useEffect(() => {
+    // Cập nhật roomData khi location.state thay đổi
+    if (location.state?.roomData) {
+      setRoomData(location.state.roomData);
+    } else {
+      setRoomData([]);
+    }
+  }, [searchKey]);
   console.log("room ====", roomData);
 
   const handleSort = (option: string) => {
@@ -53,14 +65,14 @@ const Filter = () => {
       (room: RoomRes) => room.room_type === type
     );
 
-    console.log(filteredData)
+    console.log(filteredData);
     setRoomData(filteredData || []);
   };
 
   return (
     <>
       {" "}
-      <Navbar />
+      <Navbar searchKey={searchText} />
       <div className="flex justify-center mt-12 space-x-14">
         <div className="flex flex-col">
           <div>
