@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 
-
 export function timeAgo(date: string): string {
   const now = new Date();
   const past = new Date(date.replace("Z", ""));
@@ -107,16 +106,26 @@ export const formatDate = (dateString: string | undefined): string => {
   return "";
 };
 
-
 export function formatTimestampToDate(timestamp: number): string {
   return dayjs.unix(timestamp).format("DD/MM/YYYY");
 }
 
+export function convertDate(inputDate: string | undefined): string {
+  // Tách chuỗi theo dấu gạch ngang (-)
+  if (inputDate) {
+    const [year, month, day] = inputDate.split("-");
+
+    // Trả về chuỗi ngày theo định dạng dd/MM/yyyy
+    return `${day}/${month}/${year}`;
+  }
+  return "";
+}
+
 export const convertToReadableNumber = (num: number): string => {
   const units: { [key: string]: number } = {
-    "tỷ": 1_000_000_000,
-    "triệu": 1_000_000,
-    "nghìn": 1_000,
+    tỷ: 1_000_000_000,
+    triệu: 1_000_000,
+    nghìn: 1_000,
   };
 
   for (const [unit, value] of Object.entries(units)) {

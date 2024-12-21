@@ -33,6 +33,7 @@ import FavoriteRoomPage from "./pages/room/FavoriteRoomPage";
 import PaymentInfo from "./pages/payment/PaymentInfo";
 import PaymentInfoPage from "./pages/payment/PaymentInfo";
 import IndexPage from "./pages/index";
+import PostedRoomPage from "./pages/room/PostedRoomPage";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -131,6 +132,14 @@ function App() {
           element={
             <PrivateRoute>
               <FavoriteRoomPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/room/posted"
+          element={
+            <PrivateRoute>
+              <PostedRoomPage />
             </PrivateRoute>
           }
         />

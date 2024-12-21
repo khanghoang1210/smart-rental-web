@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, RadioChangeEvent } from "antd";
+import { Button, RadioChangeEvent, Spin } from "antd";
 import RoomInfoForm from "./form/RoomInfoForm";
 import AddressForm from "./form/AddressForm";
 import ImageAndAmenitiesForm from "./form/ImageAndAmenitiesForm";
@@ -11,6 +11,7 @@ import { Address, CreateRoomForm } from "@/models/room";
 import { useAppStore } from "@/store";
 
 const PostRoomForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
@@ -144,6 +145,7 @@ const PostRoomForm = () => {
       form.append("address", add);
     });
 
+    setIsLoading(true);
     try {
       console.log("form", form);
       const roomService = new RoomService();
@@ -152,6 +154,8 @@ const PostRoomForm = () => {
       toast.success("Tạo phòng thành công");
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -192,6 +196,13 @@ const PostRoomForm = () => {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto p-4 w-[750px]">
       <div className="flex items-center">

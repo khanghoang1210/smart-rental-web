@@ -16,6 +16,7 @@ import RoomService from "@/services/RoomService";
 import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
 import { useAppStore } from "@/store";
+import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 
 interface NavbarProps {
   searchKey?: string;
@@ -66,7 +67,6 @@ const Navbar = (prop: NavbarProps) => {
     }
   }, [prop.searchKey]);
 
-  
   const onSearch = (text: string) => {
     setSearchText(text);
     if (text.trim() === "") {
@@ -94,7 +94,7 @@ const Navbar = (prop: NavbarProps) => {
   const onSelect = async (value: string) => {
     console.log("onSelect", value);
     await callApiAndNavigate(value);
-    setSearchText(value)
+    setSearchText(value);
   };
 
   const onPressEnter = async () => {
@@ -167,7 +167,7 @@ const Navbar = (prop: NavbarProps) => {
             onClick={handleButtonClick}
           >
             <PersonalButton
-              avatarUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
+              avatarUrl={userInfo?.avatar_url || USER_DEFAULT_AVATAR}
               name={userInfo?.full_name}
               role={userInfo?.role === 1 ? "Chủ nhà" : "Khách thuê"}
             />

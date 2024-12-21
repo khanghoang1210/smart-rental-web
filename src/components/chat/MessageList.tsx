@@ -95,7 +95,7 @@ const MessageList = () => {
             className="flex items-center px-4 py-4 rounded-xl hover:bg-blue-98 cursor-pointer"
             onClick={() => {
               setSelectedConversationId(conversation.id);
-              setSelectedUserId(user.id);
+              // setSelectedUserId(user.id);
             }}
           >
             <img

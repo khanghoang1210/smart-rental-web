@@ -5,6 +5,8 @@ export type UserInfo = {
     phone_number: string;
     avatar_url: string;
     full_name: string;
+    gender: number;
+    dob: string;
     total_room: number;
     total_rating: number;
     address: string;

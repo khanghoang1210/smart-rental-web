@@ -46,8 +46,8 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-40">
-        <Spin />
+      <div className="flex justify-center  items-center h-[300px]">
+        <Spin size="large"  className="ml-72"/>
       </div>
     );
   }

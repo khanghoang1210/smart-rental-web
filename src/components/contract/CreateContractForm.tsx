@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Modal } from "antd";
+import { Button, Modal, Spin } from "antd";
 import ContractInfoForm from "./form/ContractInfoForm";
 import ResponsibityForm from "./form/ResponsibityForm";
 import PreviewForm from "./form/PreviewForm";
@@ -12,6 +12,7 @@ import { CreateContractRequest } from "@/models/contract";
 
 const CreateContractForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const location = useLocation();
   const rentalDetail = location.state || {};
@@ -196,13 +197,16 @@ const CreateContractForm = () => {
 
     closeSignatureModal();
     console.log("Payload: ", payload);
+    setIsLoading(true);
     try {
       const contractService = new ContractService();
       await contractService.createContract(cookies.token, payload);
       toast.success("Tạo hợp đồng thành công!");
       setShowSignatureModal(false);
-    } catch (error: any) {
-      toast.error("Error creating contract:", error.message);
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -244,6 +248,14 @@ const CreateContractForm = () => {
       content: <PreviewForm formData={{}} />,
     },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 w-[750px]">

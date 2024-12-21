@@ -54,6 +54,7 @@ const ChatBox = () => {
           );
   
           const conversationData = conversationRes.data.data;
+          console.log(conversationData)
   
           if (conversationData && conversationData.length > 0) {
             fetchMessagesForConversation(conversationData[0].id);

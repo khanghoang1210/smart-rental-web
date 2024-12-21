@@ -25,6 +25,7 @@ export default class PaymentService {
     }
   }
 
+
   async getDetailInfo(token: string, type:string, id:number|undefined) {
     const url = PAYMENT_ENDPOINT + `/detail-info?type=${type}&id=${id}`;
     try {

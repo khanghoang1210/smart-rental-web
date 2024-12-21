@@ -33,7 +33,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
   const navigate = useNavigate();
 
   const handleCreateContract = async () => {
-    navigate("/contract/create",{ state: request });
+    navigate("/contract/create", { state: request });
   };
   const handleAcceptRequest = async () => {
     try {
@@ -129,7 +129,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
     <div className="p-4 bg-white shadow-md rounded-lg">
       <div className="flex justify-start items-center">
         <h3 className="font-bold text-gray-20 text-lg mr-8">
-          Yêu cầu #{request?.code}
+          #{request?.code}
         </h3>
         <div
           className={`flex space-x-2 items-center px-5 py-1 rounded-sm text-sm font-medium 
@@ -163,46 +163,48 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         )}
       </div>
       <p className="text-gray-40 text-xs mt-3">13:49 17/09/2023</p>
-      <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
-        <h4 className="font-semibold text-sm text-gray-20">
-          Thông tin người thuê
-        </h4>
-        <div className="flex justify-between">
-          <div className="flex items-center ">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
-              alt="User"
-              className="w-8 h-8 rounded-full mr-3"
-            />
-            <div>
-              <p className="font-semibold text-sm">
-                {request?.sender.full_name}
-              </p>
-              <div className="flex space-x-1 ">
-                {[...Array(5)].map((_, index) => (
-                  <StarFilled
-                    key={index}
-                    className="text-[#FFCC47] text-[10px]"
-                  />
-                ))}
+      {userInfo?.role === 1 && (
+        <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
+          <h4 className="font-semibold text-sm text-gray-20">
+            Thông tin người thuê
+          </h4>
+          <div className="flex justify-between">
+            <div className="flex items-center ">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
+                alt="User"
+                className="w-8 h-8 rounded-full mr-3"
+              />
+              <div>
+                <p className="font-semibold text-sm">
+                  {request?.sender.full_name}
+                </p>
+                <div className="flex space-x-1 ">
+                  {[...Array(5)].map((_, index) => (
+                    <StarFilled
+                      key={index}
+                      className="text-[#FFCC47] text-[10px]"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button
-              className="bg-blue-40 text-[#FFF] font-medium text-xs"
-              onClick={handleStartConversation}
-            >
-              Chat
-              <img src={message_white} className="w-3 h-3" alt="" />
-            </Button>
-            <Button className="text-gray-40 bg-gray-90 border-gray-40 font-medium text-xs">
-              Gọi
-              <img src={phone} alt="" />
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button
+                className="bg-blue-40 text-[#FFF] font-medium text-xs"
+                onClick={handleStartConversation}
+              >
+                Chat
+                <img src={message_white} className="w-3 h-3" alt="" />
+              </Button>
+              <Button className="text-gray-40 bg-gray-90 border-gray-40 font-medium text-xs">
+                Gọi
+                <img src={phone} alt="" />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
         <h4 className="font-semibold text-sm text-gray-20">
@@ -283,18 +285,25 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         <div className="mt-6 flex justify-end space-x-6">
           <Button
             onClick={handleDeclineRequest}
-            className="bg-[#FFF0F1] border-none font-semibold w-1/2 py-3"
+            className={`bg-[#FFF0F1] border-none font-semibold ${userInfo?.role == 1 ? "w-1/2" : "w-full"} py-3`}
             danger
           >
-            <img src={x} className="w-3 h-3" alt="" /> Từ chối
+            {userInfo?.role === 1 ? (
+              <img src={x} className="w-3 h-3" alt="" />
+            ) : (
+              <img src={x} className="w-3 h-3" alt="" />
+            )}{" "}
+            {userInfo?.role === 1 ? "Từ chối" : "Hủy yêu cầu"}
           </Button>
-          <Button
-            onClick={handleAcceptRequest}
-            className="border-none bg-[#E9FFE8] text-[#3FA836] font-semibold w-1/2"
-          >
-            <img src={checked} className="w-3 h-3" alt="" />
-            Tiếp nhận
-          </Button>
+          {userInfo?.role === 1 && (
+            <Button
+              onClick={handleAcceptRequest}
+              className="border-none bg-[#E9FFE8] text-[#3FA836] font-semibold w-1/2"
+            >
+              <img src={checked} className="w-3 h-3" alt="" />
+              Tiếp nhận
+            </Button>
+          )}
         </div>
       )}
     </div>

@@ -20,7 +20,7 @@ const Dashboard = () => {
           {[
             { title: "Phòng yêu thích", icon: heart, path: "/room/favorite" },
             { title: "Kho lưu trữ", icon: kho, path: "/room/favorite" },
-            { title: "Phòng đã đăng", icon: phongdang, path: "/room/favorite" },
+            { title: "Phòng đã đăng", icon: phongdang, path: "/room/posted" },
             {
               title: "Phòng chờ duyệt",
               icon: phongduyet,
@@ -47,7 +47,7 @@ const Dashboard = () => {
           {[
             { title: "Hợp đồng thuê trọ", icon: contract, path: "/contract" },
             { title: "Yêu cầu thuê trọ", icon: yeucau, path: "/request" },
-            { title: "Chỉ số điện nước", icon: chiso, path: "/contract" },
+            { title: "Chỉ số điện nước", icon: chiso, path: "/index" },
             {
               title: "Hoá đơn thu tiền",
               icon: hoadon,
@@ -63,7 +63,7 @@ const Dashboard = () => {
                 <img src={item.icon} alt="" className="w-7 h-8" />
                 <span className="text-gray-20">{item.title}</span>
               </div>
-              <span className="text-gray-500">{">"}</span>
+              <span className="text-gray-20">{">"}</span>
             </li>
           ))}
         </ul>
