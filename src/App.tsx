@@ -34,6 +34,7 @@ import PaymentInfo from "./pages/payment/PaymentInfo";
 import PaymentInfoPage from "./pages/payment/PaymentInfo";
 import IndexPage from "./pages/index";
 import PostedRoomPage from "./pages/room/PostedRoomPage";
+import ProfilePage from "./pages/account/UserProfilePage";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -152,6 +153,15 @@ function App() {
           element={
             <PrivateRoute>
               <AccountPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <ProfilePage />
             </PrivateRoute>
           }
         />

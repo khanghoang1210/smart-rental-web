@@ -6,7 +6,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const PostedRoom = () => {
+const PostedRoom = ({ title }: any) => {
   const navigate = useNavigate();
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
@@ -35,9 +35,9 @@ const PostedRoom = () => {
     navigate(`/room/${roomId}`); // Navigate to the dynamic route
   };
   return (
-    <div className="container mx-auto py-8 px-8 max-w-[1100px]">
-      <h2 className="text-2xl md:text-2xl font-bold mb-6 text-gray-20">
-        Phòng đã đăng
+    <div className="container mx-auto mt-8 max-w-[1100px]">
+      <h2 className="text-xl md:text-xl font-bold mb-6 text-gray-20">
+        {title}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
         {rooms?.slice(0, 4).map((room) => (

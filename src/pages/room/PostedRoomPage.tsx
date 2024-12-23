@@ -7,6 +7,7 @@ const PostedRoomPage = () => {
     <Navbar />
     
     <div >
+      
       <PostedRoom />
     </div>
   </div>
