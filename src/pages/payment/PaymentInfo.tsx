@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 const PaymentInfoPage = () => {
   const location = useLocation();
   const { payment, room, bill } = location.state || {};
-  console.log(bill)
   return (
     <>
       <Navbar />
@@ -19,7 +18,8 @@ const PaymentInfoPage = () => {
           recipient={room?.owner || ""}
         />
         <QRPayment
-          bank={payment.bank_name}
+          bank={payment.short_name}
+          logo={payment.logo}
           accountHolder={payment.account_name}
           accountNumber={payment.account_number}
           transferAmount={payment.amount}

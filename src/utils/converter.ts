@@ -137,3 +137,12 @@ export const convertToReadableNumber = (num: number): string => {
 
   return num.toString(); // Trả về nguyên số nếu không cần chuyển đổi
 };
+
+
+export function parseDate(dateTime: string): string {
+  return dateTime.split("T")[0]; // Lấy phần trước ký tự 'T' (date)
+}
+
+export function parseTime(dateTime: string): string {
+  return dateTime.split("T")[1]?.split(":").slice(0, 2).join(":");
+}

@@ -3,6 +3,7 @@ import React from "react";
 
 interface QRPaymentProps {
   bank: string;
+  logo: string;
   accountHolder: string;
   accountNumber: string;
   transferAmount: string;
@@ -12,6 +13,7 @@ interface QRPaymentProps {
 
 const QRPayment: React.FC<QRPaymentProps> = ({
   bank,
+  logo,
   accountHolder,
   accountNumber,
   transferAmount,
@@ -44,8 +46,8 @@ const QRPayment: React.FC<QRPaymentProps> = ({
           <ul className="space-y-2">
             <li className="flex flex-col py-2">
               <span className="text-gray-40 text-[12px]">Ngân hàng</span>
-              <div className="flex space-x-3">
-                <img src="ádasd" alt="logo" />
+              <div className="flex items-center justify-between">
+                <img src={logo} alt="logo" className="h-12 object-contain"/>
                 <span className="font-semibold text-gray-20">{bank}</span>
               </div>
             </li>

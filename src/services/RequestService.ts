@@ -192,4 +192,25 @@ export default class RequestService {
         }
       }
   }
+
+  async trackRentalRequestProcess(token: string, id: number) {
+    const url = RENTAL_REQUEST_ENDPOINT + `/${id}/tracking-process`;
+    try {
+      const res = await apiClient.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res;
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
+      }
+    }
+  }
 }
