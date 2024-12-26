@@ -83,7 +83,7 @@ const BillList = ({
               handleOpenModal(); // Create invoices
             }
           }}
-          disabled={showCheckboxes && selectedBills.length === 0} // Disable if no bills are selected
+          disabled={showCheckboxes && selectedBills.length === 0}
         >
           {showCheckboxes
             ? selectedBills.length > 0

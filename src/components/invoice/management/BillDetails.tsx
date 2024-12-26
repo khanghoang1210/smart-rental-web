@@ -28,7 +28,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
       try {
         const billingService = new BillingService();
         const response = await billingService.getByID(token, billId);
-        setBill(response.data.data); // Map API response to state
+        setBill(response.data.data); 
       } catch (error: any) {
         toast.error(error.message || "Lỗi khi lấy dữ liệu hóa đơn.");
       } finally {

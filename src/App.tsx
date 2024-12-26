@@ -35,6 +35,7 @@ import PaymentInfoPage from "./pages/payment/PaymentInfo";
 import IndexPage from "./pages/index";
 import PostedRoomPage from "./pages/room/PostedRoomPage";
 import ProfilePage from "./pages/account/UserProfilePage";
+import ContractPreviewPage from "./pages/contract/ContractPreviewPage";
 
 type DecodedToken = {
   exp: number; // expiration timestamp
@@ -115,7 +116,7 @@ function App() {
         />
         <Route path="filter" element={<Filter />} />
         <Route path="/contract/create" element={<Contract />} />
-        <Route path="/contract/preview" element={<ContractTemplate />} />
+        <Route path="/contract/preview" element={<ContractPreviewPage />} />
         <Route path="/contract" element={<ContractManagementPage />} />
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/index" element={<IndexPage />} />
