@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import React from "react";
+import { toast } from "sonner";
 
 interface QRPaymentProps {
   bank: string;
@@ -24,7 +25,7 @@ const QRPayment: React.FC<QRPaymentProps> = ({
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        console.log("Đã sao chép:", text);
+        toast.success ("Đã sao chép");
       })
       .catch((err) => {
         console.error("Sao chép thất bại:", err);

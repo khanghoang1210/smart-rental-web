@@ -1,8 +1,9 @@
-import React from "react";
-import { Button } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal } from "antd";
 import { ContractRes } from "@/models/contract";
 import { formatTimestampToDate } from "@/utils/converter";
 import { useAppStore } from "@/store";
+import { useNavigate } from "react-router-dom";
 
 interface ContractDetailProps {
   contract?: ContractRes;
@@ -10,6 +11,14 @@ interface ContractDetailProps {
 
 const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
   const { userInfo } = useAppStore();
+  const navigate = useNavigate();
+
+  
+
+  const handleSignClick = () => {
+    navigate("/contract/preview")
+  };
+
   if (!contract) {
     return <div className="w-[50%] p-4">Chọn một hợp đồng để xem chi tiết</div>;
   }
@@ -88,10 +97,12 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
       </div>
 
       {userInfo?.role === 1 && (
-        <Button className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
+        <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
           Ký hợp đồng
         </Button>
       )}
+
+
     </div>
   );
 };
