@@ -79,7 +79,7 @@ const QRPayment: React.FC<QRPaymentProps> = ({
               </div>
 
               <Button
-                onClick={() => copyToClipboard(accountNumber)}
+                onClick={() => copyToClipboard(transferAmount)}
                 className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]"
               >
                 Sao chép
@@ -96,7 +96,7 @@ const QRPayment: React.FC<QRPaymentProps> = ({
               </div>
 
               <Button
-                onClick={() => copyToClipboard(accountNumber)}
+                onClick={() => copyToClipboard(transferContent)}
                 className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]"
               >
                 Sao chép

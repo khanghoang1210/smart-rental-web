@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import BillingService from "@/services/BillingService";
 import { toast } from "sonner";
 import { formatDateTime } from "@/utils/converter";
+import PaymentService from "@/services/PaymentService";
 
 interface BillDetailsProps {
   billId: number | undefined;
@@ -39,6 +40,17 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     fetchBill();
   }, [billId]);
 
+  const handleConfirmPayment = async () => {
+    if (!billId) return;
+
+    try {
+      const paymentService = new PaymentService();
+      await paymentService.confirmPayment(token, 13);
+      toast.success("Xác nhận thanh toán thành công.");
+    } catch (error: any) {
+      toast.error(error.message || "Lỗi khi xác nhận thanh toán.");
+    }
+  };
   console.log(bill);
   if (!billId) {
     return <div></div>;
@@ -47,7 +59,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
   if (loading) {
     return (
       <div className="flex justify-center  items-center h-[300px]">
-        <Spin size="large"  className="ml-72"/>
+        <Spin size="large" className="ml-72" />
       </div>
     );
   }
@@ -68,7 +80,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
   return (
     <div className="rounded-lg px-4 space-y-6">
       {/* Nếu chưa thanh toán */}
-      {bill?.status === 1 && (
+      {bill?.status === 2 && (
         <div className="flex space-x-8 w-[900px]">
           <div className="w-[60%] p-4 ">
             <div className="flex space-x-3">
@@ -144,7 +156,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
             </ul>
           </div>
           <div className="w-[50%]">
-            <div className="mb-6 mr-1">
+            <div className="mb-6">
               <Button className="w-[70%] text-blue-60 text-base font-semibold border-2 border-blue-60 py-5 mt-5 rounded-[100px]">
                 Chỉnh sửa hóa đơn
               </Button>
@@ -193,7 +205,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
       )}
 
       {/* Nếu đã thanh toán */}
-      {bill?.status === 2 && (
+      {bill?.status === 1 && (
         <div className="w-[800px]">
           <div className="flex justify-between">
             <div className="flex space-x-3">
@@ -205,7 +217,10 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
             </div>
 
             <div>
-              <Button className="w-full bg-blue-60 text-base font-medium text-[#fff] p-5 rounded-[100px]">
+              <Button
+                onClick={handleConfirmPayment}
+                className="w-full bg-blue-60 text-base font-medium text-[#fff] p-5 rounded-[100px]"
+              >
                 Xác nhận đã hoàn thành
               </Button>
             </div>
