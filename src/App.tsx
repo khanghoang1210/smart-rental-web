@@ -115,9 +115,30 @@ function App() {
           element={<ReturnRequestMangement />}
         />
         <Route path="filter" element={<Filter />} />
-        <Route path="/contract/create" element={<Contract />} />
-        <Route path="/contract/preview" element={<ContractPreviewPage />} />
-        <Route path="/contract" element={<ContractManagementPage />} />
+        <Route
+          path="/contract/create"
+          element={
+            <PrivateRoute>
+              <Contract />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/contract/preview"
+          element={
+            <PrivateRoute>
+              <ContractPreviewPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/contract"
+          element={
+            <PrivateRoute>
+              <ContractManagementPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="/invoice" element={<InvoicePage />} />
         <Route path="/index" element={<IndexPage />} />
         <Route

@@ -13,8 +13,6 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
 
-  
-
   const handleSignClick = () => {
     navigate("/contract/preview")
   };

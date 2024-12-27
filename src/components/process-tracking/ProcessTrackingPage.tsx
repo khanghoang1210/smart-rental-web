@@ -55,43 +55,6 @@ const ProcessTrackingPage = () => {
     }
   }, [selectedRequest, token]);
 
-  const statusDetails = [
-    {
-      date: "13/08/2024",
-      time: "09:50",
-      actor: "",
-      description: "Quá trình thuê trọ hoàn tất",
-      isComplete: false,
-    },
-    {
-      date: "13/08/2024",
-      time: "09:50",
-      actor: "Bạn",
-      description: "Đã ký hợp đồng và thanh toán tiền đặt cọc",
-      isComplete: true,
-    },
-    {
-      date: "13/08/2024",
-      time: "09:50",
-      actor: "Nguyễn Xuân Hoàng - Chủ nhà",
-      description: "Đã tạo hợp đồng thuê trọ",
-      isComplete: true,
-    },
-    {
-      date: "13/08/2024",
-      time: "09:50",
-      actor: "Nguyễn Xuân Hoàng - Chủ nhà",
-      description: "Đã tiếp nhận yêu cầu thuê trọ của bạn",
-      isComplete: true,
-    },
-    {
-      date: "13/08/2024",
-      time: "09:50",
-      actor: "Bạn",
-      description: "Đã gửi yêu cầu thuê trọ",
-      isComplete: true,
-    },
-  ];
 
   return (
     <div className="flex space-x-6 p-6 mt-6">

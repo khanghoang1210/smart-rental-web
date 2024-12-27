@@ -1,28 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Checkbox, DatePicker, Form, Input, Modal } from "antd";
-import letter from "../../assets/letter.png";
-import term from "../../assets/terms.png";
-import credit_card from "../../assets/credit_card.png";
-import rating from "../../assets/rating.png";
-import RequestService from "@/services/RequestService";
-import { CreateReturnRequestReq } from "@/models/chat/request";
+import { Button, Form, Modal, Spin } from "antd";
+
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import ContractTemplate from "@/components/contract/form/PreviewForm";
 import Navbar from "@/components/home/Navbar";
+import ContractService from "@/services/ContractService";
 
-interface FormValues {
-  reason: string;
-  return_date: Date;
-  deduct_amount: number;
-  total_return_deposit: number;
-}
 const ContractPreviewPage = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isSecondModalVisible, setIsSecondModalVisible] = useState(false);
-  const [form] = Form.useForm();
 
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -34,17 +22,27 @@ const ContractPreviewPage = () => {
   };
 
   // Open the second modal
-  const handleConfirmEndContract = () => {
-    setIsModalVisible(false);
-    setIsSecondModalVisible(true);
+  const handleDeclineContract = async () => {
+    setIsLoading(true);
+    const contractService = new ContractService();
+    try {
+      await contractService.declineContract(token, 13);
+      toast.success("Ký hợp đồng thành công!");
+      setShowSignatureModal(false);
+      clearCanvas();
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error("Không thể tải dữ liệu thanh toán");
+    } finally {
+      setIsModalVisible(false);
+      setIsLoading(false);
+    }
   };
   const [isLoading, setIsLoading] = useState(false);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
-// //   const location = useLocation();
-//   const rentalDetail = location.state || {};
-//   const [cookies] = useCookies(["token"]);
-
-
+  // //   const location = useLocation();
+  //   const rentalDetail = location.state || {};
+  //   const [cookies] = useCookies(["token"]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const isDrawing = useRef(false);
@@ -114,8 +112,6 @@ const ContractPreviewPage = () => {
     }
   }, []);
 
-
-
   const getSignatureBase64 = (): string | null => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -128,7 +124,6 @@ const ContractPreviewPage = () => {
   const handleShowSignatureModal = () => {
     setShowSignatureModal(true);
   };
-
 
   const closeSignatureModal = () => {
     setShowSignatureModal(false);
@@ -143,59 +138,90 @@ const ContractPreviewPage = () => {
     }
   };
 
+  const handleSignContract = async () => {
+    const signature = getSignatureBase64();
+    if (!signature) {
+      toast.error("Vui lòng ký tên trước khi xác nhận.");
+      return;
+    }
 
+    setIsLoading(true);
+    const contractService = new ContractService();
+    try {
+      await contractService.signContractByTenant(token, 13, signature);
+      toast.success("Ký hợp đồng thành công!");
+      setShowSignatureModal(false);
+      clearCanvas();
+    } catch (error) {
+      if (error instanceof Error)
+        toast.error("Không thể tải dữ liệu thanh toán");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <div>
-      <Navbar/>
-      <div className='container mx-auto p-4 w-[750px]'>
-      <h1 className="text-center my-10 text-2xl text-gray-20">
-        Chi tiết hợp đồng
-      </h1>
-      <ContractTemplate formData={{}} />
-      <div className="flex justify-between mt-6">
-        <button
-          onClick={handleOpenModal}
-          className="border border-red text-red px-16 py-3 rounded-[100px]"
-        >
-          Không đồng ý
-        </button>
-        <button onClick={handleShowSignatureModal} className="bg-blue-60 text-[#FFF] px-16 py-3 rounded-[100px]">
-          Ký hợp đồng
-        </button>
-      </div>
-      {isModalVisible && (
-        <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="bg-blue-60 w-16 h-16 flex items-center justify-center rounded-full text-[#fff] text-3xl">
-                !
-              </div>
-              <h2 className="text-xl font-semibold text-gray-20">Thông báo</h2>
-              <p className="text-gray-20">
-                Bạn có chắc chắn muốn kết thúc{" "}
-                <span>hợp đồng và tiến hành trả phòng</span>?
-              </p>
-              <div className="flex justify-center space-x-4 mt-6">
-                <button
-                  className="px-6 py-2 w-32 rounded-full border border-blue-60 text-blue-60 hover:bg-gray-100"
-                  onClick={handleCloseModal}
-                >
-                  Hủy
-                </button>
-                <button
-                  className="px-6 py-2 w-32 rounded-full bg-blue-60 text-[#fff] hover:bg-blue-700"
-                  onClick={handleConfirmEndContract}
-                >
-                  Chắc chắn
-                </button>
+      <Navbar />
+      <div className="container mx-auto p-4 w-[750px]">
+        <h1 className="text-center my-10 text-2xl text-gray-20">
+          Chi tiết hợp đồng
+        </h1>
+        <ContractTemplate contractId={} />
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handleOpenModal}
+            className="border border-red text-red px-16 py-3 rounded-[100px]"
+          >
+            Không đồng ý
+          </button>
+          <button
+            onClick={handleShowSignatureModal}
+            className="bg-blue-60 text-[#FFF] px-16 py-3 rounded-[100px]"
+          >
+            Ký hợp đồng
+          </button>
+        </div>
+        {isModalVisible && (
+          <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="bg-blue-60 w-16 h-16 flex items-center justify-center rounded-full text-[#fff] text-3xl">
+                  !
+                </div>
+                <h2 className="text-xl font-semibold text-gray-20">
+                  Thông báo
+                </h2>
+                <p className="text-gray-20">
+                  Bạn có chắc chắn muốn từ chối ký <span>hợp đồng</span>?
+                </p>
+                <div className="flex justify-center space-x-4 mt-6">
+                  <button
+                    className="px-6 py-2 w-32 rounded-full border border-blue-60 text-blue-60 hover:bg-gray-100"
+                    onClick={handleCloseModal}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    className="px-6 py-2 w-32 rounded-full bg-blue-60 text-[#fff] hover:bg-blue-700"
+                    onClick={handleDeclineContract}
+                  >
+                    Chắc chắn
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-     </div>
+        )}
+      </div>
       {/* Signature Modal */}
       <Modal
         className="w-[500px] h-[600px]"
@@ -219,7 +245,7 @@ const ContractPreviewPage = () => {
             <Button
               className="w-36 h-10 rounded-[100px] bg-blue-60 text-[#FFF]"
               key="submit"
-            //   onClick={handleSubmit}
+              onClick={handleSignContract}
             >
               Xác nhận
             </Button>
