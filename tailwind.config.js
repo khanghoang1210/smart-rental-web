@@ -24,6 +24,7 @@ export default{
   			'90': '#F2F2F2'
   		},
 		red: '#FF425E',
+		green: '#3FA836',
   	},
   	extend: {
   		fontFamily: {
@@ -79,7 +80,7 @@ export default{
   	},
   	plugins: []
   },
-    // plugins: [require("tailwindcss-animate")]cls
+    plugins: [require("tailwindcss-animate")]
 }
 
 

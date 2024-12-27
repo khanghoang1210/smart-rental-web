@@ -51,7 +51,7 @@ const Dashboard = () => {
             {
               title: "Hoá đơn thu tiền",
               icon: hoadon,
-              path: userInfo?.role === 1 ? "/invoice/manage" : "/invoice",
+              path: "/invoice",
             },
           ].map((item) => (
             <li

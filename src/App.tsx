@@ -25,12 +25,10 @@ import ProcessTracking from "./pages/process-tracking";
 import ReturnRequestPage from "./pages/request/ReturnRequestPage";
 import ReturnRequestMangement from "./pages/request/ReturnRequestMangement";
 import { useCookies } from "react-cookie";
-import ContractTemplate from "./components/contract/form/PreviewForm";
 import ConfirmationSuccess from "./components/return-request/ConfirmationSuccess";
 import AccountPage from "./pages/account";
 import DashboardPage from "./pages/dashboard";
 import FavoriteRoomPage from "./pages/room/FavoriteRoomPage";
-import PaymentInfo from "./pages/payment/PaymentInfo";
 import PaymentInfoPage from "./pages/payment/PaymentInfo";
 import IndexPage from "./pages/index";
 import PostedRoomPage from "./pages/room/PostedRoomPage";
@@ -79,6 +77,7 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const { userInfo } = useAppStore();
   const RequestWithID = () => {
     const { id } = useParams<{ id: string }>();
     return <Request requestID={id ? parseInt(id) : null} />;
@@ -139,7 +138,20 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/invoice" element={<InvoicePage />} />
+        <Route
+          path="/invoice"
+          element={
+            userInfo?.role === 1 ? (
+              <PrivateRoute>
+                <BillManagementPage />
+              </PrivateRoute>
+            ) : (
+              <PrivateRoute>
+                <InvoicePage />
+              </PrivateRoute>
+            )
+          }
+        />
         <Route path="/index" element={<IndexPage />} />
         <Route
           path="/invoice/manage"

@@ -53,6 +53,10 @@ const BillList = ({
 
   return (
     <div className=" mt-6 w-[25%]">
+      <h1 className="text-xl  text-gray-20 font-bold mb-4">
+        Hóa đơn thu tiền
+      </h1>
+
       <div className="flex items-center mb-4 space-x-4 w-full">
         <div className="relative">
           <label
@@ -128,9 +132,13 @@ const BillList = ({
             )}
             <div className="flex-1">
               <p
-                className={`text-sm ${bill.status === 1 ? "text-red" : "text-blue-40"}`}
+                className={`text-sm ${bill.status === 1 && !bill.payment_id ? "text-red" : bill.status === 1 && bill.payment_id ? "text-blue-40" : "text-green"}`}
               >
-                {bill.status === 1 ? "Chưa thanh toán" : "Đã thanh toán"}
+                {bill.status === 1 && !bill.payment_id
+                  ? "Chưa thanh toán"
+                  : bill.status === 1 && bill.payment_id
+                    ? "Chờ xác nhận"
+                    : "Đã thanh toán"}
               </p>
               <h3 className="font-semibold text-xs text-gray-60">
                 Phòng số {bill.room_number}

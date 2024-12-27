@@ -7,8 +7,9 @@ import { GetBillingByIDRes } from "@/models/billing";
 import { useCookies } from "react-cookie";
 import BillingService from "@/services/BillingService";
 import { toast } from "sonner";
-import { formatDateTime } from "@/utils/converter";
+import { formatDateTime, toCurrencyFormat } from "@/utils/converter";
 import PaymentService from "@/services/PaymentService";
+import { PaymentRes } from "@/models/payment";
 
 interface BillDetailsProps {
   billId: number | undefined;
@@ -16,11 +17,13 @@ interface BillDetailsProps {
 
 const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
   const [bill, setBill] = useState<GetBillingByIDRes | null>(null);
+  const [payment, setPayment] = useState<PaymentRes>();
   const [loading, setLoading] = useState(false);
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
 
   // Fetch bill data when billId changes
+  console.log(billId);
   useEffect(() => {
     const fetchBill = async () => {
       if (!billId) return;
@@ -29,7 +32,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
       try {
         const billingService = new BillingService();
         const response = await billingService.getByID(token, billId);
-        setBill(response.data.data); 
+        setBill(response.data.data);
       } catch (error: any) {
         toast.error(error.message || "Lỗi khi lấy dữ liệu hóa đơn.");
       } finally {
@@ -40,6 +43,23 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     fetchBill();
   }, [billId]);
 
+  useEffect(() => {
+    const fetchPayment = async () => {
+      if (!bill?.payment_id) return;
+
+      setLoading(true);
+      try {
+        const paymentService = new PaymentService();
+        const response = await paymentService.getById(token, bill.payment_id);
+        setPayment(response.data.data);
+      } catch (error: any) {
+        toast.error(error.message || "Lỗi khi lấy dữ liệu hóa đơn.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPayment();
+  }, [bill?.payment_id]);
   const handleConfirmPayment = async () => {
     if (!billId) return;
 
@@ -52,9 +72,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     }
   };
   console.log(bill);
-  if (!billId) {
-    return <div></div>;
-  }
+  // if (!billId) {
+  //   return <div></div>;
+  // }
 
   if (loading) {
     return (
@@ -78,9 +98,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
   }
 
   return (
-    <div className="rounded-lg px-4 space-y-6">
+    <div className="rounded-lg mt-12 px-4 space-y-6">
       {/* Nếu chưa thanh toán */}
-      {bill?.status === 2 && (
+      {bill?.status === 1 && !payment && (
         <div className="flex space-x-8 w-[900px]">
           <div className="w-[60%] p-4 ">
             <div className="flex space-x-3">
@@ -205,7 +225,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
       )}
 
       {/* Nếu đã thanh toán */}
-      {bill?.status === 1 && (
+      {bill?.status === 1 && payment && (
         <div className="w-[800px]">
           <div className="flex justify-between">
             <div className="flex space-x-3">
@@ -226,7 +246,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
             </div>
           </div>
           <div className="text-[12px] text-gray-20 mb-4">
-            Thời gian tạo: 13:49 17/09/2023
+            Thời gian tạo: {formatDateTime(bill.created_at)}
           </div>
           <div className="border border-blue-95 rounded-lg p-6 mt-8 text-left">
             <h2 className="text-lg text-gray-20 font-semibold mb-4">
@@ -242,7 +262,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               <div className="flex justify-between">
                 <span className="text-gray-20">Mã giao dịch</span>
                 <span className="text-blue-20 font-bold flex items-center">
-                  P23911800011362
+                  {payment.code}
                   <button className="ml-2 text-blue-600">
                     <CopyOutlined />
                   </button>
@@ -251,7 +271,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               <div className="flex justify-between">
                 <span className="text-gray-20">Thời gian</span>
                 <span className="text-gray-20 font-semibold">
-                  10:45 14/07/2023
+                  {payment.paid_time
+                    ? formatDateTime(payment.paid_time)
+                    : "Chưa thanh toán"}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -260,7 +282,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-20">Tổng thanh toán</span>
-                <span className="text-gray-20 font-semibold">2.000.000 đ</span>
+                <span className="text-gray-20 font-semibold">
+                  {toCurrencyFormat(payment.amount)}đ
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-20">Phương thức</span>
@@ -270,7 +294,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                 <span className="text-gray-20">Minh chứng</span>
                 <div className="border mt-2 rounded-lg overflow-hidden w-[70px]">
                   <img
-                    src=""
+                    src={payment.evidence_image || ""}
                     alt="Minh chứng chuyển khoản"
                     className="w-full h-full object-cover"
                   />

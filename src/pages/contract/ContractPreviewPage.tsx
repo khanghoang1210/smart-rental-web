@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Form, Modal, Spin } from "antd";
+import { Button, Modal, Spin } from "antd";
 
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
@@ -169,13 +169,13 @@ const ContractPreviewPage = () => {
   }
 
   return (
-    <div>
+    <>
       <Navbar />
       <div className="container mx-auto p-4 w-[750px]">
         <h1 className="text-center my-10 text-2xl text-gray-20">
           Chi tiết hợp đồng
         </h1>
-        <ContractTemplate contractId={} />
+        <ContractTemplate contractId={1} />
         <div className="flex justify-between mt-6">
           <button
             onClick={handleOpenModal}
@@ -276,7 +276,7 @@ const ContractPreviewPage = () => {
           onMouseLeave={stopDrawing}
         />
       </Modal>
-    </div>
+    </>
   );
 };
 

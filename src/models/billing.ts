@@ -8,6 +8,7 @@ export interface BillingRes {
   addition_fee: number;
   addition_note: string | null;
   total_amount: number;
+  payment_id: number;
   month: number;
   year: number;
   old_water_index: number;
@@ -54,6 +55,7 @@ export interface GetBillingByIDRes {
   code: string;
   created_at: string; // ISO Date format
   electricity_cost: number;
+  payment_id: number;
   id: number;
   info: BillingInfo; // Nested object
   internet_cost: number;

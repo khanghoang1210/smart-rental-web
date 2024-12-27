@@ -19,7 +19,6 @@ const BillManagementPage = () => {
 
   const periods = ["10/2023", "09/2023", "08/2023"];
 
-
   const paymentService = new BillingService();
 
   // Tách tháng và năm từ kỳ
@@ -35,16 +34,14 @@ const BillManagementPage = () => {
       setIsLoading(true);
       setIsDataEmpty(false);
       const response = await paymentService.getByMonth(token, month, year);
-        if (!response.data.data || response.data.data.length === 0) {
+      if (!response.data.data || response.data.data.length === 0) {
         setIsDataEmpty(true); // Đánh dấu không có data
         setBills([]);
         setAddress("");
         return;
       }
       const data: GetBillByMonthRes = response.data.data[0];
-      console.log(data)
-
-     
+      console.log(data);
 
       // Map list_bill
       // const formattedBills:Billing = data.list_bill.map((bill) => ({
@@ -59,7 +56,7 @@ const BillManagementPage = () => {
       // }));
 
       setBills(data.list_bill);
-      console.log(data.list_bill)
+      console.log(data.list_bill);
       setAddress(data.address); // Lưu địa chỉ vào state
     } catch (error: any) {
       toast.error(error.message || "Lỗi khi lấy dữ liệu hóa đơn");
@@ -72,7 +69,7 @@ const BillManagementPage = () => {
     fetchBillsByPeriod(selectedPeriod);
   }, [selectedPeriod]);
 
-  console.log(bills)
+  console.log(bills);
 
   const handlePeriodChange = (period: string) => {
     setSelectedPeriod(period);
@@ -85,10 +82,8 @@ const BillManagementPage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex ml-52 flex-col p-6">
-        <h1 className="text-xl text-gray-20 font-bold mb-4">Hóa đơn thu tiền</h1>
-
-        <div className="flex space-x-6">
+      <div className="flex flex-col p-6 justify-center">
+        <div className="flex justify-center space-x-6">
           <BillList
             bills={bills}
             address={address}

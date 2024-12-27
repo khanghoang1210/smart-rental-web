@@ -17,3 +17,17 @@ export interface PaymentInfoRes{
     tranfer_content: string;
     qr_url:string;
 }
+
+export interface PaymentRes {
+    id: number;
+    code: string;
+    sender_id: number;
+    bill_id: number;
+    contract_id: number | null;
+    amount: number;
+    status: number;
+    return_request_id: number | null;
+    paid_time: string | null;
+    tranfer_content: string;
+    evidence_image: string | null;
+}
