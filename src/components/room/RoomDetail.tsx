@@ -293,10 +293,10 @@ const RoomDetail = () => {
         <FeaturedRooms title="Đề xuất" />
         <div className="flex items-center justify-center">
           <div className="flex justify-start items-center space-x-12 mr-24">
-            <LandlordInfo name={user?.full_name} totalRoom={user?.total_room} totalRating={user?.total_rating}/>
+            <LandlordInfo name={user?.full_name} totalRoom={user?.total_room} totalRating={user?.total_rating} avatar={user?.avatar_url}/>
             <button
               onClick={handleStartConversation}
-              className=" bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]"
+              className="bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]"
             >
               <span className="mr-5">
                 <img src={message_white} alt="" className="w-7" />

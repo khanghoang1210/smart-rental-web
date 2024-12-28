@@ -33,7 +33,7 @@ const InvoicePage = () => {
   }, [statusFilter]);
 
   return (
-    <>
+    <div className="">
       <Navbar />
       <div className="flex justify-center">
         <InvoiceList
@@ -48,7 +48,7 @@ const InvoicePage = () => {
         />
         <InvoiceDetails bill={selectedInvoice} />
       </div>
-    </>
+    </div>
   );
 };
 

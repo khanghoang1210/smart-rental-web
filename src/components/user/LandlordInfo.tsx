@@ -1,6 +1,9 @@
+import { USER_DEFAULT_AVATAR } from "@/utils/constants";
+
 interface LandlordInfoProps {
   name: string | undefined;
   totalRoom: number | undefined;
+  avatar: string | undefined;
   totalRating: number | undefined;
 }
 const LandlordInfo = (prop: LandlordInfoProps) => {
@@ -10,7 +13,7 @@ const LandlordInfo = (prop: LandlordInfoProps) => {
         {/* Avatar and Name */}
         <div className="flex flex-col items-center mb-4 w-full">
           <img
-            src="https://via.placeholder.com/100" // Replace with actual image URL
+            src={prop.avatar || USER_DEFAULT_AVATAR} 
             alt="Nam Huong"
             className="rounded-full w-32 h-32 object-cover mb-4"
           />
