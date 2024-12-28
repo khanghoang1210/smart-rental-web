@@ -3,6 +3,7 @@ import BillDetails from "@/components/invoice/management/BillDetails";
 import BillList from "@/components/invoice/management/BillList";
 import { Billing, GetBillByMonthRes } from "@/models/billing";
 import BillingService from "@/services/BillingService";
+import { generatePeriods } from "@/utils/generater";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
@@ -17,11 +18,10 @@ const BillManagementPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDataEmpty, setIsDataEmpty] = useState(false);
 
-  const periods = ["10/2023", "09/2023", "08/2023"];
+  const periods = generatePeriods();
 
   const paymentService = new BillingService();
 
-  // Tách tháng và năm từ kỳ
   const getMonthYear = (period: string) => {
     const [month, year] = period.split("/").map(Number);
     return { month, year };
@@ -82,8 +82,8 @@ const BillManagementPage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex flex-col p-6 justify-center">
-        <div className="flex justify-center space-x-6">
+      <div className="flex flex-col p-6 ">
+        <div className="flex justify-center item-center space-x-6">
           <BillList
             bills={bills}
             address={address}

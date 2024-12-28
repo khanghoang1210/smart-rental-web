@@ -47,12 +47,11 @@ const BillList = ({
 
   // Handle invoice creation
   const handleCreateInvoices = () => {
-    // Logic to create invoices for selected bills
     console.log("Creating invoices for:", selectedBills);
   };
 
   return (
-    <div className=" mt-6 w-[25%]">
+    <div className=" mt-6 w-[400px]">
       <h1 className="text-xl  text-gray-20 font-bold mb-4">
         Hóa đơn thu tiền
       </h1>

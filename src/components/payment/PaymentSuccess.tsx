@@ -2,11 +2,42 @@ import { Button } from "antd";
 import success from "../../assets/success.png"
 import { CopyOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-const PaymentSuccess = () => {
+import React, { useEffect, useState } from "react";
+import PaymentService from "@/services/PaymentService";
+import { PaymentRes } from "@/models/payment";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
+import { formatDateTime, toCurrencyFormat } from "@/utils/converter";
+
+interface PaymentSuccessProps {
+  paymentId: number;
+}
+const PaymentSuccess:React.FC<PaymentSuccessProps> = ({paymentId}) => {
+    const [cookies] = useCookies(["token"]);
+    const [payment, setPayment] = useState<PaymentRes>();
+    const [loading, setLoading] = useState(false);
+    const token = cookies.token;
     const navigate = useNavigate();
     const handleBackHome = () => {
         navigate("/")
     }
+    useEffect(() => {
+      const fetchPaymentById = async () => {
+        if (!paymentId) return;
+  
+        setLoading(true);
+        try {
+          const paymentService = new PaymentService();
+          const response = await paymentService.getById(token, paymentId);
+          setPayment(response.data.data);
+        } catch (error: any) {
+          toast.error(error.message || "Lỗi khi lấy dữ liệu hóa đơn.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPaymentById();
+    }, [paymentId]);
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
 
@@ -37,12 +68,12 @@ const PaymentSuccess = () => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-gray-20">Trạng thái</span>
-              <span className="text-gray-40 text-xs font-bold bg-gray-90 rounded-full px-3 py-1">Chờ xác nhận</span>
+              <span className="text-gray-40 text-xs font-bold bg-gray-90 rounded-full px-3 py-1">{payment?.status === 0 ? "Chờ xác nhận" : "Đã xác nhận"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-20">Mã giao dịch</span>
               <span className="text-blue-20 font-bold flex items-center">
-                P23911800011362
+                {payment?.code}
                 <button className="ml-2 text-blue-600">
                 <CopyOutlined />
                 </button>
@@ -50,15 +81,15 @@ const PaymentSuccess = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-20">Thời gian</span>
-              <span className="text-gray-20 font-semibold">10:45 14/07/2023</span>
+              <span className="text-gray-20 font-semibold">{formatDateTime(payment?.paid_time)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-20">Người giao dịch</span>
-              <span className="text-gray-20 font-semibold">Lê Bảo Như</span>
+              <span className="text-gray-20 font-semibold">{payment?.sender_name}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-20">Tổng thanh toán</span>
-              <span className="text-gray-20 font-semibold">2.000.000 đ</span>
+              <span className="text-gray-20 font-semibold">{toCurrencyFormat(payment?.amount)} đ</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-20">Phương thức</span>
@@ -68,7 +99,7 @@ const PaymentSuccess = () => {
               <span className="text-gray-20">Minh chứng</span>
               <div className="border mt-2 rounded-lg overflow-hidden w-[70px]">
                 <img
-                  src={success}
+                  src={payment?.evidence_image ||""}
                   alt="Minh chứng chuyển khoản"
                   className="w-full h-full object-cover"
                 />

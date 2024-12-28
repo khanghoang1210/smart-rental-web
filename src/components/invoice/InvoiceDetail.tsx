@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import clock from "../../assets/clock.svg";
+import checked from "../../assets/checked.png";
 import { Button } from "antd";
 import { BillingRes } from "@/models/billing";
 import { UserInfo } from "@/store/slice/authSlice";
@@ -75,11 +76,24 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
       <div className="w-1/2 p-4 ">
         <div className="flex space-x-3">
           <h2 className="text-xl font-bold mb-2">Thông tin hoá đơn</h2>
-          <div className="flex items-center space-x-2 bg-gray-90 px-3 py-1 rounded-sm text-sm font-medium text-gray-40">
+          <div
+          className={`flex space-x-2 items-center px-5 py-1 rounded-sm text-sm font-medium 
+            ${
+              bill.bill.status === 0 ||  bill.bill.status === 1
+                ? "bg-gray-90 text-gray-40"
+                 : "bg-[#E9FFE8] text-[#3FA836]"
+                 
+            } `}
+        >
+          {bill.bill.status  === 0 || bill.bill.status  === 1 ? (
             <img src={clock} className="w-5" alt="" />
-            <p>Chưa thanh toán</p>
-          </div>
+          ) : (
+            <img src={checked} className="w-3 h-3" alt="" />
+          )}
+
+          <p className="font-semibold">{bill.bill.status === 0? "Chưa thanh toán" : bill.bill.status ===  1 ? "Chờ xác nhận" : "Đã thanh toán"}</p>
         </div>
+          </div>
 
         <div className="text-[12px] text-gray-20 mb-6">
           Thời gian tạo: 13:49 17/09/2023
@@ -170,12 +184,12 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
             {bill.bill.total_amount}đ
           </span>
         </div>
-        <Button
+       {bill.bill.status === 0 &&( <Button
           onClick={handlePaymentClick}
           className="w-full bg-blue-60 text-xl text-[#fff] py-6  mt-6 rounded-[100px]"
         >
           Thanh toán
-        </Button>
+        </Button>)}
       </div>
     </div>
   );

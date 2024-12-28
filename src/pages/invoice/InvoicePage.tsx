@@ -14,7 +14,7 @@ const InvoicePage = () => {
   const [selectedInvoice, setSelectedInvoice] = useState<
     BillingRes | undefined
   >();
-  const [statusFilter, setStatusFilter] = useState<1 | 2>(1);
+  const [statusFilter, setStatusFilter] = useState<0 | 1 | 2>(0);
 
   const billingService = new BillingService();
 

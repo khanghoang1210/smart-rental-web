@@ -9,6 +9,8 @@ interface PaymentInfoProps {
   amount: string;
   paymentMethod: string;
   recipient: string;
+  onImageUpload?: (image: File|null) => void;
+  onSave?: () => void;
 }
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({
@@ -17,14 +19,28 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
   amount,
   paymentMethod,
   recipient,
+  onImageUpload,
+  onSave,
 }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
+
+  const handleSaveClick = () => {
+    if (onSave) {
+      onSave(); // Notify parent with the selected image
+    }
+    handleClosePopup();
+  };
   const handleCompleteClick = () => {
     setIsPopupVisible(true);
   };
 
+  const handleImageUpload = (file: File) => {
+    if (onImageUpload) {
+      onImageUpload(file); // Trigger callback
+    }
+  };
   const handleClosePopup = () => {
     setIsPopupVisible(false);
   };
@@ -94,9 +110,9 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
       </button>
 
       {isPopupVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#000] bg-opacity-50 z-50">
+        <div className="fixed inset-0  flex items-center justify-center bg-[#000] bg-opacity-50 z-50">
           <div
-            className="bg-[#fff] rounded-lg p-8 w-[70%] md:w-[30%] h-[500px] "
+            className="bg-[#fff] rounded-lg p-8 w-[60%] md:w-[25%] h-[400px] "
             ref={popupRef}
           >
             <h2 className="text-lg font-semibold mb-4 text-gray-20">
@@ -105,19 +121,25 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
             <p className="text-gray-40 mb-3 text-center">
               HÌNH ẢNH CHUYỂN KHOẢN THÀNH CÔNG
             </p>
-            <div className=" p-4 rounded-lg h-72 mb-4">
-              <Upload.Dragger className=" border-dashed">
-                <div className="ant-upload-drag-icon flex justify-center mb-3">
+            <div className="p-4 rounded-lg h-52 mb-4">
+              <Upload.Dragger 
+                beforeUpload={(file) => {
+                  handleImageUpload(file);
+                  return false; // Prevent automatic upload
+                }} 
+                className=" border-dashed ant-upload-larger">
+                <div className=" flex justify-center mb-3">
                   <img src={digital} alt="" className="w-8 h-8" />
                 </div>
-                <p className="ant-upload-text text-blue-60">
-                  Tải ảnh từ thư viện
-                </p>
+                <p className="text-blue-60 text-xs">
+                        Bấm hoặc kéo thả hình ảnh vào đây để <br /> đăng hình
+                        ảnh từ thư viện nhé!
+                      </p>
               </Upload.Dragger>
             </div>
             <button
               className="bg-[#fff] w-[90%] ml-5 border-blue-60 border text-blue-60 px-6 py-2 rounded-full font-semibold"
-              onClick={handleClosePopup}
+              onClick={handleSaveClick}
             >
               Lưu
             </button>

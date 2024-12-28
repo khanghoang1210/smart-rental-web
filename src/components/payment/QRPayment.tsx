@@ -39,7 +39,7 @@ const QRPayment: React.FC<QRPaymentProps> = ({
             Quét mã QR để thanh toán
           </h2>
           <div className="bg-[#FFF] p-3 w-full h-[275px] rounded-[20px]">
-            <img src={qrUrl} alt="QR Code" className="w-full h-60" />
+            <img src={qrUrl} alt="QR Code" className="w-full h-60 object-contain" />
           </div>
         </div>
 

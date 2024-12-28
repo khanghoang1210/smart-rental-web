@@ -15,7 +15,7 @@ interface InvoiceProps {
 interface InvoiceListProps {
   invoices: InvoiceProps[];
   onSelect: (id: number) => void;
-  onFilterChange: (status: 1 | 2) => void;
+  onFilterChange: (status: 0 | 1|2) => void;
   currentFilter: number;
 }
 
@@ -53,13 +53,23 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       <div className="flex gap-4 mb-4">
         <Button
           className={`px-4 py-2 rounded-lg ${
+            currentFilter === 0
+              ? "bg-blue-40 text-[#fff]"
+              : "bg-gray-90 text-gray-40"
+          }`}
+          onClick={() => onFilterChange(0)}
+        >
+          Chưa thanh toán
+        </Button>
+        <Button
+          className={`px-4 py-2 rounded-lg ${
             currentFilter === 1
               ? "bg-blue-40 text-[#fff]"
               : "bg-gray-90 text-gray-40"
           }`}
           onClick={() => onFilterChange(1)}
         >
-          Chưa thanh toán
+          Chờ xác nhận
         </Button>
         <Button
           className={`px-4 py-2 rounded-lg ${

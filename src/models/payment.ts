@@ -21,13 +21,13 @@ export interface PaymentInfoRes{
 export interface PaymentRes {
     id: number;
     code: string;
-    sender_id: number;
+    sender_name: string;
     bill_id: number;
     contract_id: number | null;
     amount: number;
     status: number;
     return_request_id: number | null;
-    paid_time: string | null;
+    paid_time: string;
     tranfer_content: string;
     evidence_image: string | null;
 }

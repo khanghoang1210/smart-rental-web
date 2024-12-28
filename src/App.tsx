@@ -178,8 +178,8 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/payment/info" element={<PaymentInfoPage />} />
+        <Route path="/payment/success" element={<Payment />} />
+        <Route path="/payment/info" element={<PrivateRoute><PaymentInfoPage /></PrivateRoute>} />
         <Route path="/process-tracking" element={<ProcessTracking />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route
