@@ -74,13 +74,13 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     }
   };
   console.log(bill);
-  // if (!billId) {
-  //   return <div></div>;
-  // }
+  if (!billId) {
+    return <div className="flex justify-center w-[830px] items-center"></div>;
+  }
 
   if (loading) {
     return (
-      <div className="flex justify-center  items-center h-[300px]">
+      <div className="flex justify-center items-center w-[830px] h-[300px]">
         <Spin size="large" className="ml-72" />
       </div>
     );

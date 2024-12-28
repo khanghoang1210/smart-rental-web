@@ -11,6 +11,8 @@ import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import PaymentService from "@/services/PaymentService";
+import { format } from "path";
+import { formatDateTime } from "@/utils/converter";
 
 interface InvoiceDetailsProps {
   bill: BillingRes | undefined;
@@ -69,10 +71,20 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
     }
   };
 
-  if (!bill.bill) return <div>Loading...</div>;
+  if (!bill.bill) {
+    return <div className="flex justify-center w-[50%] items-center"></div>;
+  }
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center w-[830px] h-[300px]">
+  //       <Spin size="large" className="ml-72" />
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="flex justify-center items-center mt-10 w-[50%]">
+    <div className="flex justify-center mt-8 w-[50%]">
       <div className="w-1/2 p-4 ">
         <div className="flex space-x-3">
           <h2 className="text-xl font-bold mb-2">Thông tin hoá đơn</h2>
@@ -96,7 +108,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
           </div>
 
         <div className="text-[12px] text-gray-20 mb-6">
-          Thời gian tạo: 13:49 17/09/2023
+          Thời gian tạo: {formatDateTime(bill.bill.created_at)}
         </div>
         <ul className="border p-4 rounded-xl border-blue-80">
           <h1 className="text-gray-20 font-medium">Thông tin hóa đơn</h1>
@@ -149,7 +161,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = (bill) => {
           </li>
         </ul>
       </div>
-      <div className="w-1/2 p-4 ">
+      <div className="w-1/2 p-4 mt-[76px] ">
         <ul className="border p-4 rounded-xl border-blue-80">
           <h1 className="text-gray-20 font-medium">Thông tin thanh toán</h1>
           <li className="flex justify-between py-2 ml-8 font-semibold">

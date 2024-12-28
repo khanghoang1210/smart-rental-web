@@ -35,7 +35,7 @@ const InvoicePage = () => {
   return (
     <>
       <Navbar />
-      <div className="flex">
+      <div className="flex justify-center">
         <InvoiceList
           invoices={bills.map((bill) => ({
             bill,

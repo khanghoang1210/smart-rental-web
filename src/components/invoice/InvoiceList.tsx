@@ -48,7 +48,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   }, [invoices]);
 
   return (
-    <div className="w-[24%] ml-64 p-4 mt-4">
+    <div className="w-[450px] p-4 mt-4">
       <h2 className="text-xl text-gray-20 font-bold mb-4">Hoá đơn thu tiền</h2>
       <div className="flex gap-4 mb-4">
         <Button
@@ -82,11 +82,11 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           Đã thanh toán
         </Button>
       </div>
-      {invoices.map((invoice) => (
+{invoices.length === 0 ? (<div className="text-gray-40">Không có hoá đơn</div>) : invoices.map((invoice) => (
         <div
           key={invoice.bill.id}
           className={`p-4 border rounded-lg mb-4 cursor-pointer ${
-            invoice.selected ? "bg-blue-98 border-blue-98" : "bg-gray-90"
+            invoice.selected ? "bg-blue-98 border-blue-98" : ""
           }`}
           onClick={() => onSelect(invoice.bill.id)}
         >
@@ -94,10 +94,10 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             Hóa đơn thu tiền kỳ tháng {invoice.bill.month}/{invoice.bill.year}
           </h1>
           <p className="text-[12px] text-gray-20 mt-2">
-            Thời gian tạo: {formatDateTime(invoice.bill.created_at)}
+            Thời gian tạo: <span className="font-semibold">{formatDateTime(invoice.bill.created_at)}</span>
           </p>
-          <p className="text-[12px] text-red">
-            Hạn thanh toán: {formatDateTime(invoice.bill.updated_at)}
+          <p className="text-[12px] text-red ">
+            Hạn thanh toán: <span className="font-semibold">{formatDateTime(invoice.bill.updated_at)}</span>
           </p>
           <p className="mt-4 text-sm text-gray-20 font-semibold">
             {rooms[invoice.bill.room_id] || "Đang tải..."}

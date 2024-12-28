@@ -50,6 +50,7 @@ const BillList = ({
     console.log("Creating invoices for:", selectedBills);
   };
 
+  
   return (
     <div className=" mt-6 w-[400px]">
       <h1 className="text-xl  text-gray-20 font-bold mb-4">
@@ -95,65 +96,71 @@ const BillList = ({
             : "Chọn"}
         </button>
       </div>
+    
+    { (!bills || bills.length === 0) ? ( 
+      <div className="text-gray-40">Không có hoá đơn cho kỳ này</div>
+    ) : (
       <div className="border-gray-80 border rounded-lg p-4">
-        <div className="flex space-x-3">
-          <img src={addressimg} alt="" />
-          <h1 className="font-semibold text-base text-gray-20">{address}</h1>
-        </div>
-        {bills.map((bill: any) => (
-          <div
-            key={bill.id}
-            className={`p-4 rounded-lg cursor-pointer mb-2 flex items-center ${
-              showCheckboxes && bill.statusCode === "not_created"
-                ? selectedBills.includes(bill.id)
-                  ? "bg-blue-98"
-                  : "hover:bg-blue-98"
-                : selectedBillId === bill.id
-                  ? "bg-blue-98"
-                  : "hover:bg-blue-98"
-            }`}
-            onClick={() => {
-              if (!showCheckboxes) {
-                onSelect(bill); // Only handle selection when checkboxes are hidden
-              }
-            }}
-          >
-            {showCheckboxes && bill.statusCode === "not_created" && (
-              <input
-                type="checkbox"
-                checked={selectedBills.includes(bill.id)}
-                onChange={(e) => {
-                  e.stopPropagation(); // Prevent parent div's onClick from firing
-                  handleCheckboxChange(bill.id); // Toggle checkbox selection
-                }}
-                className="mr-3 w-5 h-5"
-              />
-            )}
-            <div className="flex-1">
-              <p
-                className={`text-sm ${bill.status === 1 && !bill.payment_id ? "text-red" : bill.status === 1 && bill.payment_id ? "text-blue-40" : "text-green"}`}
-              >
-                {bill.status === 1 && !bill.payment_id
-                  ? "Chưa thanh toán"
-                  : bill.status === 1 && bill.payment_id
-                    ? "Chờ xác nhận"
-                    : "Đã thanh toán"}
-              </p>
-              <h3 className="font-semibold text-xs text-gray-60">
-                Phòng số {bill.room_number}
-              </h3>
-              <p className="font-semibold text-gray">
-                {bill.tenant_name || "Le Bao Nhu"}
-              </p>
-            </div>
-            {bill.statusCode !== "not_created" && (
-              <span className="font-semibold text-gray-20">
-                {bill.total_amount}đ
-              </span>
-            )}
-          </div>
-        ))}
+      <div className="flex space-x-3">
+        <img src={addressimg} alt="" />
+        <h1 className="font-semibold text-base text-gray-20">{address}</h1>
       </div>
+      {bills.map((bill: any) => (
+        <div
+          key={bill.id}
+          className={`p-4 rounded-lg cursor-pointer mb-2 flex items-center ${
+            showCheckboxes && bill.statusCode === "not_created"
+              ? selectedBills.includes(bill.id)
+                ? "bg-blue-98"
+                : "hover:bg-blue-98"
+              : selectedBillId === bill.id
+                ? "bg-blue-98"
+                : "hover:bg-blue-98"
+          }`}
+          onClick={() => {
+            if (!showCheckboxes) {
+              onSelect(bill); // Only handle selection when checkboxes are hidden
+            }
+          }}
+        >
+          {showCheckboxes && bill.statusCode === "not_created" && (
+            <input
+              type="checkbox"
+              checked={selectedBills.includes(bill.id)}
+              onChange={(e) => {
+                e.stopPropagation(); // Prevent parent div's onClick from firing
+                handleCheckboxChange(bill.id); // Toggle checkbox selection
+              }}
+              className="mr-3 w-5 h-5"
+            />
+          )}
+          <div className="flex-1">
+            <p
+              className={`text-sm ${bill.status === 1 && !bill.payment_id ? "text-red" : bill.status === 1 && bill.payment_id ? "text-blue-40" : "text-green"}`}
+            >
+              {bill.status === 1 && !bill.payment_id
+                ? "Chưa thanh toán"
+                : bill.status === 1 && bill.payment_id
+                  ? "Chờ xác nhận"
+                  : "Đã thanh toán"}
+            </p>
+            <h3 className="font-semibold text-xs text-gray-60">
+              Phòng số {bill.room_number}
+            </h3>
+            <p className="font-semibold text-gray">
+              {bill.tenant_name }
+            </p>
+          </div>
+          {bill.statusCode !== "not_created" && (
+            <span className="font-semibold text-gray-20">
+              {bill.total_amount}đ
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+    )}
+      
       {isModalVisible && (
         <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">
