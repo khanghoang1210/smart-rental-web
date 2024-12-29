@@ -11,8 +11,7 @@ import { toast } from "sonner";
 const BillManagementPage = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
-  const [address, setAddress] = useState("");
-  const [selectedPeriod, setSelectedPeriod] = useState("10/2023");
+  const [selectedPeriod, setSelectedPeriod] = useState("10/2024");
   const [selectedBill, setSelectedBill] = useState<Billing>();
   const [bills, setBills] = useState<Billing[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,10 +36,9 @@ const BillManagementPage = () => {
       if (!response.data.data || response.data.data.length === 0) {
         setIsDataEmpty(true); // Đánh dấu không có data
         setBills([]);
-        setAddress("");
         return;
       }
-      const data: GetBillByMonthRes = response.data.data[0];
+      const data = response.data.data;
       console.log(data);
 
       // Map list_bill
@@ -55,9 +53,8 @@ const BillManagementPage = () => {
       //   avatar: bill.avatar,
       // }));
 
-      setBills(data.list_bill);
-      console.log(data.list_bill);
-      setAddress(data.address); // Lưu địa chỉ vào state
+      setBills(data);
+      console.log(data);
     } catch (error: any) {
       toast.error(error.message || "Lỗi khi lấy dữ liệu hóa đơn");
     } finally {
@@ -86,8 +83,7 @@ const BillManagementPage = () => {
         <div className="flex justify-center item-center space-x-6">
           <BillList
             bills={bills}
-            address={address}
-            selectedBillId={selectedBill?.id}
+            selectedBill={selectedBill}
             onSelect={handleBillSelect}
             onChange={handlePeriodChange}
             selectedPeriod={selectedPeriod}

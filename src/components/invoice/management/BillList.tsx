@@ -1,10 +1,11 @@
 import { useState } from "react";
 import addressimg from "../../../assets/address.svg";
+import { toCurrencyFormat } from "@/utils/converter";
+import { Spin } from "antd";
 
 const BillList = ({
   bills,
-  address,
-  selectedBillId,
+  selectedBill,
   onSelect,
   periods,
   selectedPeriod,
@@ -13,6 +14,7 @@ const BillList = ({
   const [selectedBills, setSelectedBills] = useState<string[]>([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   console.log(bills);
   // Open the modal
@@ -37,11 +39,9 @@ const BillList = ({
     setShowCheckboxes(true);
   };
 
-  const handleCheckboxChange = (billId: string) => {
+  const handleCheckboxChange = (bill: any) => {
     setSelectedBills((prev) =>
-      prev.includes(billId)
-        ? prev.filter((id) => id !== billId)
-        : [...prev, billId]
+      prev.includes(bill) ? prev.filter((b) => b !== bill) : [...prev, bill]
     );
   };
 
@@ -50,12 +50,9 @@ const BillList = ({
     console.log("Creating invoices for:", selectedBills);
   };
 
-  
   return (
     <div className=" mt-6 w-[400px]">
-      <h1 className="text-xl  text-gray-20 font-bold mb-4">
-        Hóa đơn thu tiền
-      </h1>
+      <h1 className="text-xl  text-gray-20 font-bold mb-4">Hóa đơn thu tiền</h1>
 
       <div className="flex items-center mb-4 space-x-4 w-full">
         <div className="relative">
@@ -68,7 +65,13 @@ const BillList = ({
           <select
             id="period-select"
             value={selectedPeriod}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={async (e) => {
+              onChange(e.target.value);
+              setLoading(true); // Set loading to true when period changes
+              // Simulate an async operation
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              setLoading(false); // Set loading to false after the operation
+            }}
             className="border rounded-lg text-gray-20 text-sm font-medium px-12 py-4 focus:outline-none focus:rin"
           >
             {periods.map((period: string, index: number) => (
@@ -96,71 +99,99 @@ const BillList = ({
             : "Chọn"}
         </button>
       </div>
-    
-    { (!bills || bills.length === 0) ? ( 
-      <div className="text-gray-40">Không có hoá đơn cho kỳ này</div>
-    ) : (
-      <div className="border-gray-80 border rounded-lg p-4">
-      <div className="flex space-x-3">
-        <img src={addressimg} alt="" />
-        <h1 className="font-semibold text-base text-gray-20">{address}</h1>
-      </div>
-      {bills.map((bill: any) => (
-        <div
-          key={bill.id}
-          className={`p-4 rounded-lg cursor-pointer mb-2 flex items-center ${
-            showCheckboxes && bill.statusCode === "not_created"
-              ? selectedBills.includes(bill.id)
-                ? "bg-blue-98"
-                : "hover:bg-blue-98"
-              : selectedBillId === bill.id
-                ? "bg-blue-98"
-                : "hover:bg-blue-98"
-          }`}
-          onClick={() => {
-            if (!showCheckboxes) {
-              onSelect(bill); // Only handle selection when checkboxes are hidden
-            }
-          }}
-        >
-          {showCheckboxes && bill.statusCode === "not_created" && (
-            <input
-              type="checkbox"
-              checked={selectedBills.includes(bill.id)}
-              onChange={(e) => {
-                e.stopPropagation(); // Prevent parent div's onClick from firing
-                handleCheckboxChange(bill.id); // Toggle checkbox selection
-              }}
-              className="mr-3 w-5 h-5"
-            />
-          )}
-          <div className="flex-1">
-            <p
-              className={`text-sm ${bill.status === 1 && !bill.payment_id ? "text-red" : bill.status === 1 && bill.payment_id ? "text-blue-40" : "text-green"}`}
-            >
-              {bill.status === 1 && !bill.payment_id
-                ? "Chưa thanh toán"
-                : bill.status === 1 && bill.payment_id
-                  ? "Chờ xác nhận"
-                  : "Đã thanh toán"}
-            </p>
-            <h3 className="font-semibold text-xs text-gray-60">
-              Phòng số {bill.room_number}
-            </h3>
-            <p className="font-semibold text-gray">
-              {bill.tenant_name }
-            </p>
-          </div>
-          {bill.statusCode !== "not_created" && (
-            <span className="font-semibold text-gray-20">
-              {bill.total_amount}đ
-            </span>
+
+      {!bills || bills.length === 0 || loading ? (
+        <div className="flex justify-center items-center">
+          {loading ? (
+            <Spin />
+          ) : (
+            <div className="text-gray-40">Không có hoá đơn cho kỳ này</div>
           )}
         </div>
-      ))}
-    </div>
-    )}
-      
+      ) : (
+        <div className="space-y-6">
+          {bills.map((billGroup: any, index: number) => (
+            <div key={index} className="border-gray-80 border rounded-lg p-4">
+              <div className="flex space-x-3">
+                <img src={addressimg} alt="" />
+                <h1 className="font-semibold text-base text-gray-20">
+                  {billGroup.address || "Địa chỉ không xác định"}
+                </h1>
+              </div>
+              {billGroup.list_bill.length === 0 ? (
+                <div className="text-gray-40 mt-2">Không có hóa đơn</div>
+              ) : (
+                billGroup.list_bill.map((bill: any) => (
+                  <div
+                    key={bill.id}
+                    className={`p-4 rounded-lg cursor-pointer mb-2 flex items-center ${
+                      showCheckboxes && bill.status === -1
+                        ? selectedBills.includes(bill)
+                          ? "bg-blue-98"
+                          : "hover:bg-blue-98"
+                        : selectedBill === bill
+                          ? "bg-blue-98"
+                          : "hover:bg-blue-98"
+                    }`}
+                    onClick={() => {
+                      if (!showCheckboxes) {
+                        onSelect(bill); // Only handle selection when checkboxes are hidden
+                      }
+                    }}
+                  >
+                    {showCheckboxes && bill.status === -1 && (
+                      <input
+                        type="checkbox"
+                        checked={selectedBills.includes(bill)}
+                        onChange={(e) => {
+                          e.stopPropagation(); // Prevent parent div's onClick from firing
+                          handleCheckboxChange(bill); // Toggle checkbox selection
+                        }}
+                        className="mr-3 w-5 h-5"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <p
+                        className={`text-sm ${
+                          bill.status === -1
+                            ? "text-blue-40"
+                            : bill.status === 0
+                              ? "text-red"
+                              : bill.status === 1
+                                ? "text-gray-40"
+                                : "text-green"
+                        }`}
+                      >
+                        {bill.status === -1
+                          ? "Chưa tạo hóa đơn"
+                          : bill.status === 0
+                            ? "Chưa thanh toán"
+                            : bill.status === 1
+                              ? "Chờ xác nhận"
+                              : "Đã thanh toán"}
+                      </p>
+                      <h3 className="font-semibold text-xs text-gray-60">
+                        Phòng số {bill.room_number}
+                      </h3>
+                      <p className="font-semibold text-gray">
+                        {bill.tenant_name}
+                      </p>
+                    </div>
+                    {bill.statusCode !== "not_created" && (
+                      <span className="font-semibold text-gray-20">
+                        {bill.total_amount
+                          ? toCurrencyFormat(bill.total_amount) + "đ"
+                          : ""}
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       {isModalVisible && (
         <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">

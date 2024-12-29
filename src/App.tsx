@@ -83,7 +83,7 @@ function App() {
     return <Request requestID={id ? parseInt(id) : null} />;
   };
   return (
-    <BrowserRouter >
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/room/create" element={<Room />} />
@@ -152,7 +152,14 @@ function App() {
             )
           }
         />
-        <Route path="/index" element={<IndexPage />} />
+        <Route
+          path="/index"
+          element={
+            <PrivateRoute>
+              <IndexPage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/invoice/manage"
           element={
@@ -179,7 +186,14 @@ function App() {
           }
         />
         <Route path="/payment/success" element={<Payment />} />
-        <Route path="/payment/info" element={<PrivateRoute><PaymentInfoPage /></PrivateRoute>} />
+        <Route
+          path="/payment/info"
+          element={
+            <PrivateRoute>
+              <PaymentInfoPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="/process-tracking" element={<ProcessTracking />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route

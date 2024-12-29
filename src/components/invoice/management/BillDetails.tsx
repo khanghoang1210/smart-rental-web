@@ -26,7 +26,10 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
   console.log(billId);
   useEffect(() => {
     const fetchBill = async () => {
-      if (!billId) return;
+      if (!billId) {
+        setBill(null);
+        return;
+      };
 
       setLoading(true);
       try {
@@ -86,9 +89,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     );
   }
 
-  if (bill?.status === 0) {
+  if (bill?.status === -1 || !bill) {
     return (
-      <div className="flex flex-col flex-1 items-center justify-center text-center text-gray-40">
+      <div className="flex flex-col  items-center justify-center w-[830px] text-center text-gray-40">
         <img
           src={billImg}
           alt="Hóa đơn chưa được tạo"
@@ -102,7 +105,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
   return (
     <div className="rounded-lg mt-12 px-4 space-y-6">
       {/* Nếu chưa thanh toán */}
-      {bill?.status === 1 && !payment && (
+      {bill?.status === 0 && (
         <div className="flex space-x-8 w-[900px]">
           <div className="w-[60%] p-4 ">
             <div className="flex space-x-3">
@@ -216,7 +219,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
             <div className="mt-4 flex justify-between items-center">
               <span className="text-lg font-bold">Tổng tiền</span>
               <span className="text-2xl font-semibold text-blue-40">
-                {bill.total_amount}đ
+                {toCurrencyFormat(bill.total_amount)}đ
               </span>
             </div>
             <Button className="w-full text-blue-60 text-base font-semibold border-2 border-blue-60 py-6  mt-6 rounded-[100px]">

@@ -88,4 +88,25 @@ export default class BillingService {
       }
     }
   }
+
+  async getIndex(token: string, year: number, month: number, type: string) {
+    const url = BILLING_ENDPOINT + `/index/${year}/${month}/${type}`;
+    try {
+      const res = await apiClient.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res;
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
+      }
+    }
+  }
 }

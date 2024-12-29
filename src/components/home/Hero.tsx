@@ -13,6 +13,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import RoomService from "@/services/RoomService";
 import { RoomRes } from "@/models/room";
+import { useCookies } from "react-cookie";
 
 // type HomeProps = {
 
@@ -23,6 +24,9 @@ const Hero = () => {
   const handleClickCreateRoom = () => {
     navigate("/room/create");
   };
+
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
   const [, setRoomData] = useState<RoomRes[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
@@ -127,7 +131,7 @@ const Hero = () => {
       </div>
 
       <div></div>
-      <FeaturedRooms title="Phòng nổi bật" />
+      {token &&   <FeaturedRooms title="Phòng nổi bật" />}
       <UserRating />
 
       <div className="flex justify-center mt-24">

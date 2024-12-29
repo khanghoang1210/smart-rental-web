@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import address from "../../assets/address.svg";
-import { Button, Input, Modal, Upload } from "antd";
+import { Button, Divider, Input, Modal, Spin, Upload } from "antd";
 import digital from "../../assets/digital.svg";
+import { useCookies } from "react-cookie";
+import BillingService from "@/services/BillingService";
+import { toast } from "sonner";
+import { generatePeriods } from "@/utils/generater";
 
 const Index: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<"DaChoThue" | "ConTrong">(
@@ -9,6 +13,14 @@ const Index: React.FC = () => {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
+  const periods = generatePeriods();
+  const [selectedPeriod, setSelectedPeriod] = useState(periods[length - 1]);
+  const [selectedType, setSelectedType] = useState("electric");
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const [loading, setLoading] = useState(false);
+  const [indexData, setIndexData] = useState<any>(null);
+
 
   const handleTabChange = (tab: "DaChoThue" | "ConTrong") => {
     setSelectedTab(tab);
@@ -23,6 +35,29 @@ const Index: React.FC = () => {
     setIsModalOpen(false);
     setSelectedRoom(null);
   };
+
+  const getMonthYear = (period: string) => {
+    const [month, year] = period.split("/").map(Number);
+    return { month, year };
+  };
+
+  const fetchIndexData = async (type: string, period: string) => {
+    const { month, year } = getMonthYear(period);
+    const billingService = new BillingService();
+    setLoading(true);
+    try {
+      const response = await billingService.getIndex(token, year, month, type);
+      setIndexData(response.data.data);
+    } catch (error: any) {
+      toast.error(error.message || "Lỗi khi lấy chỉ số.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchIndexData(selectedType, selectedPeriod);
+  }, [selectedPeriod, selectedType]);
 
   return (
     <div className="flex justify-center space-x-14 bg-white rounded-lg p-6">
@@ -59,9 +94,10 @@ const Index: React.FC = () => {
               <select
                 id="type"
                 className="border-none text-gray-20 font-medium focus:outline-none focus:ring-0 rounded px-2 py-1 cursor-pointer"
+                onChange={(e) => setSelectedType(e.target.value)}
               >
-                <option value="Dien">Điện</option>
-                <option value="Nuoc">Nước</option>
+                <option value="electric">Điện</option>
+                <option value="water">Nước</option>
               </select>
             </div>
             <div className="flex flex-col border rounded-lg px-4 py-1">
@@ -69,61 +105,84 @@ const Index: React.FC = () => {
                 Kỳ
               </label>
               <select
+                value={selectedPeriod}
+                onChange={async (e) => {
+                  setSelectedPeriod(e.target.value);
+                
+                }}
                 id="period"
                 className="border-none text-gray-20 font-medium focus:outline-none focus:ring-0 rounded px-2 py-1 cursor-pointer"
               >
-                <option value="10/2024">10/2024</option>
-                <option value="11/2024">11/2024</option>
+                {periods.map((period: string, index: number) => (
+                  <option key={index} value={period}>
+                    {period}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
         </div>
       </div>
-      <div className=" border border-blue-95 p-6 mt-14 rounded-lg w-[40%]">
-        <div className="flex items-center space-x-3 mb-4">
-          <img src={address} alt="" />
-
-          <h3 className="font-semibold text-gray-20 text-base">
-            Số 9 Nguyễn Văn Huyên, Dịch Vọng, Cầu Giấy, Hà Nội
-          </h3>
+      {loading ? (
+        <div className="flex justify-center items-center w-[740px] h-[300px]">
+          <Spin size="large" className="ml-52" />
         </div>
-
-        <table className="w-full ">
-          <thead className="text-gray-40 border-b">
-            <tr>
-              <th className="p-2">Phòng số</th>
-              <th className="p-2">CS cũ</th>
-              <th className="p-2">CS Mới</th>
-              <th className="p-2">Sử dụng</th>
-            </tr>
-          </thead>
-          <tbody className="font-medium text-gray-20">
-            {[1, 2, 3, 4].map((room, index) => (
-              <tr key={index}>
-                <td className="border-b p-2 text-gray-20 text-center">
-                  {room}
-                </td>
-                <td className="p-2 text-gray-20 border-b text-center">150</td>
-                <td className="p-2 border-b text-center">
-                  {index % 2 === 0 ? (
-                    <button
-                      onClick={() => openModal(room)}
-                      className="px-2 py-1 text-blue-40 bg-blue-98 text-sm font-semibold rounded"
-                    >
-                      Ghi
-                    </button>
-                  ) : (
-                    "167"
-                  )}
-                </td>
-                <td className="p-2 border-b text-center">
-                  {index % 2 === 0 ? "-" : "17"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      ) : indexData && indexData.length > 0 ? (
+        indexData?.map((data: any, index: number) => (
+          <div
+            key={index}
+            className="border border-blue-95 p-6 mt-14 rounded-lg w-[40%]"
+          >
+            <div className="flex items-center space-x-3 mb-4">
+              <img src={address} alt="" />
+              <h3 className="font-semibold text-gray-20 text-base">
+                {data.address}
+              </h3>
+            </div>
+            <table className="w-full">
+              <thead className="text-gray-40 border-b">
+                <tr>
+                  <th className="p-2">Phòng số</th>
+                  <th className="p-2">CS cũ</th>
+                  <th className="p-2">CS Mới</th>
+                  <th className="p-2">Sử dụng</th>
+                </tr>
+              </thead>
+              <tbody className="font-medium text-gray-20">
+                {data.index_info.map((info: any, subIndex: number) => (
+                  <tr key={`${index}-${subIndex}`}>
+                  <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                      {info.room_number}
+                    </td>
+                    <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                      {info.old_index}
+                    </td>
+                    <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                      {info.new_index === null ? (
+                        <button
+                          onClick={() => openModal(info.room_number)}
+                          className="px-2 py-1 text-blue-40 bg-blue-98 text-sm font-semibold rounded"
+                        >
+                          Ghi
+                        </button>
+                      ) : (
+                        info.new_index
+                      )}
+                    </td>
+                    <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                      {info.used === null ? "-" : info.used}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))
+      ): (
+        <div className="flex justify-center items-center w-[740px] h-[300px]">
+          <p className="text-gray-40 text-lg">Không có dữ liệu chỉ số</p>
+        </div>
+      )}
       {/* Modal */}
       <Modal
         title={<label className="text-gray-20">Ghi số điện</label>}
