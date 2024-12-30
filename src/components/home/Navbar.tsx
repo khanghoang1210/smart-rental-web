@@ -136,6 +136,10 @@ const Navbar = (prop: NavbarProps) => {
   const handleButtonClick = () => {
     setDropdownVisible((prev) => !prev);
   };
+
+  const handleOpenMessage = () => {
+    navigate("/chat");
+  }
   console.log(searchText);
   return (
     <div>
@@ -153,7 +157,7 @@ const Navbar = (prop: NavbarProps) => {
           value={searchText}
         />
 
-        <button>
+        <button onClick={handleOpenMessage}>
           <img src={notiIcon} alt="" className="pl-32 pr-10" />
         </button>
         <button>
@@ -169,7 +173,7 @@ const Navbar = (prop: NavbarProps) => {
             <PersonalButton
               avatarUrl={userInfo?.avatar_url || USER_DEFAULT_AVATAR}
               name={userInfo?.full_name}
-              role={userInfo?.role === 1 ? "Chủ nhà" : "Khách thuê"}
+              role={userInfo?.role === 1 ? "Chủ nhà" : userInfo?.role === 0 ? "Khách thuê" : ""}
             />
           </div>
 

@@ -2,6 +2,9 @@ import { useState } from "react";
 import addressimg from "../../../assets/address.svg";
 import { toCurrencyFormat } from "@/utils/converter";
 import { Spin } from "antd";
+import BillingService from "@/services/BillingService";
+import { useCookies } from "react-cookie";
+import { toast } from "sonner";
 
 const BillList = ({
   bills,
@@ -11,7 +14,9 @@ const BillList = ({
   selectedPeriod,
   onChange,
 }: any) => {
-  const [selectedBills, setSelectedBills] = useState<string[]>([]);
+  const [cookies] = useCookies(["token"]);
+  const token = cookies.token;
+  const [selectedBills, setSelectedBills] = useState<any[]>([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,11 +50,45 @@ const BillList = ({
     );
   };
 
-  // Handle invoice creation
-  const handleCreateInvoices = () => {
-    console.log("Creating invoices for:", selectedBills);
+  const getMonthYear = (period: string) => {
+    const [month, year] = period.split("/").map(Number);
+    return { month, year };
   };
 
+  // Handle invoice creation
+
+  const handleCreateInvoices = async () => {
+    setLoading(true);
+    const billingService = new BillingService();
+    const { month, year } = getMonthYear(selectedPeriod);
+    try {
+      for (const bill of selectedBills) {
+        const billingData = {
+          room_id: bill.room_id,
+          month: month,
+          year: year,
+          addition_fee: 0,
+          addition_note:""
+        };
+        await billingService.createBilling(token, billingData);
+      }
+      toast.success("Tạo hóa đơn thành công");
+    } catch (error: any) {
+      toast.error(error.message || "Lỗi tạo hóa đơn.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log("Selected Bills:", selectedBills);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center w-[830px] h-[300px]">
+        <Spin size="large" className="ml-72" />
+      </div>
+    );
+  }
+  
   return (
     <div className=" mt-6 w-[400px]">
       <h1 className="text-xl  text-gray-20 font-bold mb-4">Hóa đơn thu tiền</h1>
@@ -68,7 +107,6 @@ const BillList = ({
             onChange={async (e) => {
               onChange(e.target.value);
               setLoading(true); // Set loading to true when period changes
-              // Simulate an async operation
               await new Promise((resolve) => setTimeout(resolve, 1000));
               setLoading(false); // Set loading to false after the operation
             }}

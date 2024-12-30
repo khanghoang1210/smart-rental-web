@@ -21,9 +21,9 @@ const ContractsList: React.FC<ContractsListProps> = ({ onSelectContract }) => {
   const [cookies] = useCookies(["token"]);
   const [contracts, setContracts] = useState<ContractRes[]>([]);
   const statusMap: Record<string, number> = {
-    pending: 1,
-    active: 2,
-    expired: 3,
+    pending: 0,
+    active: 1,
+    expired: 2,
   };
 
   useEffect(() => {

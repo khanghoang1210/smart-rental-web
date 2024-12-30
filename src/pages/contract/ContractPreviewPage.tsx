@@ -6,11 +6,14 @@ import { toast } from "sonner";
 import ContractTemplate from "@/components/contract/form/PreviewForm";
 import Navbar from "@/components/home/Navbar";
 import ContractService from "@/services/ContractService";
+import { useLocation } from "react-router-dom";
 
 const ContractPreviewPage = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const [isModalVisible, setIsModalVisible] = useState(false);
+    const location = useLocation();
+    const contractId = location.state || {};
 
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -32,7 +35,7 @@ const ContractPreviewPage = () => {
       clearCanvas();
     } catch (error) {
       if (error instanceof Error)
-        toast.error("Không thể tải dữ liệu thanh toán");
+        toast.error("Lỗi hệ thống");
     } finally {
       setIsModalVisible(false);
       setIsLoading(false);
@@ -40,8 +43,7 @@ const ContractPreviewPage = () => {
   };
   const [isLoading, setIsLoading] = useState(false);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
-  // //   const location = useLocation();
-  //   const rentalDetail = location.state || {};
+
   //   const [cookies] = useCookies(["token"]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -154,7 +156,7 @@ const ContractPreviewPage = () => {
       clearCanvas();
     } catch (error) {
       if (error instanceof Error)
-        toast.error("Không thể tải dữ liệu thanh toán");
+        toast.error("Lỗi hệ thống");
     } finally {
       setIsLoading(false);
     }
@@ -175,7 +177,7 @@ const ContractPreviewPage = () => {
         <h1 className="text-center my-10 text-2xl text-gray-20">
           Chi tiết hợp đồng
         </h1>
-        <ContractTemplate contractId={1} />
+        <ContractTemplate contractId={contractId.contractId} />
         <div className="flex justify-between mt-6">
           <button
             onClick={handleOpenModal}

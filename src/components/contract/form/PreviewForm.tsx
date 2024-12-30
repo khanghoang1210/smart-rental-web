@@ -5,6 +5,8 @@ import { useCookies } from "react-cookie";
 interface ContractTemplateProps {
   contractId?: number;
   formData?: {
+    addrressCreated?: string;
+    dateCreated?: string;
     landlordName?: string;
     landlordBirthYear?: string;
     landlordID?: string;
@@ -26,7 +28,8 @@ interface ContractTemplateProps {
     paymentMethod?: string;
     roomAddress?: string;
     contractDuration?: string;
-    handoverDate?: string;
+    beginDate?: string;
+    endDate?: string;
     landlordResponsibilities?: string;
     tenantResponsibilities?: string;
   };
@@ -59,14 +62,18 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     depositAmount: "……………. ",
     paymentMethod: "………………….",
     contractDuration: "………. ",
-    handoverDate: "………. ",
+    beginDate: "………. ",
+    endDate: "………. ",
     landlordResponsibilities: "…………………",
     tenantResponsibilities: "…………………",
+    generalResponsibilities: "…………………",
     ...formData,
   };
   const [contract, setContract] = useState(defaultFormData);
 
   const {
+    addrressCreated,
+    dateCreated,
     landlordName,
     landlordBirthYear,
     landlordID,
@@ -87,6 +94,12 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     waterPrice,
     depositAmount,
     paymentMethod,
+    beginDate,
+    endDate,
+    generalResponsibilities,
+    tenantResponsibilities,
+    landlordResponsibilities,
+
   } = contract;
 
   useEffect(() => {
@@ -98,8 +111,60 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
             cookies.token,
             contractId
           );
-          const contractData = response.data.data;
-          setContract(contractData);
+          const data = response.data.data;
+
+          const formattedData = {
+            addrressCreated:data.address_created || defaultFormData.addrressCreated,
+            dateCreated: data.date_created || defaultFormData.dateCreated,
+            landlordName: data.party_a.name || defaultFormData.landlordName,
+            landlordBirthYear:
+              data.party_a.dob?.split("-")[0] ||
+              defaultFormData.landlordBirthYear,
+            landlordID: data.party_a.cccd || defaultFormData.landlordID,
+            landlordIssueDate:
+              data.party_a.issue_date || defaultFormData.landlordIssueDate,
+            landlordIssuePlace:
+              data.party_a.issue_by || defaultFormData.landlordIssuePlace,
+            landlordAddress:
+              data.party_a.registered_place || defaultFormData.landlordAddress,
+            landlordPhone: data.party_a.phone || defaultFormData.landlordPhone,
+
+            tenantName: data.party_b.name || defaultFormData.tenantName,
+            tenantBirthYear:
+              data.party_b.dob?.split("-")[0] ||
+              defaultFormData.tenantBirthYear,
+            tenantID: data.party_b.cccd || defaultFormData.tenantID,
+            tenantIssueDate:
+              data.party_b.issue_date || defaultFormData.tenantIssueDate,
+            tenantIssuePlace:
+              data.party_b.issue_by || defaultFormData.tenantIssuePlace,
+            tenantAddress:
+              data.party_b.registered_place || defaultFormData.tenantAddress,
+            tenantPhone: data.party_b.phone || defaultFormData.tenantPhone,
+
+            roomAddress:
+              data.room_address?.join(", ") || defaultFormData.roomAddress,
+            rentalPrice: `${data.room_price}` || defaultFormData.rentalPrice,
+            electricityPrice:
+              `${data.electric_cost}` || defaultFormData.electricityPrice,
+            waterPrice: `${data.water_cost}` || defaultFormData.waterPrice,
+            depositAmount: `${data.deposit}` || defaultFormData.depositAmount,
+            paymentMethod: data.method || defaultFormData.paymentMethod,
+            contractDuration:
+              `từ ${new Date(data.start_date * 1000).toLocaleDateString()} đến ${new Date(data.end_date * 1000).toLocaleDateString()}` ||
+              defaultFormData.contractDuration,
+            landlordResponsibilities:
+              data.responsibility_a || defaultFormData.landlordResponsibilities,
+            tenantResponsibilities:
+              data.responsibility_b || defaultFormData.tenantResponsibilities,
+            beginDate: data.start_date,
+            endDate: data.end_date,
+            generalResponsibilities:
+              data.general || defaultFormData.generalResponsibilities,
+          };
+
+          console.log(formattedData);
+          setContract(formattedData);
         }
       } catch (error) {
         console.error("Error fetching contract data:", error);
@@ -107,7 +172,7 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     };
 
     fetchContractData();
-  }, []);
+  }, [contractId, cookies.token]);
 
   return (
     <div className="p-20 bg-gray-50 border rounded-lg text-gray-700">
@@ -125,35 +190,48 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
       </h1>
 
       {/* Introduction */}
-      <p className="mb-4">Hôm nay, ngày …. tháng …. năm …...;</p>
+      <p className="mb-4">Hôm nay, tại <strong>{addrressCreated|| "...."} </strong> ngày <strong>{new Date(Number(dateCreated) * 1000).getDate()|| "...."}</strong> tháng <strong>{new Date(Number(dateCreated) * 1000).getMonth() + 1|| "...."}</strong> năm <strong>{new Date(Number(dateCreated) * 1000).getFullYear() || "...."}</strong></p>
+    
 
       {/* Section A: landlord Details */}
       <div className="mb-6 space-y-3">
         <h1 className="font-bold mb-4">Chúng tôi gồm:</h1>
         <h2 className="">1. Bên đại diện cho thuê phòng trọ (Bên A):</h2>
         <p>
-          Ông/bà: {landlordName} Sinh ngày: {landlordBirthYear}
+          Ông/bà: <strong>{landlordName}</strong> Sinh ngày:{" "}
+          <strong>{landlordBirthYear}</strong>
         </p>
-        <p>Nơi đăng ký HK: {landlordAddress}</p>
         <p>
-          CMND/CCCD số: {landlordID}, Ngày cấp: {landlordIssueDate}, Nơi cấp:{" "}
-          {landlordIssuePlace}
+          Nơi đăng ký HK: <strong>{landlordAddress}</strong>
         </p>
-        <p>Số điện thoại: {landlordPhone}</p>
+        <p>
+          CMND/CCCD số: <strong>{landlordID}</strong>, Ngày cấp:{" "}
+          <strong>{landlordIssueDate}</strong>, Nơi cấp:{" "}
+          <strong>{landlordIssuePlace}</strong>
+        </p>
+        <p>
+          Số điện thoại: <strong>{landlordPhone}</strong>
+        </p>
       </div>
 
       {/* Section B: tenant Details */}
       <div className="mb-6 space-y-3">
         <h2 className="">2. Bên thuê phòng trọ (Bên B):</h2>
         <p>
-          Ông/bà: {tenantName} Sinh ngày: {tenantBirthYear}
+          Ông/bà: <strong>{tenantName}</strong> Sinh ngày:{" "}
+          <strong>{tenantBirthYear}</strong>
         </p>
-        <p>Nơi đăng ký HK thường trú: {tenantAddress}</p>
         <p>
-          CMND/CCCD số: {tenantID}, Ngày cấp: {tenantIssueDate}, Nơi cấp:{" "}
-          {tenantIssuePlace}
+          Nơi đăng ký HK thường trú: <strong>{tenantAddress}</strong>
         </p>
-        <p>Số điện thoại: {tenantPhone}</p>
+        <p>
+          CMND/CCCD số: <strong>{tenantID}</strong>, Ngày cấp:{" "}
+          <strong>{tenantIssueDate}</strong>, Nơi cấp:{" "}
+          <strong>{tenantIssuePlace}</strong>
+        </p>
+        <p>
+          Số điện thoại: <strong>{tenantPhone}</strong>
+        </p>
       </div>
 
       <div className="space-y-3 mb-4">
@@ -161,18 +239,35 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
           Sau khi bàn bạc trên tinh thần dân chủ, hai bên cùng có lợi, cùng
           thống nhất như sau:
         </h1>
-        <p>Bên A đồng ý cho bên B thuê 01 phòng ở tại địa chỉ: {roomAddress}</p>
-        <p>Giá thuê: {rentalPrice} đ/tháng</p>
-        <p>Hình thức thanh toán: {paymentMethod}</p>
         <p>
-          Tiền điện {electricityPrice} đ/kwh tính theo chỉ số công tơ, thanh
-          toán vào cuối các tháng
+          Bên A đồng ý cho bên B thuê 01 phòng ở tại địa chỉ:{" "}
+          <strong>{roomAddress}</strong>
         </p>
-        <p>Tiền nước: {waterPrice}đ/người thanh toán vào đầu các tháng.</p>
-        <p>Tiền đặt cọc: {depositAmount}</p>
         <p>
-          Hợp đồng có giá trị kể từ ngày …… tháng …… năm 20…. đến ngày ….. tháng
-          …. năm 20….
+          Giá thuê: <strong>{rentalPrice}</strong> đ/tháng
+        </p>
+        <p>
+          Hình thức thanh toán: <strong>{paymentMethod}</strong>
+        </p>
+        <p>
+          Tiền điện <strong>{electricityPrice}</strong> đ/kwh tính theo chỉ số
+          công tơ, thanh toán vào cuối các tháng
+        </p>
+        <p>
+          Tiền nước: <strong>{waterPrice}</strong> đ/người thanh toán vào đầu
+          các tháng.
+        </p>
+        <p>
+          Tiền đặt cọc: <strong>{depositAmount}</strong>
+        </p>
+        <p>
+        Hợp đồng có giá trị kể từ ngày{" "}
+        <strong>{new Date(Number(beginDate) * 1000).getDate()}</strong> tháng{" "}
+        <strong>{new Date(Number(beginDate) * 1000).getMonth() + 1}</strong> năm{" "}
+        <strong>{new Date(Number(beginDate) * 1000).getFullYear()}</strong> đến ngày{" "}
+        <strong>{new Date(Number(endDate) * 1000).getDate()}</strong> tháng{" "}
+        <strong>{new Date(Number(endDate) * 1000).getMonth() + 1}</strong> năm{" "}
+        <strong>{new Date(Number(endDate) * 1000).getFullYear()}</strong>.
         </p>
       </div>
 
@@ -181,11 +276,13 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
         <h2 className="font-bold">TRÁCH NHIỆM CỦA CÁC BÊN</h2>
 
         <h2 className="font-bold mt-6 mb-2">* Trách nhiệm của bên A:</h2>
-        <p>- Tạo mọi điều kiện thuận lợi để bên B thực hiện theo hợp đồng.</p>
-        <p>- Cung cấp nguồn điện, nước, wifi cho bên B sử dụng.</p>
+        <p>{landlordResponsibilities}</p>
+        {/* <p>- Tạo mọi điều kiện thuận lợi để bên B thực hiện theo hợp đồng.</p>
+        <p>- Cung cấp nguồn điện, nước, wifi cho bên B sử dụng.</p> */}
 
         <h2 className="font-bold mt-6 mb-4">* Trách nhiệm của bên B:</h2>
-        <p>- Thanh toán đầy đủ các khoản tiền theo đúng thỏa thuận.</p>
+        <p>{tenantResponsibilities}</p>
+        {/* <p>- Thanh toán đầy đủ các khoản tiền theo đúng thỏa thuận.</p>
         <p>
           - Bảo quản các trang thiết bị và cơ sở vật chất của bên A trang bị cho
           ban đầu (làm hỏng phải sửa, mất phải đền).
@@ -203,11 +300,12 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
           - Nếu bên B cho khách ở qua đêm thì phải báo và được sự đồng ý của chủ
           nhà đồng thời phải chịu trách nhiệm về các hành vi vi phạm pháp luật
           của khách trong thời gian ở lại.
-        </p>
+        </p> */}
 
         <h2 className="font-bold mt-6 mb-4">TRÁCH NHIỆM CHUNG</h2>
+        <p>{generalResponsibilities}</p>
 
-        <p>- Hai bên phải tạo điều kiện cho nhau thực hiện hợp đồng.</p>
+        {/* <p>- Hai bên phải tạo điều kiện cho nhau thực hiện hợp đồng.</p>
         <p>
           - Trong thời gian hợp đồng còn hiệu lực nếu bên nào vi phạm các điều
           khoản đã thỏa thuận thì bên còn lại có quyền đơn phương chấm dứt hợp
@@ -227,7 +325,7 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
         <p>
           - Hợp đồng được lập thành 02 bản có giá trị pháp lý như nhau, mỗi bên
           giữ một bản.
-        </p>
+        </p> */}
       </div>
 
       {/* Footer: Signatures */}

@@ -14,7 +14,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
   const navigate = useNavigate();
 
   const handleSignClick = () => {
-    navigate("/contract/preview")
+    navigate("/contract/preview", { state: { contractId: contract?.id } });
   };
 
   if (!contract) {

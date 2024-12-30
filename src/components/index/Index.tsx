@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import address from "../../assets/address.svg";
-import { Button, Divider, Input, Modal, Spin, Upload } from "antd";
-import digital from "../../assets/digital.svg";
+import { Button, Input, Modal, Spin } from "antd";
 import { useCookies } from "react-cookie";
 import BillingService from "@/services/BillingService";
 import { toast } from "sonner";
@@ -20,7 +19,7 @@ const Index: React.FC = () => {
   const token = cookies.token;
   const [loading, setLoading] = useState(false);
   const [indexData, setIndexData] = useState<any>(null);
-
+  const [inputIndex, setInputIndex] = useState<number | null>(null);
 
   const handleTabChange = (tab: "DaChoThue" | "ConTrong") => {
     setSelectedTab(tab);
@@ -34,6 +33,32 @@ const Index: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRoom(null);
+  };
+
+  const handleCreateIndex = async () => {
+    const billingService = new BillingService();
+    setLoading(true);
+    try {
+      const data = {
+        room_id: indexData?.find((data: any) =>
+          data.index_info.some(
+            (info: any) => info.room_number === selectedRoom
+          )
+        )?.room_id,
+        month: getMonthYear(selectedPeriod).month,
+        year: getMonthYear(selectedPeriod).year,
+        ...(selectedType === "electric"
+          ? { electricity_index: inputIndex }
+          : { water_index: inputIndex }),
+      };
+      const response = await billingService.createIndex(token, data);
+      toast.success("Ghi chỉ số thành công.");
+    } catch (error: any) {
+      toast.error(error.message || "Lỗi khi ghi chỉ số.");
+    } finally {
+      setLoading(false);
+      closeModal();
+    }
   };
 
   const getMonthYear = (period: string) => {
@@ -108,7 +133,6 @@ const Index: React.FC = () => {
                 value={selectedPeriod}
                 onChange={async (e) => {
                   setSelectedPeriod(e.target.value);
-                
                 }}
                 id="period"
                 className="border-none text-gray-20 font-medium focus:outline-none focus:ring-0 rounded px-2 py-1 cursor-pointer"
@@ -127,7 +151,7 @@ const Index: React.FC = () => {
         <div className="flex justify-center items-center w-[740px] h-[300px]">
           <Spin size="large" className="ml-52" />
         </div>
-      ) : indexData && indexData.length > 0 ? (
+      ) : indexData && indexData.length > 0  ? (
         indexData?.map((data: any, index: number) => (
           <div
             key={index}
@@ -151,13 +175,19 @@ const Index: React.FC = () => {
               <tbody className="font-medium text-gray-20">
                 {data.index_info.map((info: any, subIndex: number) => (
                   <tr key={`${index}-${subIndex}`}>
-                  <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                    <td
+                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
+                    >
                       {info.room_number}
                     </td>
-                    <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                    <td
+                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
+                    >
                       {info.old_index}
                     </td>
-                    <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                    <td
+                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
+                    >
                       {info.new_index === null ? (
                         <button
                           onClick={() => openModal(info.room_number)}
@@ -169,7 +199,9 @@ const Index: React.FC = () => {
                         info.new_index
                       )}
                     </td>
-                    <td className={`${info === data.index_info[data.index_info.length -1] ? "" : "border-b"} p-2 text-gray-20 text-center`}>
+                    <td
+                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
+                    >
                       {info.used === null ? "-" : info.used}
                     </td>
                   </tr>
@@ -178,11 +210,11 @@ const Index: React.FC = () => {
             </table>
           </div>
         ))
-      ): (
+      ) : !indexData || (indexData[0].index_info.new_index === null &&indexData[0].index_info.old_index === null) ? (
         <div className="flex justify-center items-center w-[740px] h-[300px]">
           <p className="text-gray-40 text-lg">Không có dữ liệu chỉ số</p>
         </div>
-      )}
+      ) :(null)}
       {/* Modal */}
       <Modal
         title={<label className="text-gray-20">Ghi số điện</label>}
@@ -194,39 +226,35 @@ const Index: React.FC = () => {
           <div className="text-sm mt-10">
             <div className="flex mb-4 items-center text-base text-gray-20 font-semibold space-x-4">
               <img src={address} alt="" />
-              <p>Số 9 Nguyễn Văn Huyên, Dịch Vọng, Cầu Giấy, Hà Nội</p>
+              <p>
+                {
+                  indexData?.find((data: any) =>
+                    data.index_info.some(
+                      (info: any) => info.room_number === selectedRoom
+                    )
+                  )?.address
+                }
+              </p>
             </div>
             <p className="font-semibold text-blue-40">
               PHÒNG SỐ {selectedRoom}
             </p>
           </div>
           <div className="text-gray-40">
-            <label htmlFor="electricIndex" className="block text-sm mb-1">
-              SỐ ĐIỆN
+            <label htmlFor="indexInput" className="block text-sm mb-1">
+              {selectedType === "electric" ? "SỐ ĐIỆN" : "SỐ NƯỚC"}
             </label>
-            <Input id="electricIndex" placeholder="Nhập số điện" />
+            <Input
+              id="indexInput"
+              placeholder={`Nhập ${selectedType === "electric" ? "số điện" : "số nước"}`}
+              onChange={(e) => setInputIndex(Number(e.target.value))}
+            />
           </div>
-          <div>
-            <label
-              htmlFor="imageUpload"
-              className="block text-sm mb-1 text-gray-40"
-            >
-              HÌNH ẢNH
-            </label>
-            <Upload.Dragger className="border-dashed ant-upload-drag">
-              <div className="flex justify-center mb-3">
-                <img src={digital} alt="" className="w-10 h-10" />
-              </div>
-              <p className="text-blue-60 text-xs">
-                Bấm hoặc kéo thả hình ảnh vào đây để <br /> đăng hình ảnh từ thư
-                viện nhé!
-              </p>
-            </Upload.Dragger>
-          </div>
+
           <div className="text-center">
             <Button
               className="w-[60%] py-6 font-medium border border-blue-60 text-blue-60 rounded-[100px]"
-              onClick={closeModal}
+              onClick={handleCreateIndex}
             >
               Ghi
             </Button>
