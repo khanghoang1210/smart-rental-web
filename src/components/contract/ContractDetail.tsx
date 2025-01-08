@@ -84,9 +84,9 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
               <div className="font-medium text-gray-20">
                 {contract.tenant_name}
               </div>
-              <div className="font-medium text-gray-20">
-                {contract.signature_b
-                  ? formatTimestampToDate(contract.signature_time_a)
+              <div className="font-medium text-gray-20 text-end">
+                {contract.signature_time_b
+                  ? formatTimestampToDate(contract.signature_time_b)
                   : "Chưa ký"}
               </div>
             </div>
@@ -94,9 +94,15 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
         </div>
       </div>
 
-      {userInfo?.role === 1 && (
+      {userInfo?.role === 0 && (
         <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
           Ký hợp đồng
+        </Button>
+      )}
+
+      {userInfo?.role === 1 && (
+        <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
+          Xem hợp đồng
         </Button>
       )}
 

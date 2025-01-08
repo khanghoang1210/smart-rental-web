@@ -29,8 +29,8 @@ const ContractPreviewPage = () => {
     setIsLoading(true);
     const contractService = new ContractService();
     try {
-      await contractService.declineContract(token, 13);
-      toast.success("Ký hợp đồng thành công!");
+      await contractService.declineContract(token, contractId.contractId);
+      toast.success("Từ chối hợp đồng thành công!");
       setShowSignatureModal(false);
       clearCanvas();
     } catch (error) {
@@ -150,7 +150,7 @@ const ContractPreviewPage = () => {
     setIsLoading(true);
     const contractService = new ContractService();
     try {
-      await contractService.signContractByTenant(token, 13, signature);
+      await contractService.signContractByTenant(token, contractId.contractId, signature);
       toast.success("Ký hợp đồng thành công!");
       setShowSignatureModal(false);
       clearCanvas();

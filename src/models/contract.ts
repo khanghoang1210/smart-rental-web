@@ -31,7 +31,7 @@ export interface ContractRes {
     landlord_name: string; // Tên chủ nhà
     room_address: string; // Địa chỉ phòng
     room_number: number; // Số phòng
-    signature_b: string; // Chữ ký bên B (Base64 string)
+    signature_time_b: number; // Chữ ký bên B (Base64 string)
     signature_time_a: number; // Thời gian chữ ký bên A (timestamp)
     tenant_name: string; // Tên người thuê
   }

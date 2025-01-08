@@ -68,7 +68,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
     setLoading(true);
     try {
       const paymentService = new PaymentService();
-      await paymentService.confirmPayment(token, 13);
+      await paymentService.confirmPayment(token, bill?.payment_id);
       toast.success("Xác nhận thanh toán thành công.");
     } catch (error: any) {
       toast.error(error.message || "Lỗi khi xác nhận thanh toán.");
@@ -123,7 +123,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               <h1 className="text-gray-20 font-semibold">Thông tin hóa đơn</h1>
               <li className="flex justify-between py-2 ml-8 font-semibold">
                 <span className="text-gray-40">Mã hoá đơn</span>
-                <span className="text-gray-20">{bill.id}</span>
+                <span className="text-gray-20">{bill.code}</span>
               </li>
               <li className="flex justify-between py-2 font-semibold ml-8">
                 <span className="text-gray-40">Tiền phòng</span>
