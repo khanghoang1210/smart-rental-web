@@ -17,11 +17,20 @@ const Filter = () => {
   );
   const [searchParams] = useSearchParams();
   const searchKey = searchParams.get("search") || ""; // Lấy giá trị từ URL
-
+  const genderMap: { [key: number]: string } = {
+    2: "Nam",
+    3 : "Nữ",
+    1: "Tất cả",
+  };
+  
   const [searchText, ] = useState<string>(searchKey);
   const [roomType, setRoomType] = useState("Kí túc xá/Homestay");
   const [sortOption, setSortOption] = useState("Liên quan nhất");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
+  const [selectedUtilities, setSelectedUtilities] = useState<string[]>([]); // Tiện ích
+  const [numOfPerson, setNumOfPerson] = useState<number | null>(null); // Số người
+  const [gender, setGender] = useState<number>(3); 
+
   useEffect(() => {
     // Cập nhật roomData khi location.state thay đổi
     if (location.state?.roomData) {
@@ -32,6 +41,35 @@ const Filter = () => {
   }, [searchKey]);
   console.log("room ====", roomData);
 
+  const handleUtilitiesChange = (utilities: string[]) => {
+    setSelectedUtilities(utilities);
+  
+    const filteredData = location.state?.roomData.filter((room: RoomRes) =>
+      utilities.every((utility) => room.utilities.includes(utility))
+    );
+    setRoomData(filteredData || []);
+  };
+  
+  const handleNumOfPersonChange = (num: number) => {
+    setNumOfPerson(num);
+  
+    const filteredData = location.state?.roomData.filter(
+      (room: RoomRes) => room.capacity === num
+    );
+    setRoomData(filteredData || []);
+  };
+
+  const handleGenderChange = (selectedGender: number) => {
+    setGender(selectedGender);
+  
+    const filteredData = location.state?.roomData.filter(
+      (room: RoomRes) => selectedGender === 3 || room.gender === selectedGender
+    );
+  
+    setRoomData(filteredData || []);
+  };
+  
+  
   const handleSort = (option: string) => {
     setSortOption(option);
 
@@ -90,10 +128,11 @@ const Filter = () => {
           </div>
           <div>
             <h2 className="text-lg font-bold mb-4 text-blue-10">Tiện ích</h2>
-            <UtilitiesList />
+            <UtilitiesList onFilterChange={handleUtilitiesChange}/>
           </div>
           <div>
-            <NumOfPerson />
+            <NumOfPerson onGenderChange={handleGenderChange}
+           onNumOfPersonChange={handleNumOfPersonChange}/>
           </div>
         </div>
         <div className="flex flex-col space-y-10">

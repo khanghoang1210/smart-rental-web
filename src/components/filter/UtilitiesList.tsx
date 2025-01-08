@@ -34,7 +34,12 @@ export const UtilitiesData = [
   { id: 14, name: "Tủ đồ", icon: tudo },
   { id: 15, name: "Máy lạnh", icon: snow },
 ];
-const UtilitiesList = () => {
+
+interface UtilitiesListProps {
+  onFilterChange: (selectedUtilities: string[]) => void;
+}
+const UtilitiesList: React.FC<UtilitiesListProps> = ({ onFilterChange }) => {
+  const [activeUtilities, setActiveUtilities] = useState<string[]>([]);
   const [activeStates, setActiveStates] = useState(
     UtilitiesData.reduce(
       (acc, utility) => {
@@ -45,6 +50,16 @@ const UtilitiesList = () => {
     )
   );
 
+  const toggleUtility = (name: string) => {
+    setActiveUtilities((prevUtilities) => {
+      const updatedUtilities = prevUtilities.includes(name)
+        ? prevUtilities.filter((utilityId) => utilityId !== name) // Bỏ chọn
+        : [...prevUtilities, name]; // Thêm chọn
+
+      onFilterChange(updatedUtilities); // Gửi danh sách tiện ích về cha
+      return updatedUtilities;
+    });
+  };
   const toggleActive = (id: number) => {
     setActiveStates((prevStates) => ({
       ...prevStates,
@@ -59,7 +74,9 @@ const UtilitiesList = () => {
           name={utility.name}
           icon={utility.icon}
           active={activeStates[utility.id]}
-          onClick={() => toggleActive(utility.id)}
+          onClick={() => {toggleUtility(utility.name)
+                    toggleActive(utility.id)
+          }}
         />
       ))}
     </div>

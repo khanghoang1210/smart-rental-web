@@ -9,6 +9,7 @@ import RoomService from "@/services/RoomService";
 import { useCookies } from "react-cookie";
 import { Address, CreateRoomForm } from "@/models/room";
 import { useAppStore } from "@/store";
+import { useNavigate } from "react-router-dom";
 
 const PostRoomForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,7 @@ const PostRoomForm = () => {
   });
 
   const [addressData, setAddressData] = useState<Address>(Object);
-
+  const navigate = useNavigate();
   const next = () => setCurrentStep(currentStep + 1);
   const prev = () => setCurrentStep(currentStep - 1);
   const handleInputChange = (
@@ -152,6 +153,7 @@ const PostRoomForm = () => {
       const response = await roomService.createRoom(token, form);
       console.log(response.data);
       toast.success("Tạo phòng thành công");
+      navigate("/room/posted")
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
     } finally {
