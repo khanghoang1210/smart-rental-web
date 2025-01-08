@@ -17,17 +17,20 @@ import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
 import { useAppStore } from "@/store";
 import { USER_DEFAULT_AVATAR } from "@/utils/constants";
+import { useCookies } from "react-cookie";
+import { customStorage } from "@/utils/localStorage";
 
 interface NavbarProps {
   searchKey?: string;
 }
 const Navbar = (prop: NavbarProps) => {
-  const { userInfo } = useAppStore();
+  const { userInfo, clearUserInfo } = useAppStore();
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [cookies, , removeCookie] = useCookies(["token"]);
 
   const [, setRoomData] = useState<RoomRes[]>([]);
   const combinedData = [
@@ -106,6 +109,12 @@ const Navbar = (prop: NavbarProps) => {
   };
   const navigate = useNavigate();
 
+  const onClickLogout = () => {
+    removeCookie("token");
+    clearUserInfo();
+    customStorage.removeItem("currentUser");
+    navigate("/auth/login");
+  };
   const onClickHome = () => {
     navigate("/");
   };
@@ -206,7 +215,7 @@ const Navbar = (prop: NavbarProps) => {
               </div>
               <div
                 className="flex items-center  space-x-2 px-2  py-3 cursor-pointer rounded-lg hover:bg-gray-90"
-                onClick={() => handleMenuClick("/logout")}
+                onClick={onClickLogout}
               >
                 <img src={logout} alt="Đăng xuất" className="w-5 h-5 mr-2" />
                 <span>Đăng xuất</span>

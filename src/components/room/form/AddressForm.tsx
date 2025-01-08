@@ -96,6 +96,7 @@ const AddressForm = (prop: AddressFormProps) => {
         }
       >
         <Select
+          showSearch
           placeholder="Chọn Thành phố"
           onChange={(value) => {
             prop.handleSelectChange(value, "city");
@@ -119,6 +120,7 @@ const AddressForm = (prop: AddressFormProps) => {
         }
       >
         <Select
+          showSearch
           placeholder="Chọn Quận / Huyện"
           onChange={(value) => {
             prop.handleSelectChange(value, "district");
@@ -142,6 +144,7 @@ const AddressForm = (prop: AddressFormProps) => {
         }
       >
         <Select
+          showSearch
           placeholder="Chọn Phường / Xã"
           onChange={(value) => prop.handleSelectChange(value, "ward")}
           className="h-[40px]"
