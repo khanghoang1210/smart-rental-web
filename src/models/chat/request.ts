@@ -11,7 +11,4 @@ export interface CreateReturnRequestReq {
   contract_id: number;
   reason: string;
   return_date: Date;
-  status: number;
-  deduct_amount: number;
-  total_return_deposit: number;
 }

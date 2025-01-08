@@ -94,13 +94,13 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
         </div>
       </div>
 
-      {userInfo?.role === 0 && (
+      {userInfo?.role === 0 && !contract.signature_time_b && (
         <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
           Ký hợp đồng
         </Button>
       )}
 
-      {userInfo?.role === 1 && (
+      {userInfo?.role === 1 || (userInfo?.role === 0 && contract.signature_time_b) && (
         <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
           Xem hợp đồng
         </Button>

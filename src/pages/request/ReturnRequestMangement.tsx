@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 const ReturnRequestMangement = () => {
     const [selectedRequest, setSelectedRequest] = useState<ReturnRequestRes | null>(null);
+    console.log(selectedRequest)
   return (
     <div>
       <Navbar />
@@ -14,7 +15,7 @@ const ReturnRequestMangement = () => {
           <RequestList onRequestSelect={setSelectedRequest} />
         </div>
         <div className="col-span-2">
-          <RequestDetails request={selectedRequest} />
+          <RequestDetails requestId={selectedRequest?.id} />
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { ReturnRequestRes } from "@/models/request";
 import RequestService from "@/services/RequestService";
 import { useAppStore } from "@/store";
+import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 import { formatDateTime } from "@/utils/converter";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -37,6 +38,7 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
     fetchRequest();
   }, []);
 
+  console.log(requests)
   return (
     <div className="shadow-sm rounded-lg">
       <h3 className="text-gray-20 text-xl font-bold mb-8">Yêu cầu trả phòng</h3>
@@ -58,7 +60,7 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
           >
             <div className="flex items-center space-x-2">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
+                src={item.created_user.avatar_url || USER_DEFAULT_AVATAR}
                 alt="User"
                 className="w-10 h-10 rounded-full"
               />
@@ -72,7 +74,7 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
               </div>
             </div>
             <p className="text-blue-40 text-xs font-semibold">
-              {item.status === 1 ? "Chưa xử lý" : "Đã xác nhận"}
+              {item.status === 0 ? "Chưa xử lý" : "Đã xác nhận"}
             </p>
           </div>
         ))}

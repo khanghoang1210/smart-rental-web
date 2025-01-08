@@ -33,11 +33,13 @@ interface ContractTemplateProps {
     landlordResponsibilities?: string;
     tenantResponsibilities?: string;
   };
+  onContractUpdate?: (contract: any) => void;
 }
 
 const ContractTemplate: React.FC<ContractTemplateProps> = ({
   formData,
   contractId,
+  onContractUpdate
 }) => {
   const [cookies] = useCookies(["token"]);
   const defaultFormData = {
@@ -67,6 +69,8 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     landlordResponsibilities: "…………………",
     tenantResponsibilities: "…………………",
     generalResponsibilities: "…………………",
+    signatureA:"",
+    signatureB:"",
     ...formData,
   };
   const [contract, setContract] = useState(defaultFormData);
@@ -99,6 +103,8 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     generalResponsibilities,
     tenantResponsibilities,
     landlordResponsibilities,
+    signatureA,
+    signatureB
 
   } = contract;
 
@@ -161,10 +167,13 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
             endDate: data.end_date,
             generalResponsibilities:
               data.general || defaultFormData.generalResponsibilities,
+            signatureA: data.signature_a,
+            signatureB: data.signature_b
           };
 
           console.log(formattedData);
           setContract(formattedData);
+          onContractUpdate?.(data);
         }
       } catch (error) {
         console.error("Error fetching contract data:", error);
@@ -173,6 +182,9 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
 
     fetchContractData();
   }, [contractId, cookies.token]);
+
+  console.log(  landlordResponsibilities.split(" - "))
+
 
   return (
     <div className="p-20 bg-gray-50 border rounded-lg text-gray-700">
@@ -276,56 +288,40 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
         <h2 className="font-bold">TRÁCH NHIỆM CỦA CÁC BÊN</h2>
 
         <h2 className="font-bold mt-6 mb-2">* Trách nhiệm của bên A:</h2>
-        <p>{landlordResponsibilities}</p>
-        {/* <p>- Tạo mọi điều kiện thuận lợi để bên B thực hiện theo hợp đồng.</p>
-        <p>- Cung cấp nguồn điện, nước, wifi cho bên B sử dụng.</p> */}
-
+        <div>
+        {landlordResponsibilities &&
+          landlordResponsibilities
+            .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
+            .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
+            .map((item, index) => (
+              <p className="mb-2" key={index}>- {item.trim()}</p>
+            ))}
+        </div>
+    
         <h2 className="font-bold mt-6 mb-4">* Trách nhiệm của bên B:</h2>
-        <p>{tenantResponsibilities}</p>
-        {/* <p>- Thanh toán đầy đủ các khoản tiền theo đúng thỏa thuận.</p>
-        <p>
-          - Bảo quản các trang thiết bị và cơ sở vật chất của bên A trang bị cho
-          ban đầu (làm hỏng phải sửa, mất phải đền).
-        </p>
-        <p>
-          - Không được tự ý sửa chữa, cải tạo cơ sở vật chất khi chưa được sự
-          đồng ý của bên A.
-        </p>
-        <p>- Giữ gìn vệ sinh trong và ngoài khuôn viên của phòng trọ.</p>
-        <p>
-          - Bên B phải chấp hành mọi quy định của pháp luật Nhà nước và quy định
-          của địa phương.
-        </p>
-        <p>
-          - Nếu bên B cho khách ở qua đêm thì phải báo và được sự đồng ý của chủ
-          nhà đồng thời phải chịu trách nhiệm về các hành vi vi phạm pháp luật
-          của khách trong thời gian ở lại.
-        </p> */}
+        <div>
+        {tenantResponsibilities &&
+          tenantResponsibilities
+            .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
+            .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
+            .map((item, index) => (
+              <p className="mb-2" key={index}>- {item.trim()}</p>
+            ))}
+        </div>
+
 
         <h2 className="font-bold mt-6 mb-4">TRÁCH NHIỆM CHUNG</h2>
-        <p>{generalResponsibilities}</p>
+        <div>
+        {generalResponsibilities &&
+          generalResponsibilities
+            .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
+            .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
+            .map((item, index) => (
+              <p className="mb-2" key={index}>- {item.trim()}</p>
+            ))}
+        </div>
 
-        {/* <p>- Hai bên phải tạo điều kiện cho nhau thực hiện hợp đồng.</p>
-        <p>
-          - Trong thời gian hợp đồng còn hiệu lực nếu bên nào vi phạm các điều
-          khoản đã thỏa thuận thì bên còn lại có quyền đơn phương chấm dứt hợp
-          đồng; nếu sự vi phạm hợp đồng đó gây tổn thất cho bên bị vi phạm hợp
-          đồng thì bên vi phạm hợp đồng phải bồi thường thiệt hại.
-        </p>
-        <p>
-          - Một trong hai bên muốn chấm dứt hợp đồng trước thời hạn thì phải báo
-          trước cho bên kia ít nhất 30 ngày và hai bên phải có sự thống nhất.
-        </p>
-
-        <p>- Bên A phải trả lại tiền đặt cọc cho bên B.</p>
-        <p>
-          - Bên nào vi phạm điều khoản chung thì phải chịu trách nhiệm trước
-          pháp luật.
-        </p>
-        <p>
-          - Hợp đồng được lập thành 02 bản có giá trị pháp lý như nhau, mỗi bên
-          giữ một bản.
-        </p> */}
+        
       </div>
 
       {/* Footer: Signatures */}
@@ -333,10 +329,24 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
         <div className="text-center">
           <p>Bên cho thuê</p>
           <p>(Ký và ghi rõ họ tên)</p>
+          {signatureA && (
+            <img
+              src={`data:image/png;base64,${signatureA}`}
+              alt="Signature B"
+              className="mt-4 max-w-[200px] max-h-[100px] object-contain"
+            />
+          )}
         </div>
         <div className="text-center">
           <p>Bên thuê</p>
           <p>(Ký và ghi rõ họ tên)</p>
+          {signatureB && (
+            <img
+              src={`data:image/png;base64,${signatureB}`}
+              alt="Signature B"
+              className="mt-4 max-w-[200px] max-h-[100px] object-contain"
+            />
+          )}
         </div>
       </div>
     </div>

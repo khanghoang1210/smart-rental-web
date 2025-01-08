@@ -5,43 +5,43 @@ import checked from "../../../assets/checked.png";
 import message_white from "../../../assets/message_white.svg";
 import { StarFilled } from "@ant-design/icons";
 import { ReturnRequestRes } from "@/models/request";
-import { formatDate, toCurrencyFormat } from "@/utils/converter";
+import { formatDate, formatDateTime, toCurrencyFormat } from "@/utils/converter";
 import { useEffect, useState } from "react";
-import RoomService from "@/services/RoomService";
 import { useCookies } from "react-cookie";
-import { RoomRes } from "@/models/room";
 import { toast } from "sonner";
 import { useConversationStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 import RequestService from "@/services/RequestService";
+import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 
 interface RequestDetailsProps {
-  request: ReturnRequestRes | null;
+  requestId: number;
 }
 
-const RequestDetails = ({ request }: RequestDetailsProps) => {
+const RequestDetails = ({ requestId }: RequestDetailsProps) => {
   const [isConfirmed, setIsConfirmed] = useState(false);
-
+  const [request, setRequest] = useState<ReturnRequestRes>();
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
-  const [room, setRoom] = useState<RoomRes>();
+
+
   const { setSelectedConversationId, setSelectedUserId } =
     useConversationStore();
   const navigate = useNavigate();
   useEffect(() => {
-    const roomService = new RoomService();
-    const fetchRoom = async () => {
+    const roomService = new RequestService();
+    const fetchRequest = async () => {
       try {
-        const roomRes = await roomService.getByID(token, request?.room_id);
+        const roomRes = await roomService.getReturnRequestByID(token, requestId);
         const data = roomRes.data.data;
 
-        setRoom(data);
+        setRequest(data);
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);
       }
     };
-    if (request) fetchRoom();
-  }, [request]);
+    if (requestId) fetchRequest();
+  }, [requestId]);
 
   const handleStartConversation = async () => {
     try {
@@ -76,26 +76,27 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
       toast.error("Đã xảy ra lỗi khi tiếp nhận yêu cầu.");
     }
   };
-  if (!request) return <div></div>;
+  console.log(request)
+  if (!requestId) return <div></div>;
 
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
       <div className="flex justify-start">
         <h3 className="font-bold text-gray-20 text-lg mr-8">
-          Yêu cầu #{request.created_at}
+          Yêu cầu #{request?.contract_id}
         </h3>
         <div
-          className={`flex items-center space-x-2 ${request.status === 1 ? "bg-gray-90 text-gray-40" : "bg-[#E9FFE8] text-[#3FA836]"}  px-5 py-1 rounded-sm text-sm font-medium `}
+          className={`flex items-center space-x-2 ${request?.status === 0 ? "bg-gray-90 text-gray-40" : "bg-[#E9FFE8] text-[#3FA836]"}  px-5 py-1 rounded-sm text-sm font-medium `}
         >
-          {request.status === 1 ? (
+          {request?.status === 0 ? (
             <img src={clock} className="w-5" alt="" />
           ) : (
             <img src={checked} className="w-3 h-3" alt="" />
           )}
-          <p>{request.status === 1 ? "Chưa xử lý" : "Đã xác nhận"}</p>
+          <p>{request?.status === 0 ? "Chưa xử lý" : "Đã xác nhận"}</p>
         </div>
       </div>
-      <p className="text-gray-40 text-xs mt-3">13:49 17/09/2023</p>
+      <p className="text-gray-40 text-xs mt-3">{formatDateTime(request?.created_at)}</p>
       <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
         <h4 className="font-semibold text-sm text-gray-20">
           Thông tin người thuê
@@ -103,13 +104,13 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         <div className="flex justify-between">
           <div className="flex items-center ">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
+              src={request?.created_user?.avatar_url || USER_DEFAULT_AVATAR}
               alt="User"
               className="w-8 h-8 rounded-full mr-3"
             />
             <div>
               <p className="font-semibold text-sm">
-                {request?.created_user.full_name}
+                {request?.created_user?.full_name}
               </p>
               <div className="flex space-x-1 ">
                 {[...Array(5)].map((_, index) => (
@@ -143,16 +144,16 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         </h4>
         <div className="flex items-center space-x-5">
           <img
-            src={room?.room_images[0]}
+            src={request?.room?.room_images[0]}
             alt="Room"
             className="w-28 h-28 rounded-2xl"
           />
           <div className="space-y-2">
-            <p className="text-gray-60 text-xs">{room?.capacity} người</p>
-            <p className="font-semibold text-gray-20">{room?.title}</p>
-            <p className="text-xs text-gray-40">{room?.address.join(", ")}</p>
+            <p className="text-gray-60 text-xs">{request?.room?.capacity} người</p>
+            <p className="font-semibold text-gray-20">{request?.room?.title}</p>
+            <p className="text-xs text-gray-40">{request?.room?.address.join(", ")}</p>
             <p className="text-blue-60 font-bold">
-              {toCurrencyFormat(room?.total_price)} ₫/phòng
+              {toCurrencyFormat(request?.room?.total_price)} ₫/phòng
             </p>
           </div>
         </div>
@@ -169,7 +170,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
                 <span className="text-gray-20 text-xs">Ngày trả phòng</span>
                 <div className="flex flex-col items-end">
                   <span className="font-semibold text-xs text-gray-20">
-                    {formatDate(request.return_date)}
+                    {formatDate(request?.return_date)}
                   </span>
                   <p className="text-gray-60 text-[10px]">
                     Theo như thời hạn hợp đồng
@@ -190,7 +191,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
             nhận tình trạng phòng cũng như ghi nhận hư hại (nếu có). Sau thời
             gian này, hệ thống sẽ tự động xác nhận việc trả phòng đã hoàn tất.
           </h3>
-          {request.status === 1 && (
+          {request?.status === 0 && (
             <Button
               onClick={handleAcceptRequest}
               className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
@@ -208,18 +209,18 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
               <li className="flex justify-between">
                 <span className="text-gray-20 text-xs">Tiền đặt cọc:</span>
                 <span className="font-semibold text-xs text-gray-20">
-                  {toCurrencyFormat(request.total_return_deposit)}
+                  {toCurrencyFormat(request?.total_return_deposit)}
                 </span>
               </li>
               <li className="flex justify-between">
                 <span className="text-gray-20 text-xs">Tiền cấn trừ:</span>
                 <span className="font-semibold text-xs text-gray-20">
-                  {request.deduct_amount
-                    ? toCurrencyFormat(request.deduct_amount)
+                  {request?.deduct_amount
+                    ? toCurrencyFormat(request?.deduct_amount)
                     : "0 đ"}
                 </span>
               </li>
-              {request.deduct_amount ? (
+              {request?.deduct_amount ? (
                 <li className="flex justify-between">
                   <span className="text-gray-20 text-xs">Lý do:</span>
                   <span className="font-semibold text-xs text-gray-20 break-words max-w-[300px]">
@@ -236,7 +237,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
                     Bên B
                   </span>
                   <p className="text-gray-20 font-semidbold text-xs">
-                    ({request.created_user.full_name} - bên thuê)
+                    ({request?.created_user?.full_name} - bên thuê)
                   </p>
                 </div>
               </li>
@@ -245,7 +246,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
           <div className="flex justify-between mt-6">
             <h1 className="text-gray-20 text-xl">Tổng tiền</h1>
             <p className="text-blue-40 text-xl font-semibold">
-              {toCurrencyFormat(request.total_return_deposit)} đ
+              {toCurrencyFormat(request?.total_return_deposit)} đ
             </p>
           </div>
         </div>

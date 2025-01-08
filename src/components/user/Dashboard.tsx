@@ -47,6 +47,7 @@ const Dashboard = () => {
           {[
             { title: "Hợp đồng thuê trọ", icon: contract, path: "/contract" },
             { title: "Yêu cầu thuê trọ", icon: yeucau, path: "/request" },
+            { title: "Yêu cầu trả phòng", icon: yeucau, path: "/return-request/manage" },
             { title: "Chỉ số điện nước", icon: chiso, path: "/index" },
             {
               title: "Hoá đơn thu tiền",
