@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import ConversationService from "@/services/ConversationService";
 import { useSocket } from "@/context/SocketContext";
 import RequestService from "@/services/RequestService";
+import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 
 interface RequestDetailsProps {
   request: RentalRequestRes | null;
@@ -128,12 +129,13 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
   if (!request) return <div></div>;
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
-      <div className="flex justify-start items-center">
-        <h3 className="font-bold text-gray-20 text-lg mr-8">
-          #{request?.code}
-        </h3>
-        <div
-          className={`flex space-x-2 items-center px-5 py-1 rounded-sm text-sm font-medium 
+      <div className="flex justify-between">
+        <div className="flex justify-start items-center">
+          <h3 className="font-bold text-gray-20 text-lg mr-8">
+            #{request?.code}
+          </h3>
+          <div
+            className={`flex space-x-2 items-center px-5 py-1 rounded-sm text-sm font-medium 
             ${
               request.status === 1
                 ? "bg-gray-90 text-gray-40"
@@ -141,18 +143,18 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
                   ? "bg-[#E9FFE8] text-[#3FA836]"
                   : "bg-[#FFF0F1] text-[#FF425E]"
             } `}
-        >
-          {request.status === 1 ? (
-            <img src={clock} className="w-5" alt="" />
-          ) : request.status === 2 ? (
-            <img src={checked} className="w-3 h-3" alt="" />
-          ) : (
-            <img src={x} className="w-3 h-3" alt="" />
-          )}
+          >
+            {request.status === 1 ? (
+              <img src={clock} className="w-5" alt="" />
+            ) : request.status === 2 ? (
+              <img src={checked} className="w-3 h-3" alt="" />
+            ) : (
+              <img src={x} className="w-3 h-3" alt="" />
+            )}
 
-          <p className="font-semibold">{getStatusLabel(request?.status)}</p>
+            <p className="font-semibold">{getStatusLabel(request?.status)}</p>
+          </div>
         </div>
-
         {request.status == 2 && userInfo?.role == 1 && (
           <Button
             onClick={handleCreateContract}
@@ -172,7 +174,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
           <div className="flex justify-between">
             <div className="flex items-center ">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
+                src={request.sender.avatar_url || USER_DEFAULT_AVATAR}
                 alt="User"
                 className="w-8 h-8 rounded-full mr-3"
               />

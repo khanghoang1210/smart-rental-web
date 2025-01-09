@@ -228,14 +228,15 @@ const ContractInfoForm = (prop: ContractInfoFormProps) => {
       <Form.Item
         label={
           <label className="text-base font-medium text-gray-40">
-            Ngày thanh toán hàng tháng
+            Tiền đặt cọc
           </label>
         }
       >
         <Input
-          name=""
+          name="deposit"
+          suffix="đ"
           onChange={prop.handleInputChange}
-          placeholder="Nhập ngày thanh toán"
+          placeholder="Nhập số tiền"
           className="h-[40px]"
         />
       </Form.Item>

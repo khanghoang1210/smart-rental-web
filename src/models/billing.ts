@@ -1,8 +1,10 @@
 export interface BillingRes {
   id: number;
   code: string;
+  address: string[];
   contract_id: number;
   room_id: number;
+  room_number: number;
   landlord_id: number;
   tenant_id: number;
   addition_fee: number;
@@ -21,6 +23,7 @@ export interface BillingRes {
   parking_fee: number;
   status: number;
   created_at: string; 
+  deadline: string;
   updated_at: string;
 }
 

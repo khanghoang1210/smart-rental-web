@@ -25,7 +25,7 @@ export default class BillingService {
     }
   }
 
-  async getByID(token: string, id: number) {
+  async getByID(token: string, id: number | undefined) {
     const url = BILLING_ENDPOINT + `/${id}`;
     try {
       const res = await apiClient.get(url, {

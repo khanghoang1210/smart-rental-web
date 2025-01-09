@@ -5,6 +5,9 @@ import RoomService from "@/services/RoomService";
 import { formatDateTime } from "@/utils/converter";
 import { toast } from "sonner";
 import { useCookies } from "react-cookie";
+import address from "../../assets/address.svg";
+import home_work from "../../assets/home_work.png";
+import dollar from "../../assets/dollar.png";
 
 interface InvoiceProps {
   bill: BillingRes;
@@ -15,7 +18,7 @@ interface InvoiceProps {
 interface InvoiceListProps {
   invoices: InvoiceProps[];
   onSelect: (id: number) => void;
-  onFilterChange: (status: 0 | 1|2) => void;
+  onFilterChange: (status: 0 | 1 | 2) => void;
   currentFilter: number;
 }
 
@@ -82,31 +85,53 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           Đã thanh toán
         </Button>
       </div>
-{invoices.length === 0 ? (<div className="text-gray-40">Không có hoá đơn</div>) : invoices.map((invoice) => (
-        <div
-          key={invoice.bill.id}
-          className={`p-4 border rounded-lg mb-4 cursor-pointer ${
-            invoice.selected ? "bg-blue-98 border-blue-98" : ""
-          }`}
-          onClick={() => onSelect(invoice.bill.id)}
-        >
-          <h1 className="font-semibold text-blue-40">
-            Hóa đơn thu tiền kỳ tháng {invoice.bill.month}/{invoice.bill.year}
-          </h1>
-          <p className="text-[12px] text-gray-20 mt-2">
-            Thời gian tạo: <span className="font-semibold">{formatDateTime(invoice.bill.created_at)}</span>
-          </p>
-          <p className="text-[12px] text-red ">
-            Hạn thanh toán: <span className="font-semibold">{formatDateTime(invoice.bill.updated_at)}</span>
-          </p>
-          <p className="mt-4 text-sm text-gray-20 font-semibold">
-            {rooms[invoice.bill.room_id] || "Đang tải..."}
-          </p>
-          <p className="text-sm font-semibold text-gray-20 mt-4">
-            {invoice.bill.total_amount.toLocaleString()} đ
-          </p>
-        </div>
-      ))}
+      {invoices.length === 0 ? (
+        <div className="text-gray-40">Không có hoá đơn</div>
+      ) : (
+        invoices.map((invoice) => (
+          <div
+            key={invoice.bill.id}
+            className={`p-4 border rounded-lg mb-4 cursor-pointer ${
+              invoice.selected ? "bg-blue-98 border-blue-98" : ""
+            }`}
+            onClick={() => onSelect(invoice.bill.id)}
+          >
+            <h1 className="font-semibold text-blue-40">
+              Hóa đơn thu tiền kỳ tháng {invoice.bill.month}/{invoice.bill.year}
+            </h1>
+            <p className="text-[12px] text-gray-20 mt-2">
+              Thời gian tạo:{" "}
+              <span className="font-semibold">
+                {formatDateTime(invoice.bill.created_at)}
+              </span>
+            </p>
+            <p className="text-[12px] text-red ">
+              Hạn thanh toán:{" "}
+              <span className="font-semibold">
+                {formatDateTime(invoice.bill.deadline)}
+              </span>
+            </p>
+            <div className="flex  justify-center items-center gap-4">
+              <img src={address} alt="" className="w-8 h-5"/>
+              <p className="mt-4 text-sm text-gray-20 font-semibold">
+                {invoice.bill.address.join(", ")}
+              </p>
+            </div>
+            <div className="flex items-end gap-4">
+              <img src={home_work} alt="" className="w-5 h-5"/>
+            <p className="mt-4 text-sm text-gray-20 font-semibold">
+              Phòng số: {invoice.bill.room_number}
+            </p>
+            </div>
+            <div className="flex items-end gap-5">
+              <img src={dollar} alt="" className="w-4 h-5" />
+            <p className="text-sm font-semibold text-gray-20 mt-4">
+              {invoice.bill.total_amount.toLocaleString()} đ
+            </p>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
