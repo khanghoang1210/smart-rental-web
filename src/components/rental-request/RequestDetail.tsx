@@ -107,6 +107,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
       await requestService.declineRentalRequest(cookies.token, request.id);
 
       toast.success("Yêu cầu đã được từ chối!");
+      window.location.reload();
     } catch (error) {
       console.error("Error accepting request:", error);
       toast.error("Đã xảy ra lỗi khi tiếp nhận yêu cầu.");

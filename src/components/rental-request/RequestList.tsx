@@ -35,6 +35,9 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
   return (
     <div className="shadow-sm rounded-lg">
       <h3 className="text-gray-20 text-xl font-bold mb-8">Yêu cầu thuê trọ</h3>
+      {requests.length == 0 && (
+        <div className="text-gray-40">Bạn không có yêu cầu nào</div>
+      )}
       <div className="flex items-center space-x-5">
         <h1 className="text-gray-60 text-xs font-medium">
           Số 9 Nguyễn Văn Huyên, Dịch Vọng, Cầu Giấy, Hà Nội
@@ -53,9 +56,9 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
           >
             <div className="flex items-center space-x-2">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFbfoE1_T9wLTh03pgANUPJ69psN0Zz2fvzQ&s"
+                src={item.sender.avatar_url}
                 alt="User"
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 rounded-full object-cover"
               />
               <div>
                 <p className="font-semibold text-gray-20 text-sm">

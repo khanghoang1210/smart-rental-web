@@ -166,6 +166,8 @@ const RoomDetail = () => {
     }
   };
 
+  console.log(room)
+
   if (!room) {
     return  <div className="flex justify-center items-center h-[300px]">
     <Spin size="large" />
@@ -272,29 +274,29 @@ const RoomDetail = () => {
                 <div className="flex flex-col items-center space-y-1">
                   <img src={bulb} alt="Bulb" className="w-8 h-8" />
                   <p className="font-bold text-blue-60">
-                    {room?.internet_cost
-                      ? room?.electricity_cost + "k"
+                    {room?.electricity_cost
+                      ? toCurrencyAbbreviation(room?.electricity_cost)
                       : "Miễn phí"}
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-1">
                   <img src={water_active} alt="Water" className="w-8 h-8" />
                   <p className="font-bold text-blue-60">
-                    {room?.internet_cost ? room?.water_cost + "k" : "Miễn phí"}
+                    {room?.water_cost ? toCurrencyAbbreviation(room?.water_cost) : "Miễn phí"}
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-1">
                   <img src={wifi_active} alt="Wi-Fi" className="w-8 h-8" />
                   <p className="font-bold text-blue-60">
                     {room?.internet_cost
-                      ? room?.internet_cost + "k"
+                      ? toCurrencyAbbreviation(room?.internet_cost)
                       : "Miễn phí"}
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-1">
                   <img src={bike_active} alt="Bike" className="w-8 h-8" />
                   <p className="font-bold text-blue-60">
-                    {room?.parking_fee ? room?.parking_fee + "k" : "Miễn phí"}
+                    {room?.parking_fee ? toCurrencyAbbreviation(room?.parking_fee) : "Miễn phí"}
                   </p>
                 </div>
               </div>
