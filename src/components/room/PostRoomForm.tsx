@@ -121,6 +121,7 @@ const PostRoomForm = () => {
     );
     form.append("owner", userInfo?.id ? userInfo.id.toString() : "");
     form.append("capacity", formData.capacity.toString());
+    form.append("area", formData.area.toString());
     form.append("gender", formData.gender.toString());
     form.append("status", formData.status.toString());
     form.append("isRent", formData.isRent.toString());

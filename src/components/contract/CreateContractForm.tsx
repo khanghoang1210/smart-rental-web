@@ -9,16 +9,18 @@ import ContractService from "@/services/ContractService";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 import { CreateContractRequest } from "@/models/contract";
+import { useAppStore } from "@/store";
 
 const CreateContractForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const  {userInfo} = useAppStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const location = useLocation();
   const rentalDetail = location.state || {};
   const [cookies] = useCookies(["token"]);
 
-  console.log(rentalDetail.room);
+  console.log(rentalDetail);
   const [formData, setFormData] = useState({
     roomType: rentalDetail?.room?.room_type || "",
     capacity: rentalDetail?.room?.capacity || "",
@@ -37,14 +39,45 @@ const CreateContractForm = () => {
     internetFee: rentalDetail.room?.internet_cost || 0,
     parking: rentalDetail.room?.is_parking || false,
     parkingFee: rentalDetail.room?.parking_fee || 0,
+    suggestedPrice: rentalDetail.suggested_price,
     responsibilityA: "",
     responsibilityB: "",
     generalResponsibility: "",
     paymentMethod: "",
-    beginDate: Dayjs,
-    endDate: Dayjs,
+    beginDate: dayjs(),
+    endDate: dayjs(),
   });
 
+  const mappedFormData = {
+    addrressCreated: `${formData.city}` || "",
+    dateCreated: Math.floor(Date.now() / 1000),   
+    landlordName: userInfo?.full_name || "",
+    landlordBirthYear: userInfo?.dob || "",
+    landlordID: rentalDetail?.room?.owner?.id || "",
+    landlordIssueDate: rentalDetail?.room?.owner?.issue_date || "",
+    landlordIssuePlace: rentalDetail?.room?.owner?.issue_place || "",
+    landlordAddress: rentalDetail?.room?.owner?.address || "",
+    landlordPhone: userInfo?.phone_number || "",
+    tenantName: rentalDetail?.sender?.full_name || "",
+    tenantBirthYear: rentalDetail?.sender?.birth_year || "",
+    tenantID: rentalDetail?.sender?.id || "",
+    tenantIssueDate: rentalDetail?.sender?.issue_date || "",
+    tenantIssuePlace: rentalDetail?.sender?.issue_place || "",
+    tenantAddress: rentalDetail?.sender?.address || "",
+    tenantPhone: rentalDetail?.sender?.phone_number || "",
+    rentalPrice: formData.price || "",
+    electricityPrice: formData.electricFee || "",
+    waterPrice: formData.waterFee.toString() || "",
+    depositAmount: formData.deposit || "",
+    paymentMethod: formData.paymentMethod || "",
+    roomAddress: `${formData.houseNumber}, ${formData.street}, ${formData.ward}, ${formData.district}, ${formData.city}` || "",
+    contractDuration: `Từ ${formData.beginDate?.format("DD/MM/YYYY")} đến ${formData.endDate?.format("DD/MM/YYYY")}` || "",
+    beginDate: formData.beginDate ? formData.beginDate.unix() : "",
+    endDate: formData.endDate ? formData.endDate.unix() : "",
+    landlordResponsibilities: formData.responsibilityA || "",
+    tenantResponsibilities: formData.responsibilityB || "",
+    generalResponsibilities: formData.generalResponsibility || "",
+  };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const isDrawing = useRef(false);
   const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -245,7 +278,7 @@ const CreateContractForm = () => {
     },
     {
       title: "Xem trước",
-      content: <PreviewForm formData={{}} />,
+      content: <PreviewForm formData={mappedFormData} />,
     },
   ];
 

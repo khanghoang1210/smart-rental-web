@@ -41,9 +41,7 @@ const Index: React.FC = () => {
     try {
       const data = {
         room_id: indexData?.find((data: any) =>
-          data.index_info.some(
-            (info: any) => info.room_number === selectedRoom
-          )
+          data.index_info.some((info: any) => info.room_number === selectedRoom)
         )?.room_id,
         month: getMonthYear(selectedPeriod).month,
         year: getMonthYear(selectedPeriod).year,
@@ -86,31 +84,10 @@ const Index: React.FC = () => {
 
   return (
     <div className="flex justify-center space-x-14 bg-white rounded-lg p-6">
-      <div className="">
+      <div className="w-[10%]">
         <h1 className="mb-8 text-gray-20 font-semibold">Chỉ số điện nước</h1>
-        <div className="flex space-x-4">
-          <button
-            className={`px-10 py-2 rounded-lg text-sm ${
-              selectedTab === "DaChoThue"
-                ? "bg-blue-40 text-[#fff]"
-                : "bg-gray-90 text-gray-40"
-            }`}
-            onClick={() => handleTabChange("DaChoThue")}
-          >
-            Đã cho thuê
-          </button>
-          <button
-            className={`px-10 py-2 rounded-lg text-sm ${
-              selectedTab === "ConTrong"
-                ? "bg-blue-40 text-[#fff]"
-                : "bg-gray-90 text-gray-40"
-            }`}
-            onClick={() => handleTabChange("ConTrong")}
-          >
-            Còn trống
-          </button>
-        </div>
-        <div className="mt-4">
+
+        <div className="mt-4 w-full">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col border rounded-lg px-4 py-1">
               <label htmlFor="type" className="mb-1 text-sm text-gray-40">
@@ -151,70 +128,57 @@ const Index: React.FC = () => {
         <div className="flex justify-center items-center w-[740px] h-[300px]">
           <Spin size="large" className="ml-52" />
         </div>
-      ) : indexData && indexData.length > 0  ? (
-        indexData?.map((data: any, index: number) => (
-          <div
-            key={index}
-            className="border border-blue-95 p-6 mt-14 rounded-lg w-[40%]"
-          >
-            <div className="flex items-center space-x-3 mb-4">
-              <img src={address} alt="" />
-              <h3 className="font-semibold text-gray-20 text-base">
-                {data.address}
-              </h3>
+      ) : indexData && indexData.length > 0 ? (
+        <div className="flex flex-col items-start space-y-4">
+          {indexData.map((data: any, index: number) => (
+            <div
+              key={index}
+              className="flex flex-col border border-blue-95 p-6 mt-14 rounded-lg w-full"
+            >
+              <div className="flex items-center space-x-3 mb-4">
+                <img src={address} alt="" />
+                <h3 className="font-semibold text-gray-20 text-base">
+                  {data.address}
+                </h3>
+              </div>
+              <div className="grid grid-cols-4 gap-4 mb-2">
+                <div className="font-semibold">Phòng số</div>
+                <div className="font-semibold">CS cũ</div>
+                <div className="font-semibold">CS Mới</div>
+                <div className="font-semibold">Sử dụng</div>
+              </div>
+              {data.index_info.map((info: any, subIndex: number) => (
+                <div
+                  key={subIndex}
+                  className="grid grid-cols-4 gap-4 border-t py-3"
+                >
+                  <div>{info.room_number}</div>
+                  <div>{info.old_index}</div>
+                  <div>
+                    {info.new_index === null ? (
+                      <button
+                        onClick={() => openModal(info.room_number)}
+                        className="px-2 py-1 text-blue-40 bg-blue-98 text-sm font-semibold rounded"
+                      >
+                        Ghi
+                      </button>
+                    ) : (
+                      info.new_index
+                    )}
+                  </div>
+                  <div>{info.used === null ? "-" : info.used}</div>
+                </div>
+              ))}
             </div>
-            <table className="w-full">
-              <thead className="text-gray-40 border-b">
-                <tr>
-                  <th className="p-2">Phòng số</th>
-                  <th className="p-2">CS cũ</th>
-                  <th className="p-2">CS Mới</th>
-                  <th className="p-2">Sử dụng</th>
-                </tr>
-              </thead>
-              <tbody className="font-medium text-gray-20">
-                {data.index_info.map((info: any, subIndex: number) => (
-                  <tr key={`${index}-${subIndex}`}>
-                    <td
-                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
-                    >
-                      {info.room_number}
-                    </td>
-                    <td
-                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
-                    >
-                      {info.old_index}
-                    </td>
-                    <td
-                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
-                    >
-                      {info.new_index === null ? (
-                        <button
-                          onClick={() => openModal(info.room_number)}
-                          className="px-2 py-1 text-blue-40 bg-blue-98 text-sm font-semibold rounded"
-                        >
-                          Ghi
-                        </button>
-                      ) : (
-                        info.new_index
-                      )}
-                    </td>
-                    <td
-                      className={`${info === data.index_info[data.index_info.length - 1] ? "" : "border-b"} p-2 text-gray-20 text-center`}
-                    >
-                      {info.used === null ? "-" : info.used}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))
-      ) : !indexData || (indexData[0].index_info.new_index === null &&indexData[0].index_info.old_index === null) ? (
+          ))}
+        </div>
+      ) : !indexData ||
+        (indexData[0].index_info.new_index === null &&
+          indexData[0].index_info.old_index === null) ? (
         <div className="flex justify-center items-center w-[740px] h-[300px]">
           <p className="text-gray-40 text-lg">Không có dữ liệu chỉ số</p>
         </div>
-      ) :(null)}
+      ) : null}
       {/* Modal */}
       <Modal
         title={<label className="text-gray-20">Ghi số điện</label>}

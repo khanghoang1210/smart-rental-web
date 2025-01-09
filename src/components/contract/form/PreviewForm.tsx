@@ -1,4 +1,5 @@
 import ContractService from "@/services/ContractService";
+import { toCurrencyFormat } from "@/utils/converter";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
@@ -43,6 +44,7 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
 }) => {
   const [cookies] = useCookies(["token"]);
   const defaultFormData = {
+    dateCreated:"",
     landlordName: "…………………………………….",
     landlordBirthYear: "………………..",
     landlordID: "…………",
@@ -256,21 +258,21 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
           <strong>{roomAddress}</strong>
         </p>
         <p>
-          Giá thuê: <strong>{rentalPrice}</strong> đ/tháng
+          Giá thuê: <strong>{toCurrencyFormat(Number(rentalPrice))}</strong> đ/tháng
         </p>
         <p>
           Hình thức thanh toán: <strong>{paymentMethod}</strong>
         </p>
         <p>
-          Tiền điện <strong>{electricityPrice}</strong> đ/kwh tính theo chỉ số
+          Tiền điện <strong>{toCurrencyFormat(Number(electricityPrice))}</strong> đ/kwh tính theo chỉ số
           công tơ, thanh toán vào cuối các tháng
         </p>
         <p>
-          Tiền nước: <strong>{waterPrice}</strong> đ/người thanh toán vào đầu
+          Tiền nước: <strong>{toCurrencyFormat(Number(waterPrice))}</strong> đ/người thanh toán vào đầu
           các tháng.
         </p>
         <p>
-          Tiền đặt cọc: <strong>{depositAmount}</strong>
+          Tiền đặt cọc: <strong>{toCurrencyFormat(Number(depositAmount))} đ</strong>
         </p>
         <p>
         Hợp đồng có giá trị kể từ ngày{" "}

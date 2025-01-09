@@ -153,7 +153,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
           <p className="font-semibold">{getStatusLabel(request?.status)}</p>
         </div>
 
-        {request.status == 2 && (
+        {request.status == 2 && userInfo?.role == 1 && (
           <Button
             onClick={handleCreateContract}
             className="ml-36 mr-0 px-6 items-center h-10 py-3 font-semibold border border-blue-60 text-blue-60 rounded-[100px]"

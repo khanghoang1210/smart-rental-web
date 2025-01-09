@@ -1,3 +1,4 @@
+import { toCurrencyFormat } from "@/utils/converter";
 import { Button, Checkbox, DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 const { Option } = Select;
@@ -71,11 +72,14 @@ const ContractInfoForm = (prop: ContractInfoFormProps) => {
             GIÁ CHO THUÊ
             <div className="mt-4">
               <p className="text-xs font-normal">
-                *Giá niêm yết: 5 000 000 đ/tháng
+                *Giá niêm yết: {toCurrencyFormat(prop.formData.price)} đ/tháng
               </p>
               <p className="text-xs font-normal">
                 {" "}
-                ** Giá yêu cầu: 4 500 000 đ/tháng
+                ** Giá yêu cầu: {toCurrencyFormat(
+                  prop.formData.suggestedPrice
+                )}{" "}
+                đ/tháng
               </p>
             </div>
           </label>
@@ -229,7 +233,7 @@ const ContractInfoForm = (prop: ContractInfoFormProps) => {
         }
       >
         <Input
-          name="price"
+          name=""
           onChange={prop.handleInputChange}
           placeholder="Nhập ngày thanh toán"
           className="h-[40px]"
