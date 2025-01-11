@@ -2,15 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import payment from "../../assets/payment.png";
 import { Upload } from "antd";
 import digital from "../../assets/digital.svg";
+import { toCurrencyFormat } from "@/utils/converter";
 
 interface PaymentInfoProps {
   address: string;
   invoiceId: string;
-  amount: string;
+  amount: number | undefined;
   paymentMethod: string;
   recipient: string;
-  onImageUpload?: (image: File|null) => void;
+  onImageUpload?: (image: File | null) => void;
   onSave?: () => void;
+  type: string;
 }
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({
@@ -21,14 +23,14 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
   recipient,
   onImageUpload,
   onSave,
+  type,
 }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
 
-
   const handleSaveClick = () => {
     if (onSave) {
-      onSave(); // Notify parent with the selected image
+      onSave(); 
     }
     handleClosePopup();
   };
@@ -45,6 +47,12 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
     setIsPopupVisible(false);
   };
 
+  const codeType =
+    type === "contract"
+      ? "Mã hợp đồng"
+      : type === "bill"
+        ? "Mã hoá đơn"
+        : "Mã hợp đồng";
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -85,12 +93,12 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
       <div className="rounded-lg p-4">
         <ul className="space-y-2 border p-4 rounded-xl border-gray-60">
           <li className="flex justify-between font-semibold border-b py-3">
-            <span className="text-gray-40">Mã hóa đơn</span>
+            <span className="text-gray-40">{codeType}</span>
             <span>{invoiceId}</span>
           </li>
           <li className="flex justify-between font-semibold border-b py-3">
             <span className="text-gray-40">Số tiền thanh toán</span>
-            <span>{amount}</span>
+            <span>{toCurrencyFormat(amount)} đ</span>
           </li>
           <li className="flex justify-between font-semibold border-b py-3">
             <span className="text-gray-40">Phương thức thanh toán</span>
@@ -122,19 +130,20 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
               HÌNH ẢNH CHUYỂN KHOẢN THÀNH CÔNG
             </p>
             <div className="p-4 rounded-lg h-52 mb-4">
-              <Upload.Dragger 
+              <Upload.Dragger
                 beforeUpload={(file) => {
                   handleImageUpload(file);
                   return false; // Prevent automatic upload
-                }} 
-                className=" border-dashed ant-upload-larger">
+                }}
+                className=" border-dashed ant-upload-larger"
+              >
                 <div className=" flex justify-center mb-3">
                   <img src={digital} alt="" className="w-8 h-8" />
                 </div>
                 <p className="text-blue-60 text-xs">
-                        Bấm hoặc kéo thả hình ảnh vào đây để <br /> đăng hình
-                        ảnh từ thư viện nhé!
-                      </p>
+                  Bấm hoặc kéo thả hình ảnh vào đây để <br /> đăng hình ảnh từ
+                  thư viện nhé!
+                </p>
               </Upload.Dragger>
             </div>
             <button

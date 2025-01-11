@@ -1,29 +1,37 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "antd";
 import { ContractRes } from "@/models/contract";
-import { formatTimestampToDate, formatTimestampToDateTime } from "@/utils/converter";
+import {
+  formatTimestampToDate,
+  formatTimestampToDateTime,
+} from "@/utils/converter";
 import { useAppStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 
 interface ContractDetailProps {
   contract?: ContractRes;
+  status: number
 }
 
-const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
+const ContractDetail: React.FC<ContractDetailProps> = ({ contract, status }) => {
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
-
 
   const handleSignClick = () => {
     navigate("/contract/preview", { state: { contractId: contract?.id } });
   };
 
+  const handleDepositClick = () => {
+    console.log(contract)
+    navigate("/payment/info", { state: { contractID: contract?.id } });
+  };
   
+
   if (!contract) {
     return <div className="w-[50%] p-4">Chọn một hợp đồng để xem chi tiết</div>;
   }
 
-  const canShowButton = userInfo?.role === 1 || (userInfo?.role === 0 && contract.signature_time_b);
+  console.log(contract)
 
   return (
     <div className="w-[50%] p-8">
@@ -99,18 +107,28 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
       </div>
 
       {userInfo?.role === 0 && !contract.signature_time_b && (
-        <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
+        <Button
+          onClick={handleSignClick}
+          className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60"
+        >
           Ký hợp đồng
         </Button>
       )}
-
-      {canShowButton && (
-        <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
+      {userInfo?.role === 0 && contract.signature_time_b && status === 0 ? (
+        <Button
+          onClick={handleDepositClick}
+          className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60"
+        >
+         Đặt cọc
+        </Button>
+      ) :  (
+        <Button
+          onClick={handleSignClick}
+          className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60"
+        >
           Xem hợp đồng
         </Button>
       )}
-
-
     </div>
   );
 };

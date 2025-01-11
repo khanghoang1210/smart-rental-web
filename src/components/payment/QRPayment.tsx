@@ -1,15 +1,16 @@
+import { toCurrencyFormat } from "@/utils/converter";
 import { Button } from "antd";
 import React from "react";
 import { toast } from "sonner";
 
 interface QRPaymentProps {
-  bank: string;
-  logo: string;
-  accountHolder: string;
-  accountNumber: string;
-  transferAmount: string;
-  transferContent: string;
-  qrUrl: string;
+  bank: string | undefined;
+  logo: string | undefined;
+  accountHolder: string | undefined;
+  accountNumber: string | undefined;
+  transferAmount: number | undefined;
+  transferContent: string | undefined;
+  qrUrl: string | undefined;
 }
 
 const QRPayment: React.FC<QRPaymentProps> = ({
@@ -21,15 +22,17 @@ const QRPayment: React.FC<QRPaymentProps> = ({
   transferContent,
   qrUrl,
 }) => {
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        toast.success ("Đã sao chép");
-      })
-      .catch((err) => {
-        console.error("Sao chép thất bại:", err);
-      });
+  const copyToClipboard = (text: string | undefined) => {
+    if (text) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          toast.success("Đã sao chép");
+        })
+        .catch((err) => {
+          console.error("Sao chép thất bại:", err);
+        });
+    }
   };
   return (
     <div className="bg-gradient-to-b from-blue-40 to-blue-80 text-white rounded-[30px] py-[70px] mt-14 w-full md:w-[40%]">
@@ -39,7 +42,11 @@ const QRPayment: React.FC<QRPaymentProps> = ({
             Quét mã QR để thanh toán
           </h2>
           <div className="bg-[#FFF] p-3 w-full h-[275px] rounded-[20px]">
-            <img src={qrUrl} alt="QR Code" className="w-full h-60 object-contain" />
+            <img
+              src={qrUrl}
+              alt="QR Code"
+              className="w-full h-60 object-contain"
+            />
           </div>
         </div>
 
@@ -48,7 +55,7 @@ const QRPayment: React.FC<QRPaymentProps> = ({
             <li className="flex flex-col py-2">
               <span className="text-gray-40 text-[12px]">Ngân hàng</span>
               <div className="flex items-center justify-between">
-                <img src={logo} alt="logo" className="h-12 object-contain"/>
+                <img src={logo} alt="logo" className="h-12 object-contain" />
                 <span className="font-semibold text-gray-20">{bank}</span>
               </div>
             </li>
@@ -75,12 +82,12 @@ const QRPayment: React.FC<QRPaymentProps> = ({
               <div className="flex flex-col">
                 <span className="text-gray-40 text-[12px]">Số tiền</span>
                 <span className="font-medium text-gray-20">
-                  {transferAmount}
+                  {toCurrencyFormat(transferAmount)}
                 </span>
               </div>
 
               <Button
-                onClick={() => copyToClipboard(transferAmount)}
+                onClick={() => copyToClipboard(transferAmount?.toString())}
                 className="bg-blue-60 px-3 py-1 text-xs rounded-[100px] text-[#FFF]"
               >
                 Sao chép

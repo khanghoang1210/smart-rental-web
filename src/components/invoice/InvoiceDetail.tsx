@@ -81,7 +81,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({ bill }) => {
 
       // Chuyển dữ liệu sang trang payment/info
       navigate("/payment/info", {
-        state: { payment: res.data.data, bill },
+        state: { billID: bill?.id },
       });
     } catch (error) {
       if (error instanceof Error)
@@ -141,7 +141,7 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({ bill }) => {
           </li>
           <li className="flex justify-between py-2 font-semibold ml-8">
             <span className="text-gray-40">Tiền phòng</span>
-            <span>{toCurrencyFormat(bill?.total_amount)} đ</span>
+            <span>{toCurrencyFormat(billByID?.room_price)} đ</span>
           </li>
           <li className="flex justify-between py-4 font-semibold ml-8 items-start">
             <span className="text-gray-40">Điện</span>
@@ -152,12 +152,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({ bill }) => {
                   {bill?.new_electricity_index}
                 </div>
                 <div>
-                  {toCurrencyFormat(bill.total_electricity_cost)}đ x
+                  {toCurrencyFormat(billByID?.electricity_cost)}đ x
                   {bill.new_electricity_index - bill.old_electricity_index}
                 </div>
               </div>
-              {toCurrencyFormat(bill.total_electricity_cost * (bill.new_electricity_index -
-              bill.old_electricity_index))} đ
+              {toCurrencyFormat(bill.total_electricity_cost)} đ
             </span>
           </li>
           <li className="flex justify-between py-4 font-semibold ml-8 items-start">
@@ -169,12 +168,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({ bill }) => {
                 </div>
                 <div>
                   {" "}
-                  {toCurrencyFormat(bill.total_water_cost)}đ x
+                  {toCurrencyFormat(billByID?.water_cost)}đ x
                   {bill.new_water_index - bill.old_water_index}
                 </div>
               </div>
-              {toCurrencyFormat(bill.total_water_cost *
-                (bill.new_water_index - bill.old_water_index))} đ
+              {toCurrencyFormat(bill.total_water_cost)} đ
             </span>
           </li>
 

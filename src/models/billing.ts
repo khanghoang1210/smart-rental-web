@@ -17,6 +17,8 @@ export interface BillingRes {
   old_electricity_index: number;
   new_water_index: number;
   new_electricity_index: number;
+  electricity_cost: number;
+  water_cost: number;
   total_water_cost: number;
   total_electricity_cost: number;
   internet_cost: number;

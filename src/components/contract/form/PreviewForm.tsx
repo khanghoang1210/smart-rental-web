@@ -35,7 +35,7 @@ interface ContractTemplateProps {
     landlordResponsibilities?: string;
     tenantResponsibilities?: string;
   };
-  onContractUpdate?: (contract: any) => void;
+  onContractUpdate: (contract: any) => void;
 }
 
 const ContractTemplate: React.FC<ContractTemplateProps> = ({
@@ -176,7 +176,7 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
 
           console.log(formattedData);
           setContract(formattedData);
-          onContractUpdate?.(data);
+          onContractUpdate(data);
         }
       } catch (error) {
         console.error("Error fetching contract data:", error);

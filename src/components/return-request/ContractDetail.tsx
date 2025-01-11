@@ -50,9 +50,6 @@ const ContractDetail = () => {
         contract_id: 16, // Thay bằng giá trị thực tế
         reason: values.reason,
         return_date: values.return_date,
-        status: 1,
-        deduct_amount: values.deduct_amount || 0,
-        total_return_deposit: values.total_return_deposit || 2000000,
       };
       const requestService = new RequestService();
 

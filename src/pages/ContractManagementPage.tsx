@@ -11,16 +11,20 @@ const ContractManagementPage: React.FC = () => {
     null
   );
 
+  const [status, setStatus] = useState(0)
+
   const handleSelectContract = (contract: ContractRes) => {
     setSelectedContract(contract);
   };
+
+  const handleChangeStatus = (status: number) => setStatus(status)
 
   return (
     <>
     <Navbar/>
     <div className="flex justify-center">
-      <ContractsList onSelectContract={handleSelectContract} />
-      <ContractDetail contract={selectedContract || undefined} />
+      <ContractsList onSelectContract={handleSelectContract} onStatusContract={handleChangeStatus}/>
+      <ContractDetail contract={selectedContract || undefined} status={status} />
     </div>
     </>
     

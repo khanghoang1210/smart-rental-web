@@ -558,11 +558,11 @@ const RoomDetail = () => {
                       className=" rounded-[10px]"
                       placeholder="Chọn ngày"
                       style={{ width: "100%", height: "50px" }}
-                      onChange={(date) =>
+                      onChange={(date) => {
                         form.setFieldsValue({
-                          begin_date: date?.toDate() ?? null,
-                        })
-                      }
+                          begin_date: date ? date : null,
+                        });
+                      }}
                     />
                   </Form.Item>
 
@@ -600,7 +600,7 @@ const RoomDetail = () => {
                       style={{ width: "100%", height: "50px" }}
                       onChange={(date) =>
                         form.setFieldsValue({
-                          end_date: date?.toDate() ?? null,
+                          end_date: date ?? null,
                         })
                       }
                     />

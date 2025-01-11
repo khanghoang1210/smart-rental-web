@@ -11,12 +11,13 @@ import { useAppStore } from "@/store";
 
 interface ContractsListProps {
   onSelectContract: (contract: ContractRes) => void;
+  onStatusContract: (status: number) => void;
 }
 
-const ContractsList: React.FC<ContractsListProps> = ({ onSelectContract }) => {
+const ContractsList: React.FC<ContractsListProps> = ({ onSelectContract, onStatusContract }) => {
   const [activeTab, setActiveTab] = useState("pending");
   const [loading, setLoading] = useState(false); // Quản lý trạng thái tải dữ liệu
-  const [error, ] = useState<string | null>(null); // Quản lý lỗi
+  const [error] = useState<string | null>(null); // Quản lý lỗi
   const { userInfo } = useAppStore();
   const [cookies] = useCookies(["token"]);
   const [contracts, setContracts] = useState<ContractRes[]>([]);
@@ -40,6 +41,7 @@ const ContractsList: React.FC<ContractsListProps> = ({ onSelectContract }) => {
           return;
         }
         setContracts(response.data.data);
+        onStatusContract(statusMap[activeTab])
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);
       } finally {

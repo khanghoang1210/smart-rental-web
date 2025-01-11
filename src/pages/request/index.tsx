@@ -12,24 +12,23 @@ interface RequestProps {
 
 const Request = ({ requestID }: RequestProps) => {
   const [cookies] = useCookies(["token"]);
-  const [selectedRequest, setSelectedRequest] =
-    useState<number | null>(null);
-  
+  const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
+
   const [request, setRequest] = useState<RentalRequestByIDRes>();
 
-    useEffect(() => {
-      const fetchRequest = async () => {
-        const requestService = new RequestService();
-        const res = await requestService.getRentalRequestByID(
-          cookies.token,
-          selectedRequest
-        );
-        setRequest(res.data.data);
-      };
-      fetchRequest();
-    }, [selectedRequest]);
+  useEffect(() => {
+    const fetchRequest = async () => {
+      const requestService = new RequestService();
+      const res = await requestService.getRentalRequestByID(
+        cookies.token,
+        selectedRequest || requestID
+      );
+      setRequest(res.data.data);
+    };
+    fetchRequest();
+  }, [selectedRequest]);
 
-    console.log(request)
+  console.log(request);
   return (
     <div>
       <Navbar />

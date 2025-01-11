@@ -42,7 +42,7 @@ const ProcessTrackingPage = () => {
       try {
         const response = await requestService.trackRentalRequestProcess(
           token,
-          selectedRequest.id
+          selectedRequest.request_info
         );
         setProcessTrackings(response.data.data);
       } catch (error) {

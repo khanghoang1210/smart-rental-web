@@ -10,7 +10,8 @@ export interface BankRes {
 
 export interface PaymentInfoRes{
     bank_name:string;
-    bank_logo:string;
+    short_name: string;
+    logo:string;
     account_name:string;
     account_number:string;
     amount: number;

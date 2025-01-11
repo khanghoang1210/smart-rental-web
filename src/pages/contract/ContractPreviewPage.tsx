@@ -12,7 +12,7 @@ import ContractService from "@/services/ContractService";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { CreateReturnRequestReq } from "@/models/chat/request";
 import RequestService from "@/services/RequestService";
-
+import { useAppStore } from "@/store";
 
 interface FormValues {
   reason: string;
@@ -28,13 +28,12 @@ const ContractPreviewPage = () => {
   const contractId = location.state || {};
   const [contract, setContract] = useState<any>(null);
   const [isSecondModalVisible, setIsSecondModalVisible] = useState(false);
-
-  const [isReturnModalVisible, setIsReturnModalVisible] = useState(false)
+  const { userInfo } = useAppStore();
+  const [isReturnModalVisible, setIsReturnModalVisible] = useState(false);
 
   const handleContractUpdate = (updatedContract: any) => {
-    setContract(updatedContract); 
+    setContract(updatedContract);
   };
-
 
   const handleCloseReturnModal = () => {
     setIsReturnModalVisible(false);
@@ -70,8 +69,7 @@ const ContractPreviewPage = () => {
       setShowSignatureModal(false);
       clearCanvas();
     } catch (error) {
-      if (error instanceof Error)
-        toast.error("Lỗi hệ thống");
+      if (error instanceof Error) toast.error("Lỗi hệ thống");
     } finally {
       setIsModalVisible(false);
       setIsLoading(false);
@@ -159,7 +157,6 @@ const ContractPreviewPage = () => {
     return null;
   };
 
-  console.log(contract)
   const handleShowSignatureModal = () => {
     setShowSignatureModal(true);
   };
@@ -187,13 +184,16 @@ const ContractPreviewPage = () => {
     setIsLoading(true);
     const contractService = new ContractService();
     try {
-      await contractService.signContractByTenant(token, contractId.contractId, signature);
+      await contractService.signContractByTenant(
+        token,
+        contractId.contractId,
+        signature
+      );
       toast.success("Ký hợp đồng thành công!");
       setShowSignatureModal(false);
       clearCanvas();
     } catch (error) {
-      if (error instanceof Error)
-        toast.error("Lỗi hệ thống");
+      if (error instanceof Error) toast.error("Lỗi hệ thống");
     } finally {
       setIsLoading(false);
     }
@@ -207,6 +207,7 @@ const ContractPreviewPage = () => {
         reason: values.reason,
         return_date: values.return_date,
       };
+      setIsLoading(true)
       const requestService = new RequestService();
 
       // Gửi yêu cầu API
@@ -219,6 +220,10 @@ const ContractPreviewPage = () => {
       console.error("Error submitting return request:", error);
       toast.error("Có lỗi xảy ra khi gửi yêu cầu trả phòng.");
     }
+    finally{
+      setIsLoading(false)
+      handleCloseReturnModal()
+    }
   };
 
   if (isLoading) {
@@ -229,6 +234,18 @@ const ContractPreviewPage = () => {
     );
   }
 
+  console.log(contract);
+  // if (!contract) {
+  //   return (
+  //     <div className="flex justify-center items-center h-[300px]">
+  //       <Spin size="large" />
+  //     </div>
+  //   );
+  // }
+
+
+
+
   return (
     <>
       <Navbar />
@@ -236,40 +253,41 @@ const ContractPreviewPage = () => {
         <h1 className="text-center my-10 text-2xl text-gray-20">
           Chi tiết hợp đồng
         </h1>
-        <ContractTemplate 
-              contractId={contractId.contractId} 
-              onContractUpdate={handleContractUpdate} />
-       {!contract?.signature_b ? (<div className="flex justify-between mt-6">
-          <button
-            onClick={handleOpenModal}
-            className="border border-red text-red px-16 py-3 rounded-[100px]"
-          >
-            Không đồng ý
-          </button>
-          <button
-            onClick={handleShowSignatureModal}
-            className="bg-blue-60 text-[#FFF] px-16 py-3 rounded-[100px]"
-          >
-            Ký hợp đồng
-          </button>
-        </div>) : contract.status === 1 ? (
+        <ContractTemplate
+          contractId={contractId.contractId}
+          onContractUpdate={handleContractUpdate}
+        />
+        {!contract?.signature_b && userInfo?.role === 0 ? (
           <div className="flex justify-between mt-6">
-          <button
-            onClick={handleOpenSecondModal}
-            className="border border-red text-red px-16 py-3 rounded-[100px]"
-          >
-            Kết thúc hợp đồng
-          </button>
-          <button
-            onClick={handleShowSignatureModal}
-            className="bg-blue-60 text-[#FFF] px-16 py-3 rounded-[100px]"
-          >
-            Gia hạn hợp đồng
-          </button>
-        </div>
-        ): (
-          null
-        )}
+            <button
+              onClick={handleOpenModal}
+              className="border border-red text-red px-16 py-3 rounded-[100px]"
+            >
+              Không đồng ý
+            </button>
+            <button
+              onClick={handleShowSignatureModal}
+              className="bg-blue-60 text-[#FFF] px-16 py-3 rounded-[100px]"
+            >
+              Ký hợp đồng
+            </button>
+          </div>
+        ) : userInfo?.role === 0 && contract.status === 1 ? (
+          <div className="flex justify-between mt-6">
+            <button
+              onClick={handleOpenSecondModal}
+              className="border border-red text-red px-16 py-3 rounded-[100px]"
+            >
+              Kết thúc hợp đồng
+            </button>
+            <button
+              onClick={handleShowSignatureModal}
+              className="bg-blue-60 text-[#FFF] px-16 py-3 rounded-[100px]"
+            >
+              Gia hạn hợp đồng
+            </button>
+          </div>
+        ) : null}
         {isModalVisible && (
           <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">
@@ -302,36 +320,38 @@ const ContractPreviewPage = () => {
           </div>
         )}
 
-      {isSecondModalVisible && (
-        <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="bg-blue-60 w-16 h-16 flex items-center justify-center rounded-full text-[#fff] text-3xl">
-                !
-              </div>
-              <h2 className="text-xl font-semibold text-gray-20">Thông báo</h2>
-              <p className="text-gray-20">
-                Bạn có chắc chắn muốn kết thúc{" "}
-                <span>hợp đồng và tiến hành trả phòng</span>?
-              </p>
-              <div className="flex justify-center space-x-4 mt-6">
-                <button
-                  className="px-6 py-2 w-32 rounded-full border border-blue-60 text-blue-60 hover:bg-gray-100"
-                  onClick={handleCloseSecondModal}
-                >
-                  Hủy
-                </button>
-                <button
-                  className="px-6 py-2 w-32 rounded-full bg-blue-60 text-[#fff] hover:bg-blue-700"
-                  onClick={handleConfirmEndContract}
-                >
-                  Chắc chắn
-                </button>
+        {isSecondModalVisible && (
+          <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-[#fff] rounded-[20px] p-8 w-[400px] text-center relative">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="bg-blue-60 w-16 h-16 flex items-center justify-center rounded-full text-[#fff] text-3xl">
+                  !
+                </div>
+                <h2 className="text-xl font-semibold text-gray-20">
+                  Thông báo
+                </h2>
+                <p className="text-gray-20">
+                  Bạn có chắc chắn muốn kết thúc{" "}
+                  <span>hợp đồng và tiến hành trả phòng</span>?
+                </p>
+                <div className="flex justify-center space-x-4 mt-6">
+                  <button
+                    className="px-6 py-2 w-32 rounded-full border border-blue-60 text-blue-60 hover:bg-gray-100"
+                    onClick={handleCloseSecondModal}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    className="px-6 py-2 w-32 rounded-full bg-blue-60 text-[#fff] hover:bg-blue-700"
+                    onClick={handleConfirmEndContract}
+                  >
+                    Chắc chắn
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}  
+        )}
       </div>
       {/* Signature Modal */}
       <Modal
@@ -496,16 +516,14 @@ const ContractPreviewPage = () => {
                   { required: true, message: "Vui lòng chọn ngày trả phòng" },
                 ]}
               >
-                <Checkbox className="mb-3 text-gray-40">
-                  Theo thời hạn hợp đồng
-                </Checkbox>
+                
                 <DatePicker
                   className=" rounded-[10px]"
                   placeholder="Chọn ngày"
                   style={{ width: "100%", height: "50px" }}
                   onChange={(date) =>
                     form.setFieldsValue({
-                      return_date: date?.toDate() ?? null,
+                      return_date: date ?? null,
                     })
                   }
                 />
@@ -543,7 +561,10 @@ const ContractPreviewPage = () => {
               </Form.Item>
               <Form.Item>
                 <div className="flex justify-end space-x-8">
-                  <Button onClick={handleCloseReturnModal} className="h-[50px] w-[150px] rounded-[100px] border-blue-60 text-blue-60 text-base font-medium">
+                  <Button
+                    onClick={handleCloseReturnModal}
+                    className="h-[50px] w-[150px] rounded-[100px] border-blue-60 text-blue-60 text-base font-medium"
+                  >
                     Huỷ
                   </Button>
                   <Button
