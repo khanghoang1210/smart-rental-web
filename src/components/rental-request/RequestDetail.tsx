@@ -6,7 +6,7 @@ import x from "../../assets/x.png";
 import message_white from "../../assets/message_white.svg";
 import edit_note from "../../assets/edit_note.png";
 import { StarFilled } from "@ant-design/icons";
-import { RentalRequestRes } from "@/models/request";
+import { RentalRequestByIDRes, RentalRequestRes } from "@/models/request";
 import {
   formatDate,
   getStatusLabel,
@@ -22,17 +22,18 @@ import RequestService from "@/services/RequestService";
 import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 
 interface RequestDetailsProps {
-  request: RentalRequestRes | null;
+  request: RentalRequestByIDRes | undefined;
 }
 
 const RequestDetails = ({ request }: RequestDetailsProps) => {
   const [cookies] = useCookies(["token"]);
   const socket = useSocket();
+  
   const { setSelectedConversationId, setSelectedUserId } =
     useConversationStore();
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
-
+  
   const handleCreateContract = async () => {
     navigate("/contract/create", { state: request });
   };
@@ -43,7 +44,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         return;
       }
 
-      setSelectedUserId(request.sender.id);
+      setSelectedUserId(request.id);
       const conversationService = new ConversationService();
 
       // Kiểm tra hoặc tạo conversation
@@ -79,7 +80,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         sender_id: userInfo?.id, // ID của chủ nhà
         receiver_id: request.sender?.id, // ID của người thuê
         conversation_id: conversationIdToUse,
-        content: null, // Nội dung JSON
+        content: null, 
         type: 2,
         rent_auto_content: JSON.stringify(rentalMessage),
       });

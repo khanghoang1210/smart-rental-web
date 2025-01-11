@@ -47,7 +47,7 @@ export default class RequestService {
       }
   }
 
-  async getRentalRequestByID(token: string, id: number) {
+  async getRentalRequestByID(token: string, id: number | null) {
     const url = RENTAL_REQUEST_ENDPOINT + `/${id}`;
     try {
       const res = await apiClient.get(url, {

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "antd";
 import { ContractRes } from "@/models/contract";
-import { formatTimestampToDate } from "@/utils/converter";
+import { formatTimestampToDate, formatTimestampToDateTime } from "@/utils/converter";
 import { useAppStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 
@@ -13,13 +13,17 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
 
+
   const handleSignClick = () => {
     navigate("/contract/preview", { state: { contractId: contract?.id } });
   };
 
+  
   if (!contract) {
     return <div className="w-[50%] p-4">Chọn một hợp đồng để xem chi tiết</div>;
   }
+
+  const canShowButton = userInfo?.role === 1 || (userInfo?.role === 0 && contract.signature_time_b);
 
   return (
     <div className="w-[50%] p-8">
@@ -64,7 +68,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
               </div>
               <div className="font-medium text-gray-20">
                 {contract.signature_time_a
-                  ? formatTimestampToDate(contract.signature_time_a)
+                  ? formatTimestampToDateTime(contract.signature_time_a)
                   : "Chưa ký"}
               </div>
             </div>
@@ -86,7 +90,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
               </div>
               <div className="font-medium text-gray-20 text-end">
                 {contract.signature_time_b
-                  ? formatTimestampToDate(contract.signature_time_b)
+                  ? formatTimestampToDateTime(contract.signature_time_b)
                   : "Chưa ký"}
               </div>
             </div>
@@ -100,7 +104,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({ contract }) => {
         </Button>
       )}
 
-      {userInfo?.role === 1 || (userInfo?.role === 0 && contract.signature_time_b) && (
+      {canShowButton && (
         <Button  onClick={handleSignClick} className="mt-6 rounded-[100px] float-end font-medium px-10 py-6 text-blue-60 border border-blue-60">
           Xem hợp đồng
         </Button>

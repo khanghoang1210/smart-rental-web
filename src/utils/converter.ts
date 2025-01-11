@@ -73,6 +73,8 @@ export const getStatusLabel = (status: number | undefined): string => {
       return "Đã tiếp nhận";
     case 3:
       return "Đã từ chối";
+    case 4:
+      return "Đã huỷ";
     default:
       return "Không xác định";
   }
@@ -110,6 +112,10 @@ export function formatTimestampToDate(timestamp: number): string {
   return dayjs.unix(timestamp).format("DD/MM/YYYY");
 }
 
+export function formatTimestampToDateTime(timestamp: number): string {
+  return dayjs.unix(timestamp).format("MM:HH DD/MM/YYYY");
+}
+
 export function convertDate(inputDate: string | undefined): string {
   // Tách chuỗi theo dấu gạch ngang (-)
   if (inputDate) {
@@ -137,7 +143,6 @@ export const convertToReadableNumber = (num: number): string => {
 
   return num.toString(); // Trả về nguyên số nếu không cần chuyển đổi
 };
-
 
 export function parseDate(dateTime: string): string {
   return dateTime.split("T")[0]; // Lấy phần trước ký tự 'T' (date)

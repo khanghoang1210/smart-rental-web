@@ -63,7 +63,7 @@ const Filter = () => {
     setGender(selectedGender);
   
     const filteredData = location.state?.roomData.filter(
-      (room: RoomRes) => selectedGender === 3 || room.gender === selectedGender
+      (room: RoomRes) => room.gender === selectedGender
     );
   
     setRoomData(filteredData || []);

@@ -1,5 +1,6 @@
 import ContractService from "@/services/ContractService";
-import { toCurrencyFormat } from "@/utils/converter";
+import { formatDate, toCurrencyFormat } from "@/utils/converter";
+import { Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
@@ -40,11 +41,11 @@ interface ContractTemplateProps {
 const ContractTemplate: React.FC<ContractTemplateProps> = ({
   formData,
   contractId,
-  onContractUpdate
+  onContractUpdate,
 }) => {
   const [cookies] = useCookies(["token"]);
   const defaultFormData = {
-    dateCreated:"",
+    dateCreated: "",
     landlordName: "…………………………………….",
     landlordBirthYear: "………………..",
     landlordID: "…………",
@@ -71,8 +72,8 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     landlordResponsibilities: "…………………",
     tenantResponsibilities: "…………………",
     generalResponsibilities: "…………………",
-    signatureA:"",
-    signatureB:"",
+    signatureA: "",
+    signatureB: "",
     ...formData,
   };
   const [contract, setContract] = useState(defaultFormData);
@@ -106,8 +107,7 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     tenantResponsibilities,
     landlordResponsibilities,
     signatureA,
-    signatureB
-
+    signatureB,
   } = contract;
 
   useEffect(() => {
@@ -122,11 +122,12 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
           const data = response.data.data;
 
           const formattedData = {
-            addrressCreated:data.address_created || defaultFormData.addrressCreated,
+            addrressCreated:
+              data.address_created || defaultFormData.addrressCreated,
             dateCreated: data.date_created || defaultFormData.dateCreated,
             landlordName: data.party_a.name || defaultFormData.landlordName,
             landlordBirthYear:
-              data.party_a.dob?.split("-")[0] ||
+              formatDate(data.party_a.dob) ||
               defaultFormData.landlordBirthYear,
             landlordID: data.party_a.cccd || defaultFormData.landlordID,
             landlordIssueDate:
@@ -170,7 +171,7 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
             generalResponsibilities:
               data.general || defaultFormData.generalResponsibilities,
             signatureA: data.signature_a,
-            signatureB: data.signature_b
+            signatureB: data.signature_b,
           };
 
           console.log(formattedData);
@@ -185,8 +186,12 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
     fetchContractData();
   }, [contractId, cookies.token]);
 
-  console.log(  landlordResponsibilities.split(" - "))
-
+  if (!contract)
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
 
   return (
     <div className="p-20 bg-gray-50 border rounded-lg text-gray-700">
@@ -204,8 +209,20 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
       </h1>
 
       {/* Introduction */}
-      <p className="mb-4">Hôm nay, tại <strong>{addrressCreated|| "...."} </strong> ngày <strong>{new Date(Number(dateCreated) * 1000).getDate()|| "...."}</strong> tháng <strong>{new Date(Number(dateCreated) * 1000).getMonth() + 1|| "...."}</strong> năm <strong>{new Date(Number(dateCreated) * 1000).getFullYear() || "...."}</strong></p>
-    
+      <p className="mb-4">
+        Hôm nay, tại <strong>{addrressCreated || "...."} </strong> ngày{" "}
+        <strong>
+          {new Date(Number(dateCreated) * 1000).getDate() || "...."}
+        </strong>{" "}
+        tháng{" "}
+        <strong>
+          {new Date(Number(dateCreated) * 1000).getMonth() + 1 || "...."}
+        </strong>{" "}
+        năm{" "}
+        <strong>
+          {new Date(Number(dateCreated) * 1000).getFullYear() || "...."}
+        </strong>
+      </p>
 
       {/* Section A: landlord Details */}
       <div className="mb-6 space-y-3">
@@ -258,30 +275,35 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
           <strong>{roomAddress}</strong>
         </p>
         <p>
-          Giá thuê: <strong>{toCurrencyFormat(Number(rentalPrice))}</strong> đ/tháng
+          Giá thuê: <strong>{toCurrencyFormat(Number(rentalPrice))}</strong>{" "}
+          đ/tháng
         </p>
         <p>
           Hình thức thanh toán: <strong>{paymentMethod}</strong>
         </p>
         <p>
-          Tiền điện <strong>{toCurrencyFormat(Number(electricityPrice))}</strong> đ/kwh tính theo chỉ số
-          công tơ, thanh toán vào cuối các tháng
+          Tiền điện{" "}
+          <strong>{toCurrencyFormat(Number(electricityPrice))}</strong> đ/kwh
+          tính theo chỉ số công tơ, thanh toán vào cuối các tháng
         </p>
         <p>
-          Tiền nước: <strong>{toCurrencyFormat(Number(waterPrice))}</strong> đ/người thanh toán vào đầu
-          các tháng.
+          Tiền nước: <strong>{toCurrencyFormat(Number(waterPrice))}</strong>{" "}
+          đ/người thanh toán vào đầu các tháng.
         </p>
         <p>
-          Tiền đặt cọc: <strong>{toCurrencyFormat(Number(depositAmount))} đ</strong>
+          Tiền đặt cọc:{" "}
+          <strong>{toCurrencyFormat(Number(depositAmount))} đ</strong>
         </p>
         <p>
-        Hợp đồng có giá trị kể từ ngày{" "}
-        <strong>{new Date(Number(beginDate) * 1000).getDate()}</strong> tháng{" "}
-        <strong>{new Date(Number(beginDate) * 1000).getMonth() + 1}</strong> năm{" "}
-        <strong>{new Date(Number(beginDate) * 1000).getFullYear()}</strong> đến ngày{" "}
-        <strong>{new Date(Number(endDate) * 1000).getDate()}</strong> tháng{" "}
-        <strong>{new Date(Number(endDate) * 1000).getMonth() + 1}</strong> năm{" "}
-        <strong>{new Date(Number(endDate) * 1000).getFullYear()}</strong>.
+          Hợp đồng có giá trị kể từ ngày{" "}
+          <strong>{new Date(Number(beginDate) * 1000).getDate()}</strong> tháng{" "}
+          <strong>{new Date(Number(beginDate) * 1000).getMonth() + 1}</strong>{" "}
+          năm{" "}
+          <strong>{new Date(Number(beginDate) * 1000).getFullYear()}</strong>{" "}
+          đến ngày <strong>{new Date(Number(endDate) * 1000).getDate()}</strong>{" "}
+          tháng{" "}
+          <strong>{new Date(Number(endDate) * 1000).getMonth() + 1}</strong> năm{" "}
+          <strong>{new Date(Number(endDate) * 1000).getFullYear()}</strong>.
         </p>
       </div>
 
@@ -291,39 +313,42 @@ const ContractTemplate: React.FC<ContractTemplateProps> = ({
 
         <h2 className="font-bold mt-6 mb-2">* Trách nhiệm của bên A:</h2>
         <div>
-        {landlordResponsibilities &&
-          landlordResponsibilities
-            .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
-            .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
-            .map((item, index) => (
-              <p className="mb-2" key={index}>- {item.trim()}</p>
-            ))}
-        </div>
-    
-        <h2 className="font-bold mt-6 mb-4">* Trách nhiệm của bên B:</h2>
-        <div>
-        {tenantResponsibilities &&
-          tenantResponsibilities
-            .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
-            .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
-            .map((item, index) => (
-              <p className="mb-2" key={index}>- {item.trim()}</p>
-            ))}
+          {landlordResponsibilities &&
+            landlordResponsibilities
+              .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
+              .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
+              .map((item, index) => (
+                <p className="mb-2" key={index}>
+                  - {item.trim()}
+                </p>
+              ))}
         </div>
 
+        <h2 className="font-bold mt-6 mb-4">* Trách nhiệm của bên B:</h2>
+        <div>
+          {tenantResponsibilities &&
+            tenantResponsibilities
+              .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
+              .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
+              .map((item, index) => (
+                <p className="mb-2" key={index}>
+                  - {item.trim()}
+                </p>
+              ))}
+        </div>
 
         <h2 className="font-bold mt-6 mb-4">TRÁCH NHIỆM CHUNG</h2>
         <div>
-        {generalResponsibilities &&
-          generalResponsibilities
-            .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
-            .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
-            .map((item, index) => (
-              <p className="mb-2" key={index}>- {item.trim()}</p>
-            ))}
+          {generalResponsibilities &&
+            generalResponsibilities
+              .split(/(?:\s*-\s*)/g) // Biểu thức chính quy để tách chuỗi
+              .filter((item) => item.trim() !== "") // Lọc các phần tử rỗng
+              .map((item, index) => (
+                <p className="mb-2" key={index}>
+                  - {item.trim()}
+                </p>
+              ))}
         </div>
-
-        
       </div>
 
       {/* Footer: Signatures */}

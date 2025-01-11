@@ -42,14 +42,11 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
   return (
     <div className="shadow-sm rounded-lg">
       <h3 className="text-gray-20 text-xl font-bold mb-8">Yêu cầu trả phòng</h3>
-      <div className="flex items-center space-x-5">
-        <h1 className="text-gray-60 text-xs font-medium">
-          Số 9 Nguyễn Văn Huyên, Dịch Vọng, Cầu Giấy, Hà Nội
-        </h1>
+      {/* <div className="flex items-center space-x-5">
         <div className="bg-gray-90 px-3 rounded-3xl text-xs font-semibold text-gray-20">
           {requests.length}
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-2 space-y-3">
         {requests.map((item) => (

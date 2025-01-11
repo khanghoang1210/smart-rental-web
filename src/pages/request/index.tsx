@@ -1,39 +1,35 @@
 import Navbar from "@/components/home/Navbar";
 import RequestDetails from "@/components/rental-request/RequestDetail";
 import RequestList from "@/components/rental-request/RequestList";
-import { RentalRequestRes } from "@/models/request";
+import { RentalRequestByIDRes, RentalRequestRes } from "@/models/request";
 import RequestService from "@/services/RequestService";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 
 interface RequestProps {
-  requestID?: number | null;
+  requestID: number | null;
 }
 
 const Request = ({ requestID }: RequestProps) => {
   const [cookies] = useCookies(["token"]);
   const [selectedRequest, setSelectedRequest] =
-    useState<RentalRequestRes | null>(null);
+    useState<number | null>(null);
+  
+  const [request, setRequest] = useState<RentalRequestByIDRes>();
 
-  useEffect(() => {
-    const fetchRequest = async () => {
-      if (requestID) {
-        try {
-          const requestService = new RequestService();
-          const response = await requestService.getRentalRequestByID(
-            cookies.token,
-            requestID
-          );
-          setSelectedRequest(response.data.data);
-        } catch (error) {
-          console.error("Failed to fetch rental request:", error);
-        }
-      }
-    };
+    useEffect(() => {
+      const fetchRequest = async () => {
+        const requestService = new RequestService();
+        const res = await requestService.getRentalRequestByID(
+          cookies.token,
+          selectedRequest
+        );
+        setRequest(res.data.data);
+      };
+      fetchRequest();
+    }, [selectedRequest]);
 
-    fetchRequest();
-  }, [requestID, cookies.token]);
-
+    console.log(request)
   return (
     <div>
       <Navbar />
@@ -42,7 +38,7 @@ const Request = ({ requestID }: RequestProps) => {
           <RequestList onRequestSelect={setSelectedRequest} />
         </div>
         <div className="col-span-2">
-          <RequestDetails request={selectedRequest} />
+          <RequestDetails request={request} />
         </div>
       </div>
     </div>

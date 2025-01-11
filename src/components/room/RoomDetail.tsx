@@ -1,4 +1,13 @@
-import { Button, Card, Checkbox, DatePicker, Form, Input, Modal, Spin } from "antd";
+import {
+  Button,
+  Card,
+  Checkbox,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Spin,
+} from "antd";
 import wc from "../../assets/wc.svg";
 import win from "../../assets/bed.svg";
 import wifi from "../../assets/wifi.svg";
@@ -59,12 +68,15 @@ const RoomDetail = () => {
   const [user, setUser] = useState<UserInfo>();
   const { id } = useParams<{ id: string }>();
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const roomId = id ? parseInt(id, 10) : null;
   const { setSelectedConversationId, setSelectedUserId } =
     useConversationStore();
   const navigate = useNavigate();
 
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null
+  );
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -73,25 +85,26 @@ const RoomDetail = () => {
   const openModal = (index: number) => {
     setSelectedImageIndex(index);
   };
-  
+
   const closeModal = () => {
     setSelectedImageIndex(null);
   };
-  
+
   const nextImage = () => {
     if (selectedImageIndex !== null && room?.room_images) {
       setSelectedImageIndex((selectedImageIndex + 1) % room.room_images.length);
     }
   };
-  
+
   const prevImage = () => {
     if (selectedImageIndex !== null && room?.room_images) {
       setSelectedImageIndex(
-        (selectedImageIndex - 1 + room.room_images.length) % room.room_images.length
+        (selectedImageIndex - 1 + room.room_images.length) %
+          room.room_images.length
       );
     }
   };
-  
+
   const handleSubmit = async (values: FormValues) => {
     if (!roomId) {
       toast.error("Invalid room ID");
@@ -115,6 +128,7 @@ const RoomDetail = () => {
     };
 
     console.log(requestData);
+    setLoading(true);
     try {
       await requestService.createRentalRequest(token, requestData);
       toast.success("Gửi yêu cầu thuê thành công");
@@ -122,6 +136,8 @@ const RoomDetail = () => {
       setIsModalVisible(false);
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
   const handleCancel = () => {
@@ -144,7 +160,7 @@ const RoomDetail = () => {
           const landlord = await userSerivce.getUserByID(data.owner.id, token);
           setUser(landlord.data.data);
 
-          console.log(user)
+          console.log(user);
         }
       } catch (error) {
         if (error instanceof Error) toast.error(error.message);
@@ -166,14 +182,23 @@ const RoomDetail = () => {
     }
   };
 
-  console.log(room)
+  console.log(room);
 
   if (!room) {
-    return  <div className="flex justify-center items-center h-[300px]">
-    <Spin size="large" />
-  </div>;
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
   }
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Spin size="large" />
+      </div>
+    );
+  }
   return (
     <>
       <Navbar />
@@ -199,14 +224,14 @@ const RoomDetail = () => {
           </div>
           <div className="flex flex-col space-y-2 cursor-pointer">
             {room?.room_images.slice(1, 3).map((image, index) => (
-                <img
-                  key={index + 1}
-                  src={image}
-                  alt={`Image ${index + 2}`}
-                  className="rounded-lg object-cover w-[450px] h-40"
-                  onClick={() => openModal(index + 1)} // Mở modal với ảnh được chọn
-                />
-              ))}
+              <img
+                key={index + 1}
+                src={image}
+                alt={`Image ${index + 2}`}
+                className="rounded-lg object-cover w-[450px] h-40"
+                onClick={() => openModal(index + 1)} // Mở modal với ảnh được chọn
+              />
+            ))}
           </div>
         </div>
 
@@ -282,7 +307,9 @@ const RoomDetail = () => {
                 <div className="flex flex-col items-center space-y-1">
                   <img src={water_active} alt="Water" className="w-8 h-8" />
                   <p className="font-bold text-blue-60">
-                    {room?.water_cost ? toCurrencyAbbreviation(room?.water_cost) : "Miễn phí"}
+                    {room?.water_cost
+                      ? toCurrencyAbbreviation(room?.water_cost)
+                      : "Miễn phí"}
                   </p>
                 </div>
                 <div className="flex flex-col items-center space-y-1">
@@ -296,7 +323,9 @@ const RoomDetail = () => {
                 <div className="flex flex-col items-center space-y-1">
                   <img src={bike_active} alt="Bike" className="w-8 h-8" />
                   <p className="font-bold text-blue-60">
-                    {room?.parking_fee ? toCurrencyAbbreviation(room?.parking_fee) : "Miễn phí"}
+                    {room?.parking_fee
+                      ? toCurrencyAbbreviation(room?.parking_fee)
+                      : "Miễn phí"}
                   </p>
                 </div>
               </div>
@@ -317,7 +346,12 @@ const RoomDetail = () => {
         <FeaturedRooms title="Đề xuất" />
         <div className="flex items-center justify-center">
           <div className="flex justify-start items-center space-x-12 mr-24">
-            <LandlordInfo name={user?.full_name} totalRoom={user?.total_room} totalRating={user?.total_rating} avatar={user?.avatar_url}/>
+            <LandlordInfo
+              name={user?.full_name}
+              totalRoom={user?.total_room}
+              totalRating={user?.total_rating}
+              avatar={user?.avatar_url}
+            />
             <button
               onClick={handleStartConversation}
               className="bg-blue-40 text-[#FFF] font-semibold py-2 px-6 rounded-lg shadow-md flex items-center justify-center h-14 w-[400px]"
@@ -520,9 +554,6 @@ const RoomDetail = () => {
                     ]}
                     className="w-[277px]"
                   >
-                    <Checkbox className="mb-3 text-gray-40">
-                      Có thể dọn vào ngay
-                    </Checkbox>
                     <DatePicker
                       className=" rounded-[10px]"
                       placeholder="Chọn ngày"
@@ -563,10 +594,6 @@ const RoomDetail = () => {
                     ]}
                     className="w-[277px]"
                   >
-                    <Checkbox className="mb-3 text-gray-40">
-                      Tôi muốn thuê dài hạn
-                    </Checkbox>
-
                     <DatePicker
                       className=" rounded-[10px]"
                       placeholder="Chọn ngày"
@@ -629,34 +656,34 @@ const RoomDetail = () => {
           </div>
         </Modal>
         {selectedImageIndex !== null && (
-        <Modal
-          open={true}
-          onCancel={closeModal}
-          footer={null}
-          centered
-          className="custom-modal"
-        >
-          <div className="relative flex items-center justify-center">
-            <button
-              className="absolute -left-4 top-1/2  text-[white]  transform -translate-y-1/2 text-white bg-gray-40 px-4 py-2 rounded-full"
-              onClick={prevImage}
-            >
-               {"<"}
-            </button>
-            <img
-              src={room?.room_images[selectedImageIndex] || ""}
-              alt="Selected"
-              className="w-full h-auto object-contain rounded-lg"
-            />
-            <button
-              className="absolute -right-4 top-1/2 transform text-[white] -translate-y-1/2 text-white bg-gray-40 px-4 py-2 rounded-full"
-              onClick={nextImage}
-            >
-              {">"}
-            </button>
-          </div>
-        </Modal>
-      )}
+          <Modal
+            open={true}
+            onCancel={closeModal}
+            footer={null}
+            centered
+            className="custom-modal"
+          >
+            <div className="relative flex items-center justify-center">
+              <button
+                className="absolute -left-4 top-1/2  text-[white]  transform -translate-y-1/2 text-white bg-gray-40 px-4 py-2 rounded-full"
+                onClick={prevImage}
+              >
+                {"<"}
+              </button>
+              <img
+                src={room?.room_images[selectedImageIndex] || ""}
+                alt="Selected"
+                className="w-full h-auto object-contain rounded-lg"
+              />
+              <button
+                className="absolute -right-4 top-1/2 transform text-[white] -translate-y-1/2 text-white bg-gray-40 px-4 py-2 rounded-full"
+                onClick={nextImage}
+              >
+                {">"}
+              </button>
+            </div>
+          </Modal>
+        )}
       </div>
       <Footer />
     </>

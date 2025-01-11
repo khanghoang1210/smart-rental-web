@@ -65,7 +65,7 @@ const NumOfPerson: React.FC<NumOfPersonProps> = ({
           <Button  onClick={() => handleGenderChange(2)} className={`${gender === 2 ?'bg-blue-40 text-[#FFF]' : 'bg-gray-90 text-gray-40'} rounded-lg w-24 h-11`}>
             Nam
           </Button>
-          <Button onClick={() => handleGenderChange(3)} className={`${gender ===3 ?'bg-blue-40 text-[#FFF]' : 'bg-gray-90 text-gray-40'} rounded-lg w-24 h-11`}>
+          <Button onClick={() => handleGenderChange(3)} className={`${gender === 3 ?'bg-blue-40 text-[#FFF]' : 'bg-gray-90 text-gray-40'} rounded-lg w-24 h-11`}>
             Nữ
           </Button>
         </div>

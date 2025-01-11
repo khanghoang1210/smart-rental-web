@@ -32,7 +32,7 @@ const ContractPreviewPage = () => {
   const [isReturnModalVisible, setIsReturnModalVisible] = useState(false)
 
   const handleContractUpdate = (updatedContract: any) => {
-    setContract(updatedContract); // Cập nhật contract từ component con
+    setContract(updatedContract); 
   };
 
 
@@ -252,7 +252,7 @@ const ContractPreviewPage = () => {
           >
             Ký hợp đồng
           </button>
-        </div>) : (
+        </div>) : contract.status === 1 ? (
           <div className="flex justify-between mt-6">
           <button
             onClick={handleOpenSecondModal}
@@ -267,6 +267,8 @@ const ContractPreviewPage = () => {
             Gia hạn hợp đồng
           </button>
         </div>
+        ): (
+          null
         )}
         {isModalVisible && (
           <div className="fixed inset-0 bg-[#000] bg-opacity-50 flex justify-center items-center z-50">

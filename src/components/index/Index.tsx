@@ -7,9 +7,6 @@ import { toast } from "sonner";
 import { generatePeriods } from "@/utils/generater";
 
 const Index: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState<"DaChoThue" | "ConTrong">(
-    "DaChoThue"
-  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<number | null>(null);
   const periods = generatePeriods();
@@ -20,10 +17,6 @@ const Index: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [indexData, setIndexData] = useState<any>(null);
   const [inputIndex, setInputIndex] = useState<number | null>(null);
-
-  const handleTabChange = (tab: "DaChoThue" | "ConTrong") => {
-    setSelectedTab(tab);
-  };
 
   const openModal = (roomNumber: number) => {
     setSelectedRoom(roomNumber);
@@ -40,9 +33,10 @@ const Index: React.FC = () => {
     setLoading(true);
     try {
       const data = {
-        room_id: indexData?.find((data: any) =>
-          data.index_info.some((info: any) => info.room_number === selectedRoom)
-        )?.room_id,
+        room_id: indexData
+          ?.flatMap((d: any) => d.index_info)
+          ?.find((info: any) => info.room_number === selectedRoom)?.room_id,
+
         month: getMonthYear(selectedPeriod).month,
         year: getMonthYear(selectedPeriod).year,
         ...(selectedType === "electric"
@@ -51,6 +45,7 @@ const Index: React.FC = () => {
       };
       const response = await billingService.createIndex(token, data);
       toast.success("Ghi chỉ số thành công.");
+      await fetchIndexData(selectedType, selectedPeriod);
     } catch (error: any) {
       toast.error(error.message || "Lỗi khi ghi chỉ số.");
     } finally {
