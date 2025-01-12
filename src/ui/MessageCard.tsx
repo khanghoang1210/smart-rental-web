@@ -24,7 +24,6 @@ const MessageCard = (prop: MessageCardProps) => {
         </p>
         <div className={`${prop.isSender ? "bg-gray-90": "bg-gray-80"} p-3 rounded-lg mt-1 space-y-1`}>
           <p className="font-semibold text-lg text-gray-20">{prop.roomTitle}</p>
-          <p className={`${prop.isSender ? "text-blue-60" :"text-blue-40"} font-bold`}>1.6 triệu VND/người</p>
           <p className="text-gray-20 text-xs">{prop.roomAddress}</p>
         </div>
         <p className="text-gray-700 mt-4">
