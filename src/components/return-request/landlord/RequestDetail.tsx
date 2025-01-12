@@ -69,8 +69,8 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
         return;
       }
 
-      const requestService = new RequestService();
-      await requestService.approveReturnRequest(cookies.token, request.id);
+      // const requestService = new RequestService();
+      // await requestService.approveReturnRequest(cookies.token, request.id);
 
       toast.success("Yêu cầu trả phòng đã được tiếp nhận!");
 
@@ -124,7 +124,7 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
               </p>
               <div className="flex space-x-1 ">
                 {[...Array(5)].map((_, index) =>
-                  index < request?.created_user?.total_rating ? (
+                  index < (request?.created_user?.total_rating || 0) ? (
                     <StarFilled
                       key={index}
                       className="text-[#FFCC47] text-[10px]"

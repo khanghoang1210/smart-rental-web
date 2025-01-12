@@ -4,20 +4,26 @@ import Navbar from "../home/Navbar";
 import success from "../../assets/success.png";
 import digital from "../../assets/digital.svg";
 import TextArea from "antd/es/input/TextArea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CustomRate from "./CustomRate";
 import { useAppStore } from "@/store";
 import RatingService from "@/services/RatingService";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
+import { UserInfo } from "@/store/slice/authSlice";
+import { RoomRes } from "@/models/room";
+import UserService from "@/services/UserService";
+import RoomService from "@/services/RoomService";
 
 const ConfirmationSuccess = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const { userInfo } = useAppStore();
-  
+  const [tenant, setTenant] = useState<UserInfo>();
+  const [landlord, setLandlord] = useState<UserInfo>();
+  const [room, setRoom] = useState<RoomRes>();
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
   const { tenantID, roomID, landlordID } = location.state || {};
@@ -65,6 +71,33 @@ const ConfirmationSuccess = () => {
     setCurrentStep(1); // Move to step 2
   };
 
+  useEffect(() => {
+    const fetchTenant = async () => {
+      const userService = new UserService();
+      const res = await userService.getUserByID(tenantID, token);
+      const data = res.data.data;
+      setTenant(data);
+    };
+
+    const fetchLandlord = async () => {
+      const userService = new UserService();
+      const res = await userService.getUserByID(landlordID, token);
+      const data = res.data.data;
+      setLandlord(data);
+    };
+
+    const fetchRoom = async () => {
+      const roomService = new RoomService();
+      const res = await roomService.getByID(token, roomID);
+      const data = res.data.data;
+      setRoom(data);
+    };
+    if (tenantID) fetchTenant();
+    if (landlordID && roomID) {
+      fetchLandlord();
+      fetchRoom;
+    }
+  }, [tenantID, roomID, landlordID]);
   const handleOk = async () => {
     const ratingService = new RatingService();
     try {
@@ -236,11 +269,13 @@ const ConfirmationSuccess = () => {
                   <div className="w-1/2">
                     <div className="text-center mb-4">
                       <img
-                        src="https://via.placeholder.com/80"
+                        src={tenant?.avatar_url}
                         alt="Avatar"
                         className="w-20 h-20 rounded-full mx-auto mb-2"
                       />
-                      <p className="font-semibold text-lg">Nguyễn Văn A</p>
+                      <p className="font-semibold text-lg">
+                        {tenant?.full_name}
+                      </p>
                       <Rate
                         onChange={(value) =>
                           handleRatingChange(value, "tenant_overall")
