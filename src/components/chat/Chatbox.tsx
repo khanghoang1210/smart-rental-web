@@ -196,7 +196,7 @@ const ChatBox = () => {
         </h1>
       </div>
       <div className="flex-grow p-4 overflow-y-auto">
-        {messages.map((msg, index) => (
+        {[...messages].reverse().map((msg, index) => (
           <div
             key={msg.id}
             className={`flex ${

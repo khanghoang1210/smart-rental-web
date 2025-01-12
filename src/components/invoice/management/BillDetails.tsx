@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { formatDateTime, toCurrencyFormat } from "@/utils/converter";
 import PaymentService from "@/services/PaymentService";
 import { PaymentRes } from "@/models/payment";
+import checked from "../../../assets/checked.png";
 
 interface BillDetailsProps {
   billId: number | undefined;
@@ -29,7 +30,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
       if (!billId) {
         setBill(null);
         return;
-      };
+      }
 
       setLoading(true);
       try {
@@ -72,7 +73,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
       toast.success("Xác nhận thanh toán thành công.");
     } catch (error: any) {
       toast.error(error.message || "Lỗi khi xác nhận thanh toán.");
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -139,12 +140,15 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                     </div>
                     <div>
                       {" "}
-                      {bill.electricity_cost}đ x
+                      {toCurrencyFormat(bill.electricity_cost)}đ x
                       {bill.new_electricity_index - bill.old_electricity_index}
                     </div>
                   </div>
-                  {bill.electricity_cost *
-                    (bill.new_electricity_index - bill.old_electricity_index)}
+                  {toCurrencyFormat(
+                    bill.electricity_cost *
+                      (bill.new_electricity_index - bill.old_electricity_index)
+                  )}{" "}
+                  đ
                 </span>
               </li>
               <li className="flex justify-between py-4 font-semibold ml-8 items-start">
@@ -157,12 +161,15 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                     </div>
                     <div>
                       {" "}
-                      {bill.water_cost}đ x
+                      {toCurrencyFormat(bill.water_cost)}đ x
                       {bill.new_water_index - bill.old_water_index}
                     </div>
                   </div>
-                  {bill.water_cost *
-                    (bill.new_water_index - bill.old_water_index)}
+                  {toCurrencyFormat(
+                    bill.water_cost *
+                      (bill.new_water_index - bill.old_water_index)
+                  )}{" "}
+                  đ
                 </span>
               </li>
 
@@ -181,12 +188,7 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
             </ul>
           </div>
           <div className="w-[50%]">
-            <div className="mb-6">
-              <Button className="w-[70%] text-blue-60 text-base font-semibold border-2 border-blue-60 py-5 mt-5 rounded-[100px]">
-                Chỉnh sửa hóa đơn
-              </Button>
-            </div>
-            <ul className="border p-4 rounded-xl border-blue-80">
+            <ul className="border p-4 rounded-xl border-blue-80 mt-[88px]">
               <h1 className="text-gray-20 font-semibold">
                 Thông tin thanh toán
               </h1>
@@ -283,7 +285,9 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-20">Người giao dịch</span>
-                <span className="text-gray-20 font-semibold">{payment.sender_name}</span>
+                <span className="text-gray-20 font-semibold">
+                  {payment.sender_name}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-20">Tổng thanh toán</span>
@@ -331,13 +335,17 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                       </div>
                       <div>
                         {" "}
-                        {bill.electricity_cost}đ x
+                        {toCurrencyFormat(bill.electricity_cost)}đ x
                         {bill.new_electricity_index -
                           bill.old_electricity_index}
                       </div>
                     </div>
-                    {bill.electricity_cost *
-                      (bill.new_electricity_index - bill.old_electricity_index)}
+                    {toCurrencyFormat(
+                      bill.electricity_cost *
+                        (bill.new_electricity_index -
+                          bill.old_electricity_index)
+                    )}{" "}
+                    đ
                   </span>
                 </li>
                 <li className="flex justify-between py-4 font-semibold ml-8 items-start">
@@ -350,12 +358,15 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
                       </div>
                       <div>
                         {" "}
-                        {bill.water_cost}đ x
+                        {toCurrencyFormat(bill.water_cost)}đ x
                         {bill.new_water_index - bill.old_water_index}
                       </div>
                     </div>
-                    {bill.water_cost *
-                      (bill.new_water_index - bill.old_water_index)}
+                    {toCurrencyFormat(
+                      bill.water_cost *
+                        (bill.new_water_index - bill.old_water_index)
+                    )}{" "}
+                    đ
                   </span>
                 </li>
 
@@ -407,7 +418,139 @@ const BillDetails: React.FC<BillDetailsProps> = ({ billId }) => {
               <div className="mt-4 flex justify-between items-center">
                 <span className="text-lg font-bold">Tổng tiền</span>
                 <span className="text-2xl font-semibold text-blue-40">
-                  {bill.total_amount}đ
+                  {toCurrencyFormat(bill.total_amount)}đ
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {bill.status === 2 && (
+        <div className="w-[900px]">
+          <div className="flex justify-between">
+            <div className="flex space-x-3">
+              <h2 className="text-xl font-bold mb-3">Thông tin hoá đơn</h2>
+              <div className="flex items-center space-x-2 bg-[#E9FFE8] px-3 py-1 rounded-sm text-sm font-medium text-green">
+                <img src={checked} className="w-5" alt="" />
+                <p>Đã thanh toán vào lúc {formatDateTime(bill.created_at)}</p>
+              </div>
+            </div>
+          </div>
+          <div className="text-[12px] text-gray-20 mb-4">
+            Thời gian tạo: {formatDateTime(bill.created_at)}
+          </div>
+
+          <div className="flex gap-16 mt-6">
+            <div className="w-[50%]">
+              <ul className="border p-4 rounded-xl border-blue-80">
+                <h1 className="text-gray-20 font-semibold">
+                  Thông tin hóa đơn
+                </h1>
+                <li className="flex justify-between py-2 ml-8 font-semibold">
+                  <span className="text-gray-40">Mã hoá đơn</span>
+                  <span className="text-gray-20">{bill.id}</span>
+                </li>
+                <li className="flex justify-between py-2 font-semibold ml-8">
+                  <span className="text-gray-40">Tiền phòng</span>
+                  <span className="text-gray-20">
+                    {toCurrencyFormat(bill.room_price)}
+                  </span>
+                </li>
+                <li className="flex justify-between py-4 font-semibold ml-8 items-start">
+                  <span className="text-gray-40">Điện</span>
+                  <span className="text-right text-black font-bold text-gray-20">
+                    <div className="text-sm text-gray-500 mt-1">
+                      <div>
+                        số cũ: {bill.old_electricity_index} - số mới:{" "}
+                        {bill.new_electricity_index}
+                      </div>
+                      <div>
+                        {" "}
+                        {toCurrencyFormat(bill.electricity_cost)}đ x
+                        {bill.new_electricity_index -
+                          bill.old_electricity_index}
+                      </div>
+                    </div>
+                    {toCurrencyFormat(
+                      bill.electricity_cost *
+                        (bill.new_electricity_index -
+                          bill.old_electricity_index)
+                    )}{" "}
+                    đ
+                  </span>
+                </li>
+                <li className="flex justify-between py-4 font-semibold ml-8 items-start">
+                  <span className="text-gray-40">Nước</span>
+                  <span className="text-right text-black font-bold text-gray-20">
+                    <div className="text-sm text-gray-500 mt-1">
+                      <div>
+                        số cũ: {bill.old_water_index} - số mới:{" "}
+                        {bill.new_water_index}
+                      </div>
+                      <div>
+                        {" "}
+                        {toCurrencyFormat(bill.water_cost)}đ x
+                        {bill.new_water_index - bill.old_water_index}
+                      </div>
+                    </div>
+                    {toCurrencyFormat(
+                      bill.water_cost *
+                        (bill.new_water_index - bill.old_water_index)
+                    )}{" "}
+                    đ
+                  </span>
+                </li>
+
+                <li className="flex justify-between py-2 font-semibold ml-8">
+                  <span className="text-gray-40">Internet</span>
+                  <span className="text-gray-20">{bill.internet_cost}</span>
+                </li>
+                <li className="flex justify-between py-2 font-semibold ml-8">
+                  <span className="text-gray-40">Phí giữ xe</span>
+                  <span className="text-gray-20">{bill.parking_fee}</span>
+                </li>
+                <li className="flex justify-between py-2 font-semibold ml-8">
+                  <span className="text-gray-40">Phí phát sinh</span>
+                  <span className="text-gray-20">{bill.addition_fee}</span>
+                </li>
+              </ul>
+            </div>
+            <div className="w-[50%]">
+              <ul className="border p-4 rounded-xl border-blue-80">
+                <h1 className="text-gray-20 font-semibold">
+                  Thông tin thanh toán
+                </h1>
+                <li className="flex justify-between py-2 ml-8 font-semibold">
+                  <span className="text-gray-40">Tên</span>
+                  <span className="text-gray-20">{bill.info.tenant_name}</span>
+                </li>
+                <li className="flex justify-between py-2 ml-8 font-semibold">
+                  <span className="text-gray-40">Số điện thoại</span>
+                  <span className="text-gray-20">{bill.info.phone_number}</span>
+                </li>
+                <li className="flex justify-between py-2 ml-8 font-semibold">
+                  <span className="text-gray-40">Phòng số</span>
+                  <span className="text-gray-20">{bill.info.room_number}</span>
+                </li>
+                <li className="flex items-start justify-between py-2 ml-8 font-semibold">
+                  <span className="text-gray-40">Địa chỉ</span>
+                  <span className="break-words text-right max-w-[200px] text-gray-20">
+                    {bill.info.address}
+                  </span>
+                </li>
+
+                <li className="flex justify-between ml-8 py-2 font-semibold">
+                  <span className="text-gray-40">Kỳ</span>
+                  <span className="text-gray-20">
+                    Tháng {bill.info.month}/{bill.info.year}
+                  </span>
+                </li>
+              </ul>
+              <div className="mt-4 flex justify-between items-center">
+                <span className="text-lg font-bold">Tổng tiền</span>
+                <span className="text-2xl font-semibold text-blue-40">
+                  {toCurrencyFormat(bill.total_amount)}đ
                 </span>
               </div>
             </div>

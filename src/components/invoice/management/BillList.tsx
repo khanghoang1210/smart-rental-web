@@ -241,7 +241,7 @@ const BillList = ({
               <h2 className="text-xl font-semibold text-gray-20">Thông báo</h2>
               <p className="text-gray-20">
                 Bạn có chắc chắn muốn tạo hóa đơn tháng{" "}
-                <span className="font-bold">10/2024</span> cho tất cả{" "}
+                <span className="font-bold">{selectedPeriod}</span> cho tất cả{" "}
                 <span className="font-bold">
                   {selectedBills.length} phòng trọ
                 </span>
