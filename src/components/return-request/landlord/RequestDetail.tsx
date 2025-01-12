@@ -62,6 +62,9 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
     }
   };
 
+  const handleReturnDeposit = async () => {
+    navigate("/payment/info", { state: { returnID: request?.id } });
+  };
   const handleAcceptRequest = async () => {
     try {
       if (!request) {
@@ -84,7 +87,11 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
       toast.error("Đã xảy ra lỗi khi tiếp nhận yêu cầu.");
     }
   };
-  console.log(request);
+  let total_return = 0;
+  if (request?.total_return_deposit && request.deduct_amount) {
+    total_return = request?.total_return_deposit - request?.deduct_amount;
+  }
+  console.log(total_return);
   if (!requestId) return <div></div>;
 
   return (
@@ -101,7 +108,13 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
           ) : (
             <img src={checked} className="w-3 h-3" alt="" />
           )}
-          <p>{request?.status === 0 ? "Chưa xử lý" : "Đã xác nhận"}</p>
+          <p>
+            {request?.status === 0
+              ? "Chưa xử lý"
+              : request?.status === 1
+                ? "Đã xác nhận"
+                : "Đã hoàn thành"}
+          </p>
         </div>
       </div>
       <p className="text-gray-40 text-xs mt-3">
@@ -220,6 +233,14 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
               Xác nhận
             </Button>
           )}
+          {request?.status === 1 && (
+            <Button
+              onClick={handleReturnDeposit}
+              className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
+            >
+              Hoàn trả tiền cọc
+            </Button>
+          )}
         </div>
         <div className="w-1/2">
           <div className="mt-4 border border-blue-95 p-5 rounded-xl ">
@@ -267,7 +288,7 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
           <div className="flex justify-between mt-6">
             <h1 className="text-gray-20 text-xl">Tổng tiền</h1>
             <p className="text-blue-40 text-xl font-semibold">
-              {toCurrencyFormat(request?.total_return_deposit)} đ
+              {toCurrencyFormat(total_return) || 0} đ
             </p>
           </div>
         </div>

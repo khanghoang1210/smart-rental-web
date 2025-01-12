@@ -30,7 +30,7 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
 
   const handleSaveClick = () => {
     if (onSave) {
-      onSave(); 
+      onSave();
     }
     handleClosePopup();
   };
@@ -84,7 +84,13 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({
           className="w-24 h-24 mb-4"
         />
         <p className="text-gray-700  font-medium">
-          Bạn đang thanh toán hóa đơn cho phòng trọ
+          Bạn đang{" "}
+          {type === "contract"
+            ? "thanh toán tiền cọc"
+            : type === "bill"
+              ? "thanh toán hoá đơn"
+              : "hoàn trả tiền cọc"}{" "}
+          cho phòng trọ
         </p>
         <p className="text-blue-60 break-words max-w-[300px] font-bold">
           {address}

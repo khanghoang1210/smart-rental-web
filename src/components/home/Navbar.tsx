@@ -19,6 +19,9 @@ import { useAppStore } from "@/store";
 import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 import { useCookies } from "react-cookie";
 import { customStorage } from "@/utils/localStorage";
+import { NotiRes } from "@/models/noti";
+import NotiService from "@/services/NotiService";
+import { formatDateTime } from "@/utils/converter";
 
 interface NavbarProps {
   searchKey?: string;
@@ -26,11 +29,15 @@ interface NavbarProps {
 const Navbar = (prop: NavbarProps) => {
   const { userInfo, clearUserInfo } = useAppStore();
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [noties, setNoties] = useState<NotiRes[]>([]);
+  const [notiVisible, setNotiVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const notiRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [cookies, , removeCookie] = useCookies(["token"]);
+  const token = cookies.token;
 
   const [, setRoomData] = useState<RoomRes[]>([]);
   const combinedData = [
@@ -64,6 +71,14 @@ const Navbar = (prop: NavbarProps) => {
     }
   };
 
+  useEffect(() => {
+    const fetchNoties = async () => {
+      const notiService = new NotiService();
+      const res = await notiService.getByCurrentUser(token);
+      setNoties(res.data.data);
+    };
+    fetchNoties();
+  }, [token]);
   useEffect(() => {
     if (prop.searchKey !== undefined) {
       setSearchText(prop.searchKey);
@@ -129,6 +144,7 @@ const Navbar = (prop: NavbarProps) => {
       ) {
         setDropdownVisible(false);
       }
+      // if (notiRef.current) setNotiVisible(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -144,6 +160,10 @@ const Navbar = (prop: NavbarProps) => {
 
   const handleButtonClick = () => {
     setDropdownVisible((prev) => !prev);
+  };
+
+  const handleNotiClick = () => {
+    setNotiVisible((prev) => !prev);
   };
 
   const handleOpenMessage = () => {
@@ -173,7 +193,7 @@ const Navbar = (prop: NavbarProps) => {
         <button onClick={handleOpenMessage}>
           <img src={notiIcon} alt="" className="pl-32 pr-10" />
         </button>
-        <button>
+        <button onClick={handleNotiClick}>
           <img src={bellIcon} alt="" className="pr-24" />
         </button>
         {/* PersonalButton */}
@@ -238,6 +258,44 @@ const Navbar = (prop: NavbarProps) => {
               >
                 <img src={logout} alt="Đăng xuất" className="w-5 h-5 mr-2" />
                 <span>Đăng xuất</span>
+              </div>
+            </div>
+          )}
+
+          {notiVisible && (
+            <div
+              ref={notiRef}
+              className="absolute right-5 top-14 text-gray-20 text-sm font-medium shadow-lg rounded-[20px] px-1 py-2 z-10 w-[400px] bg-[#fff] overflow-hidden"
+            >
+              <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-track scrollbar-thumb">
+                {noties.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="flex border-b items-center space-x-2 px-4 py-3 cursor-pointer hover:bg-blue-98"
+                    onClick={() =>
+                      handleMenuClick(
+                        `/notifications/${notification.reference_id}`
+                      )
+                    }
+                  >
+                    {/* Optional Icon */}
+                    <img
+                      src={
+                        notification.reference_type === "rental_request"
+                          ? home
+                          : eye
+                      }
+                      alt="Notification"
+                      className="w-6 h-6 mr-2"
+                    />
+                    <div>
+                      <p className="font-semibold">{notification.title}</p>
+                      <span className="text-xs text-gray-500">
+                        {formatDateTime(notification.created_at)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

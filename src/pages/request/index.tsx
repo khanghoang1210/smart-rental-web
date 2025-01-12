@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 
 interface RequestProps {
-  requestID: number | null;
+  requestID?: number | null;
 }
 
 const Request = ({ requestID }: RequestProps) => {

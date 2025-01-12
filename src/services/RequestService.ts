@@ -1,6 +1,12 @@
-import { RENTAL_REQUEST_ENDPOINT, RETURN_REQUEST_ENDPOINT } from "@/utils/constants";
+import {
+  RENTAL_REQUEST_ENDPOINT,
+  RETURN_REQUEST_ENDPOINT,
+} from "@/utils/constants";
 import { apiClient, isApiErrorResponse } from "../utils/apiClient";
-import { CreateRentalRequestReq, CreateReturnRequestReq } from "@/models/chat/request";
+import {
+  CreateRentalRequestReq,
+  CreateReturnRequestReq,
+} from "@/models/chat/request";
 
 export default class RequestService {
   constructor() {}
@@ -15,15 +21,15 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async getRentalRequestByRoomID(token: string, roomId: number) {
@@ -36,18 +42,18 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
-  async getRentalRequestByID(token: string, id: number | null) {
+  async getRentalRequestByID(token: string, id: number | null | undefined) {
     const url = RENTAL_REQUEST_ENDPOINT + `/${id}`;
     try {
       const res = await apiClient.get(url, {
@@ -57,15 +63,15 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async getAllRentalRequest(token: string) {
@@ -78,19 +84,19 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async approveRentalRequest(token: string, id: number) {
-    const url = RENTAL_REQUEST_ENDPOINT+ `/${id}/review?action=approve`
+    const url = RENTAL_REQUEST_ENDPOINT + `/${id}/review?action=approve`;
     try {
       const res = await apiClient.get(url, {
         headers: {
@@ -99,19 +105,19 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async declineRentalRequest(token: string, id: number) {
-    const url = RENTAL_REQUEST_ENDPOINT+ `/${id}/review?action=decline`
+    const url = RENTAL_REQUEST_ENDPOINT + `/${id}/review?action=decline`;
     try {
       const res = await apiClient.get(url, {
         headers: {
@@ -120,17 +126,20 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
-  async getReturnRequestByLandlordID(token: string, userID: number | undefined) {
+  async getReturnRequestByLandlordID(
+    token: string,
+    userID: number | undefined
+  ) {
     const url = RETURN_REQUEST_ENDPOINT + `/landlord/${userID}`;
     try {
       const res = await apiClient.get(url, {
@@ -140,15 +149,15 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async getReturnRequestByID(token: string, id: number) {
@@ -161,15 +170,15 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
   async createReturnRequest(token: string, req: CreateReturnRequestReq) {
     const url = RETURN_REQUEST_ENDPOINT;
@@ -181,19 +190,19 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async approveReturnRequest(token: string, id: number) {
-    const url = RETURN_REQUEST_ENDPOINT+ `/confirm/${id}`
+    const url = RETURN_REQUEST_ENDPOINT + `/confirm/${id}`;
     try {
       const res = await apiClient.get(url, {
         headers: {
@@ -202,15 +211,15 @@ export default class RequestService {
       });
       return res;
     } catch (error) {
-        if (isApiErrorResponse(error)) {
-          const { message } = error.response.data;
-          throw new Error(message);
-        } else if (!navigator.onLine) {
-          throw new Error("Vui lòng kiểm tra kết nối");
-        } else {
-          throw new Error("Lỗi hệ thống");
-        }
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
       }
+    }
   }
 
   async trackRentalRequestProcess(token: string, id: number) {

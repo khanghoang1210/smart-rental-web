@@ -71,7 +71,7 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
               </div>
             </div>
             <p className="text-blue-40 text-xs font-semibold">
-              {item.status === 0 ? "Chưa xử lý" : "Đã xác nhận"}
+              {item.status === 0 ? "Chưa xử lý" : item.status === 1 ? "Đã xác nhận" : "Đã hoàn thành"}
             </p>
           </div>
         ))}

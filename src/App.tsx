@@ -111,7 +111,11 @@ function App() {
         />
         <Route
           path="/return-request/manage"
-          element={<ReturnRequestMangement />}
+          element={
+            <PrivateRoute>
+              <ReturnRequestMangement />
+            </PrivateRoute>
+          }
         />
         <Route path="filter" element={<Filter />} />
         <Route
@@ -194,7 +198,14 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/process-tracking" element={<ProcessTracking />} />
+        <Route
+          path="/process-tracking"
+          element={
+            <PrivateRoute>
+              <ProcessTracking />
+            </PrivateRoute>
+          }
+        />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route
           path="/account"
