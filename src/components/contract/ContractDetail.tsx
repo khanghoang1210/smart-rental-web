@@ -95,27 +95,31 @@ const ContractDetail: React.FC<ContractDetailProps> = ({
         <div>
           <div className="flex justify-between">
             <div className="flex space-x-3">
-              <h2 className="text-xl font-bold mb-3">Thông tin hoá đơn</h2>
+              <h2 className="text-xl font-bold mb-3">Thông tin hợp đồng</h2>
               <div
-                className={`flex items-center space-x-2 ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green"}  px-3 py-1 rounded-sm text-sm font-medium `}
+                className={`flex items-center space-x-2 ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green bg-[#E9FFE8]"}  px-3 py-1 rounded-sm text-sm font-medium `}
               >
                 <img
                   src={payment?.status == 0 ? clock : checked}
                   className="w-5"
                   alt=""
                 />
-                <p>Chờ xác nhận</p>
+                <p>
+                  {payment?.status === 0 ? "Chờ xác nhận" : "Đã thanh toán"}
+                </p>
               </div>
             </div>
 
-            <div>
-              <Button
-                onClick={handleConfirmPayment}
-                className="w-full bg-blue-60 text-base font-medium text-[#fff] p-5 rounded-[100px]"
-              >
-                Xác nhận đã hoàn thành
-              </Button>
-            </div>
+            {payment?.status === 0 && (
+              <div>
+                <Button
+                  onClick={handleConfirmPayment}
+                  className="w-full bg-blue-60 text-base font-medium text-[#fff] p-5 rounded-[100px]"
+                >
+                  Xác nhận đã hoàn thành
+                </Button>
+              </div>
+            )}
           </div>
           <div className="text-[12px] text-gray-20 mb-4">
             Thời gian tạo: {formatTimestampToDateTime(contract.created_at)}
@@ -128,7 +132,7 @@ const ContractDetail: React.FC<ContractDetailProps> = ({
               <div className="flex justify-between items-center">
                 <span className="text-gray-20">Trạng thái</span>
                 <span
-                  className={` text-xs font-bold ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green"} rounded-full px-3 py-1`}
+                  className={` text-xs font-bold ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green bg-[#E9FFE8]"} rounded-full px-3 py-1`}
                 >
                   {payment?.status === 0 ? "Chờ xác nhận" : "Đã thanh toán"}
                 </span>
