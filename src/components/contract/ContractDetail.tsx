@@ -96,7 +96,9 @@ const ContractDetail: React.FC<ContractDetailProps> = ({
           <div className="flex justify-between">
             <div className="flex space-x-3">
               <h2 className="text-xl font-bold mb-3">Thông tin hoá đơn</h2>
-              <div className={`flex items-center space-x-2 ${payment?.status === 0 ? "bg-gray-90 text-gray-40" :" text-green"}  px-3 py-1 rounded-sm text-sm font-medium `}>
+              <div
+                className={`flex items-center space-x-2 ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green"}  px-3 py-1 rounded-sm text-sm font-medium `}
+              >
                 <img
                   src={payment?.status == 0 ? clock : checked}
                   className="w-5"
@@ -125,8 +127,10 @@ const ContractDetail: React.FC<ContractDetailProps> = ({
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-gray-20">Trạng thái</span>
-                <span className="text-gray-40 text-xs font-bold bg-gray-90 rounded-full px-3 py-1">
-                  Chờ xác nhận
+                <span
+                  className={` text-xs font-bold ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green"} rounded-full px-3 py-1`}
+                >
+                  {payment?.status === 0 ? "Chờ xác nhận" : "Đã thanh toán"}
                 </span>
               </div>
               <div className="flex justify-between">

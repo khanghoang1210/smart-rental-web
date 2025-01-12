@@ -106,8 +106,8 @@ const ContractInfoForm = (prop: ContractInfoFormProps) => {
           onChange={(value) => prop.handleSelectChange(value, "paymentMethod")}
           className="h-[40px]"
         >
-          <Option value="cash">Tiền mặt</Option>
-          <Option value="credit">Chuyển khoản</Option>
+          <Option value="Tiền mặt">Tiền mặt</Option>
+          <Option value="Chuyển khoản">Chuyển khoản</Option>
         </Select>
       </Form.Item>
       <Form.Item
