@@ -1,5 +1,5 @@
 import { Button, Modal, Rate, Upload } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../home/Navbar";
 import success from "../../assets/success.png";
 import digital from "../../assets/digital.svg";
@@ -17,7 +17,10 @@ const ConfirmationSuccess = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const { userInfo } = useAppStore();
+  
   const [currentStep, setCurrentStep] = useState(1);
+  const location = useLocation();
+  const { tenantID, roomID, landlordID } = location.state || {};
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [overallTenantRating, setOverallTenantRating] = useState<number>(0);
   const [overallLandlordRating, setOverallLandlordRating] = useState<number>(0);
@@ -65,10 +68,10 @@ const ConfirmationSuccess = () => {
   const handleOk = async () => {
     const ratingService = new RatingService();
     try {
-      if (userInfo?.role === 1) {
+      if (userInfo?.role === 1 && tenantID) {
         // Tenant rating
         const formData = new FormData();
-        formData.append("tenant_id", "2");
+        formData.append("tenant_id", tenantID);
         formData.append("payment_rating", criteriaRatings.payment.toString());
         formData.append(
           "property_care_rating",
@@ -91,7 +94,7 @@ const ConfirmationSuccess = () => {
         await ratingService.createTenantRating(token, formData);
       } else {
         const formData = new FormData();
-        formData.append("room_id", "48");
+        formData.append("room_id", roomID);
         formData.append(
           "amenities_rating",
           criteriaRatings.amenities.toString()
@@ -109,7 +112,7 @@ const ConfirmationSuccess = () => {
         });
 
         const payload = {
-          landlord_id: 2,
+          landlord_id: landlordID,
           friendliness_rating: criteriaRatings.friendliness,
           professionalism_rating: criteriaRatings.professionalism,
           support_rating: criteriaRatings.support,

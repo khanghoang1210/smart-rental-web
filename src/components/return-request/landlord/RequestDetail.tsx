@@ -3,9 +3,13 @@ import clock from "../../../assets/clock.svg";
 import phone from "../../../assets/phone.svg";
 import checked from "../../../assets/checked.png";
 import message_white from "../../../assets/message_white.svg";
-import { StarFilled } from "@ant-design/icons";
+import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { ReturnRequestRes } from "@/models/request";
-import { formatDate, formatDateTime, toCurrencyFormat } from "@/utils/converter";
+import {
+  formatDate,
+  formatDateTime,
+  toCurrencyFormat,
+} from "@/utils/converter";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
@@ -24,7 +28,6 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
 
-
   const { setSelectedConversationId, setSelectedUserId } =
     useConversationStore();
   const navigate = useNavigate();
@@ -32,7 +35,10 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
     const roomService = new RequestService();
     const fetchRequest = async () => {
       try {
-        const roomRes = await roomService.getReturnRequestByID(token, requestId);
+        const roomRes = await roomService.getReturnRequestByID(
+          token,
+          requestId
+        );
         const data = roomRes.data.data;
 
         setRequest(data);
@@ -69,14 +75,16 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
       toast.success("Yêu cầu trả phòng đã được tiếp nhận!");
 
       setTimeout(() => {
-        navigate("/return-request/success");
+        navigate("/return-request/success", {
+          state: { tenantID: request.created_user.id },
+        });
       }, 500);
     } catch (error) {
       console.error("Error accepting request:", error);
       toast.error("Đã xảy ra lỗi khi tiếp nhận yêu cầu.");
     }
   };
-  console.log(request)
+  console.log(request);
   if (!requestId) return <div></div>;
 
   return (
@@ -96,7 +104,9 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
           <p>{request?.status === 0 ? "Chưa xử lý" : "Đã xác nhận"}</p>
         </div>
       </div>
-      <p className="text-gray-40 text-xs mt-3">{formatDateTime(request?.created_at)}</p>
+      <p className="text-gray-40 text-xs mt-3">
+        {formatDateTime(request?.created_at)}
+      </p>
       <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
         <h4 className="font-semibold text-sm text-gray-20">
           Thông tin người thuê
@@ -113,12 +123,19 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
                 {request?.created_user?.full_name}
               </p>
               <div className="flex space-x-1 ">
-                {[...Array(5)].map((_, index) => (
-                  <StarFilled
-                    key={index}
-                    className="text-[#FFCC47] text-[10px]"
-                  />
-                ))}
+                {[...Array(5)].map((_, index) =>
+                  index < request?.created_user?.total_rating ? (
+                    <StarFilled
+                      key={index}
+                      className="text-[#FFCC47] text-[10px]"
+                    />
+                  ) : (
+                    <StarOutlined
+                      key={index}
+                      className="text-gray-40 text-[10px]"
+                    />
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -149,9 +166,13 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
             className="w-28 h-28 rounded-2xl"
           />
           <div className="space-y-2">
-            <p className="text-gray-60 text-xs">{request?.room?.capacity} người</p>
+            <p className="text-gray-60 text-xs">
+              {request?.room?.capacity} người
+            </p>
             <p className="font-semibold text-gray-20">{request?.room?.title}</p>
-            <p className="text-xs text-gray-40">{request?.room?.address.join(", ")}</p>
+            <p className="text-xs text-gray-40">
+              {request?.room?.address.join(", ")}
+            </p>
             <p className="text-blue-60 font-bold">
               {toCurrencyFormat(request?.room?.total_price)} ₫/phòng
             </p>
