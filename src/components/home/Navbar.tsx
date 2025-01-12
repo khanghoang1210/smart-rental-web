@@ -148,7 +148,11 @@ const Navbar = (prop: NavbarProps) => {
 
   const handleOpenMessage = () => {
     navigate("/chat");
-  }
+  };
+
+  const handleClickLogin = () => {
+    navigate("/auth/login");
+  };
   console.log(searchText);
   return (
     <div>
@@ -179,11 +183,26 @@ const Navbar = (prop: NavbarProps) => {
             ref={buttonRef}
             onClick={handleButtonClick}
           >
-            <PersonalButton
-              avatarUrl={userInfo?.avatar_url || USER_DEFAULT_AVATAR}
-              name={userInfo?.full_name}
-              role={userInfo?.role === 1 ? "Chủ nhà" : userInfo?.role === 0 ? "Khách thuê" : ""}
-            />
+            {userInfo ? (
+              <PersonalButton
+                avatarUrl={userInfo?.avatar_url || USER_DEFAULT_AVATAR}
+                name={userInfo?.full_name}
+                role={
+                  userInfo?.role === 1
+                    ? "Chủ nhà"
+                    : userInfo?.role === 0
+                      ? "Khách thuê"
+                      : ""
+                }
+              />
+            ) : (
+              <div
+                onClick={handleClickLogin}
+                className="flex items-center text-blue-60 space-x-4 px-4 py-1 rounded-lg border border-gray-80 shadow-sm"
+              >
+                Đăng nhập
+              </div>
+            )}
           </div>
 
           {/* Dropdown Menu */}
