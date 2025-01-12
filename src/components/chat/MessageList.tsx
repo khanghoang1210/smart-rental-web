@@ -95,13 +95,13 @@ const MessageList = () => {
             className="flex items-center px-4 py-4 rounded-xl hover:bg-blue-98 cursor-pointer"
             onClick={() => {
               setSelectedConversationId(conversation.id);
-              // setSelectedUserId(user.id);
+              setSelectedUserId(user.id);
             }}
           >
             <img
-              src="../../asset"
+              src={user?.avatar_url}
               alt={user ? user.full_name : "Unknown User"}
-              className="rounded-full w-10 h-10 mr-4"
+              className="rounded-full w-10 h-10 mr-4 object-cover"
             />
             <div className="flex flex-col">
               <span className="font-semibold text-gray-20">
