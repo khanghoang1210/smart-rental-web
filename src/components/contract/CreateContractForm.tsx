@@ -3,7 +3,7 @@ import { Button, Modal, Spin } from "antd";
 import ContractInfoForm from "./form/ContractInfoForm";
 import ResponsibityForm from "./form/ResponsibityForm";
 import PreviewForm from "./form/PreviewForm";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
 import ContractService from "@/services/ContractService";
 import { useCookies } from "react-cookie";
@@ -13,12 +13,13 @@ import { useAppStore } from "@/store";
 
 const CreateContractForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const  {userInfo} = useAppStore();
+  const { userInfo } = useAppStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const location = useLocation();
   const rentalDetail = location.state || {};
   const [cookies] = useCookies(["token"]);
+  const navigate = useNavigate();
 
   console.log(rentalDetail);
   const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ const CreateContractForm = () => {
 
   const mappedFormData = {
     addrressCreated: `${formData.city}` || "",
-    dateCreated: Math.floor(Date.now() / 1000),   
+    dateCreated: Math.floor(Date.now() / 1000),
     landlordName: userInfo?.full_name || "",
     landlordBirthYear: userInfo?.dob || "",
     landlordID: rentalDetail?.room?.owner?.id || "",
@@ -70,8 +71,12 @@ const CreateContractForm = () => {
     waterPrice: formData.waterFee.toString() || "",
     depositAmount: formData.deposit || "",
     paymentMethod: formData.paymentMethod || "",
-    roomAddress: `${formData.houseNumber}, ${formData.street}, ${formData.ward}, ${formData.district}, ${formData.city}` || "",
-    contractDuration: `Từ ${formData.beginDate?.format("DD/MM/YYYY")} đến ${formData.endDate?.format("DD/MM/YYYY")}` || "",
+    roomAddress:
+      `${formData.houseNumber}, ${formData.street}, ${formData.ward}, ${formData.district}, ${formData.city}` ||
+      "",
+    contractDuration:
+      `Từ ${formData.beginDate?.format("DD/MM/YYYY")} đến ${formData.endDate?.format("DD/MM/YYYY")}` ||
+      "",
     beginDate: formData.beginDate ? formData.beginDate.unix() : "",
     endDate: formData.endDate ? formData.endDate.unix() : "",
     landlordResponsibilities: formData.responsibilityA || "",
@@ -236,6 +241,7 @@ const CreateContractForm = () => {
       await contractService.createContract(cookies.token, payload);
       toast.success("Tạo hợp đồng thành công!");
       setShowSignatureModal(false);
+      navigate("/");
     } catch (error) {
       if (error instanceof Error) toast.error(error.message);
     } finally {
