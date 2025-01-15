@@ -102,6 +102,11 @@ const ChatBox = () => {
             ? JSON.parse(msg.rent_auto_content as unknown as string)
             : undefined,
       }));
+      parsedMessages.sort(
+        (a: any, b: any) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+
       setMessages(parsedMessages);
       if (selectedUserId) {
         const sender = await userService.getUserByID(selectedUserId, token);
@@ -112,11 +117,12 @@ const ChatBox = () => {
     }
   };
 
-  console.log(senderUser);
+  console.log(selectedConversationId);
 
   useEffect(() => {
     if (socket) {
       socket.on("receiveMessage", (message: MessageRes) => {
+        console.log("Received message:", message);
         const parsedMessage = {
           ...message,
           rent_auto_content:
@@ -196,7 +202,7 @@ const ChatBox = () => {
         </h1>
       </div>
       <div className="flex-grow p-4 overflow-y-auto">
-        {[...messages].reverse().map((msg, index) => (
+        {messages.map((msg, index) => (
           <div
             key={msg.id}
             className={`flex ${

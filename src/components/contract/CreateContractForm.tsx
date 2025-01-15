@@ -219,7 +219,7 @@ const CreateContractForm = () => {
       water_cost: Number(formData.waterFee), // Giá nước
       internet_cost: Number(formData.internetFee), // Giá Internet
       parking_fee: Number(formData.parkingFee), // Phí giữ xe
-      deposit: formData.deposit, // Tiền đặt cọc
+      deposit: Number(formData.deposit), // Tiền đặt cọc
       begin_date: dayjs.isDayjs(formData.beginDate)
         ? formData.beginDate.format("YYYY-MM-DD")
         : null,

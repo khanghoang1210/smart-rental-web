@@ -90,7 +90,6 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
   let total_return = 0;
   if (request?.total_return_deposit) {
     total_return = request?.total_return_deposit - request?.deduct_amount;
-
   }
   console.log(total_return);
   if (!requestId) return <div></div>;
@@ -121,53 +120,6 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
       <p className="text-gray-40 text-xs mt-3">
         {formatDateTime(request?.created_at)}
       </p>
-      <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
-        <h4 className="font-semibold text-sm text-gray-20">
-          Thông tin người thuê
-        </h4>
-        <div className="flex justify-between">
-          <div className="flex items-center ">
-            <img
-              src={request?.created_user?.avatar_url || USER_DEFAULT_AVATAR}
-              alt="User"
-              className="w-8 h-8 rounded-full mr-3"
-            />
-            <div>
-              <p className="font-semibold text-sm">
-                {request?.created_user?.full_name}
-              </p>
-              <div className="flex space-x-1 ">
-                {[...Array(5)].map((_, index) =>
-                  index < (request?.created_user?.total_rating || 0) ? (
-                    <StarFilled
-                      key={index}
-                      className="text-[#FFCC47] text-[10px]"
-                    />
-                  ) : (
-                    <StarOutlined
-                      key={index}
-                      className="text-gray-40 text-[10px]"
-                    />
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button
-              className="bg-blue-40 text-[#FFF] font-medium text-xs"
-              onClick={handleStartConversation}
-            >
-              Chat
-              <img src={message_white} className="w-3 h-3" alt="" />
-            </Button>
-            <Button className="text-gray-40 bg-gray-90 border-gray-40 font-medium text-xs">
-              Gọi
-              <img src={phone} alt="" />
-            </Button>
-          </div>
-        </div>
-      </div>
 
       <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
         <h4 className="font-semibold text-sm text-gray-20">

@@ -95,6 +95,27 @@ export default class RequestService {
     }
   }
 
+  async getAllRentalRequestForProcessTracking(token: string) {
+    const url = RENTAL_REQUEST_ENDPOINT + "/process-tracking";
+    try {
+      const res = await apiClient.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res;
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
+      }
+    }
+  }
+
   async approveRentalRequest(token: string, id: number) {
     const url = RENTAL_REQUEST_ENDPOINT + `/${id}/review?action=approve`;
     try {
@@ -141,6 +162,27 @@ export default class RequestService {
     userID: number | undefined
   ) {
     const url = RETURN_REQUEST_ENDPOINT + `/landlord/${userID}`;
+    try {
+      const res = await apiClient.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res;
+    } catch (error) {
+      if (isApiErrorResponse(error)) {
+        const { message } = error.response.data;
+        throw new Error(message);
+      } else if (!navigator.onLine) {
+        throw new Error("Vui lòng kiểm tra kết nối");
+      } else {
+        throw new Error("Lỗi hệ thống");
+      }
+    }
+  }
+
+  async getReturnRequestByTenantID(token: string, userID: number | undefined) {
+    const url = RETURN_REQUEST_ENDPOINT + `/tenant/${userID}`;
     try {
       const res = await apiClient.get(url, {
         headers: {

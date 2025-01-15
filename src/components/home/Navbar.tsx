@@ -22,6 +22,8 @@ import { customStorage } from "@/utils/localStorage";
 import { NotiRes } from "@/models/noti";
 import NotiService from "@/services/NotiService";
 import { formatDateTime } from "@/utils/converter";
+import home_noti from "../../assets/home_noti.png";
+import contract_noti from "../../assets/contract_noti.png";
 
 interface NavbarProps {
   searchKey?: string;
@@ -179,7 +181,10 @@ const Navbar = (prop: NavbarProps) => {
       <nav className="relative flex justify-center items-center w-full mt-4 pb-2 border-b border-gray-80">
         <div className="px-24 cursor-pointer" onClick={() => onClickHome()}>
           {" "}
-          <p>Smart Rental</p>
+          <p className="text-2xl font-semibold">
+            <span className="text-blue-40">Smart</span>
+            <span className="text-gray-20">Rent</span>
+          </p>
         </div>
         <SearchBar
           placeHolder="Tìm kiếm"
@@ -271,7 +276,7 @@ const Navbar = (prop: NavbarProps) => {
                 {noties.map((notification) => (
                   <div
                     key={notification.id}
-                    className="flex border-b items-center space-x-2 px-4 py-3 cursor-pointer hover:bg-blue-98"
+                    className="flex border-b items-start space-x-3 p-2  cursor-pointer hover:bg-blue-98"
                     onClick={() =>
                       handleMenuClick(
                         `/notifications/${notification.reference_id}`
@@ -279,16 +284,18 @@ const Navbar = (prop: NavbarProps) => {
                     }
                   >
                     {/* Optional Icon */}
-                    <img
-                      src={
-                        notification.reference_type === "rental_request"
-                          ? home
-                          : eye
-                      }
-                      alt="Notification"
-                      className="w-6 h-6 mr-2"
-                    />
-                    <div>
+                    <div className="rounded-full bg-blue-60 items-center flex p-2 justify-center">
+                      <img
+                        src={
+                          notification.reference_type === "rental_request"
+                            ? home_noti
+                            : contract_noti
+                        }
+                        alt="Notification"
+                        className="w-6 h-6 object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col">
                       <p className="font-semibold">{notification.title}</p>
                       <span className="text-xs text-gray-500">
                         {formatDateTime(notification.created_at)}

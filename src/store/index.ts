@@ -5,15 +5,13 @@ import { MessageSend } from "@/models/chat/chat";
 import { persist } from "zustand/middleware";
 import { customStorage } from "@/utils/localStorage";
 
-
 export const useConversationStore = create<ChatSlice>((set, get) => ({
-  selectedConversationId: null, 
+  selectedConversationId: null,
   setSelectedConversationId: (conversationId: number | null) =>
-    set({ selectedConversationId: conversationId }), 
+    set({ selectedConversationId: conversationId }),
 
   selectedUserId: null,
-  setSelectedUserId: (userId: number | null) =>
-    set({ selectedUserId: userId }),
+  setSelectedUserId: (userId: number | null) => set({ selectedUserId: userId }),
   selectedChatMessages: [],
   setSelectedChatMessages: (messages: MessageSend[]) =>
     set({ selectedChatMessages: messages }),
@@ -29,8 +27,8 @@ export const useConversationStore = create<ChatSlice>((set, get) => ({
           ...message,
           receiver_id: message.receiver_id,
           sender_id: message.sender_id,
-        }
-      ]
+        },
+      ],
     });
   },
 }));
@@ -40,7 +38,7 @@ export const useAppStore = create(
     (set) => ({
       userInfo: undefined,
       setUserInfo: (userInfo: UserInfo) => set({ userInfo }),
-      clearUserInfo: () => set ({userInfo:undefined})
+      clearUserInfo: () => set({ userInfo: undefined }),
     }),
     {
       name: "currentUser",

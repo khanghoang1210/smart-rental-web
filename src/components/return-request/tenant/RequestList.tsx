@@ -1,16 +1,15 @@
 import { ReturnRequestRes } from "@/models/request";
 import RequestService from "@/services/RequestService";
 import { useAppStore } from "@/store";
-import { USER_DEFAULT_AVATAR } from "@/utils/constants";
 import { formatDateTime } from "@/utils/converter";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
 
 interface RequestListProps {
-  onRequestSelect: (request: ReturnRequestRes) => void; 
+  onRequestSelect: (request: ReturnRequestRes) => void;
 }
-const RequestList = ({ onRequestSelect }: RequestListProps) => {
+const RequestListTenant = ({ onRequestSelect }: RequestListProps) => {
   const [requests, setRequests] = useState<ReturnRequestRes[]>([]);
   const { userInfo } = useAppStore();
   const [cookies] = useCookies(["token"]);
@@ -21,7 +20,7 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
 
     const fetchRequest = async () => {
       try {
-        const messageRes = await requestService.getReturnRequestByLandlordID(
+        const messageRes = await requestService.getReturnRequestByTenantID(
           token,
           userInfo?.id
         );
@@ -38,15 +37,10 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
     fetchRequest();
   }, []);
 
-  console.log(requests)
+  console.log(requests);
   return (
     <div className="shadow-sm rounded-lg">
       <h3 className="text-gray-20 text-xl font-bold mb-8">Yêu cầu trả phòng</h3>
-      {/* <div className="flex items-center space-x-5">
-        <div className="bg-gray-90 px-3 rounded-3xl text-xs font-semibold text-gray-20">
-          {requests.length}
-        </div>
-      </div> */}
 
       <div className="mt-2 space-y-3">
         {requests.map((item) => (
@@ -57,13 +51,13 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
           >
             <div className="flex items-center space-x-2">
               <img
-                src={item.created_user.avatar_url || USER_DEFAULT_AVATAR}
+                src={item.room.room_images[0]}
                 alt="User"
                 className="w-10 h-10 object-cover rounded-full"
               />
               <div>
                 <p className="font-semibold text-gray-20 text-sm">
-                  {item.created_user.full_name}
+                  {item.room.title}
                 </p>
                 <p className="text-xs text-gray-40">
                   Thời gian gửi: {formatDateTime(item.created_at)}
@@ -71,7 +65,11 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
               </div>
             </div>
             <p className="text-blue-40 text-xs font-semibold">
-              {item.status === 0 ? "Chưa xử lý" : item.status === 1 ? "Đã xác nhận" : "Đã hoàn thành"}
+              {item.status === 0
+                ? "Chưa xử lý"
+                : item.status === 1
+                  ? "Đã xác nhận"
+                  : "Đã hoàn thành"}
             </p>
           </div>
         ))}
@@ -80,4 +78,4 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
   );
 };
 
-export default RequestList;
+export default RequestListTenant;

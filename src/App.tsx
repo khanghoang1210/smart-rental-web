@@ -104,7 +104,20 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/return-request" element={<ReturnRequestPage />} />
+        <Route
+          path="/return-request"
+          element={
+            userInfo?.role === 1 ? (
+              <PrivateRoute>
+                <ReturnRequestMangement />
+              </PrivateRoute>
+            ) : (
+              <PrivateRoute>
+                <ReturnRequestPage />
+              </PrivateRoute>
+            )
+          }
+        />
         <Route
           path="/return-request/success"
           element={<ConfirmationSuccess />}

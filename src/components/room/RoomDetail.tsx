@@ -224,13 +224,31 @@ const RoomDetail = () => {
           </div>
           <div className="flex flex-col space-y-2 cursor-pointer">
             {room?.room_images.slice(1, 3).map((image, index) => (
-              <img
+              <div
                 key={index + 1}
-                src={image}
-                alt={`Image ${index + 2}`}
-                className="rounded-lg object-cover w-[450px] h-40"
-                onClick={() => openModal(index + 1)} // Mở modal với ảnh được chọn
-              />
+                className="relative"
+                onClick={() => openModal(index + 1)}
+              >
+                <img
+                  src={image}
+                  alt={`Image ${index + 2}`}
+                  className={`rounded-lg object-cover w-[450px] h-40 ${
+                    index === 1 && room?.room_images.length > 3
+                      ? "opacity-70"
+                      : ""
+                  }`}
+                />
+
+                {/* Thẻ hiển thị +number trên hình thứ 3 */}
+                {index === 1 && room?.room_images.length > 3 && (
+                  <div
+                    className="absolute inset-0 bg-[#000] bg-opacity-30 flex items-center justify-center text-gray-90 text-xl font-bold rounded-lg"
+                    onClick={() => openModal(3)}
+                  >
+                    +{room?.room_images.length - 3}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -663,9 +681,9 @@ const RoomDetail = () => {
             centered
             className="custom-modal"
           >
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center w-full">
               <button
-                className="absolute -left-4 top-1/2  text-[white]  transform -translate-y-1/2 text-white bg-gray-40 px-4 py-2 rounded-full"
+                className="absolute -left-4 top-1/2  text-[white]  transform -translate-y-1/2 text-white bg-gray-20 px-4 py-2 rounded-full"
                 onClick={prevImage}
               >
                 {"<"}
@@ -676,7 +694,7 @@ const RoomDetail = () => {
                 className="w-full h-auto object-contain rounded-lg"
               />
               <button
-                className="absolute -right-4 top-1/2 transform text-[white] -translate-y-1/2 text-white bg-gray-40 px-4 py-2 rounded-full"
+                className="absolute -right-4 top-1/2 transform text-[white] -translate-y-1/2 text-white bg-gray-20 px-4 py-2 rounded-full"
                 onClick={nextImage}
               >
                 {">"}
