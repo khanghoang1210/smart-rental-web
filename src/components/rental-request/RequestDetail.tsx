@@ -20,6 +20,7 @@ import ConversationService from "@/services/ConversationService";
 import { useSocket } from "@/context/SocketContext";
 import RequestService from "@/services/RequestService";
 import { USER_DEFAULT_AVATAR } from "@/utils/constants";
+import { useState } from "react";
 
 interface RequestDetailsProps {
   request: RentalRequestByIDRes | undefined;
@@ -28,12 +29,13 @@ interface RequestDetailsProps {
 const RequestDetails = ({ request }: RequestDetailsProps) => {
   const [cookies] = useCookies(["token"]);
   const socket = useSocket();
-  
+  const [loading, setLoading] = useState(false);
+
   const { setSelectedConversationId, setSelectedUserId } =
     useConversationStore();
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
-  
+
   const handleCreateContract = async () => {
     navigate("/contract/create", { state: request });
   };
@@ -80,7 +82,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
         sender_id: userInfo?.id, // ID của chủ nhà
         receiver_id: request.sender?.id, // ID của người thuê
         conversation_id: conversationIdToUse,
-        content: null, 
+        content: null,
         type: 2,
         rent_auto_content: JSON.stringify(rentalMessage),
       });
@@ -127,7 +129,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
       toast.error("Đã xảy ra lỗi khi bắt đầu cuộc trò chuyện.");
     }
   };
-  if (!request) return <div></div>;
+  if (!request) return <div className="w-[700px]"></div>;
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
       <div className="flex justify-between">

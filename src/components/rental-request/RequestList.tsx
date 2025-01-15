@@ -12,6 +12,14 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
   const [requests, setRequests] = useState<RentalRequestRes[]>([]);
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
+  const [selectedRequestId, setSelectedRequestId] = useState<number | null>(
+    null
+  );
+
+  const handleRequestClick = (id: number) => {
+    setSelectedRequestId(id);
+    onRequestSelect(id); // Gọi hàm callback từ props
+  };
 
   useEffect(() => {
     const requestService = new RequestService();
@@ -45,11 +53,11 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
             key={requestIndex}
             className="border border-gray-90 rounded-lg p-4 mb-4"
           >
-            <div className="flex ">
-              <h4 className="text-gray-60 text-xs font-medium">
+            <div className="flex justify-between mb-3 items-center">
+              <h4 className="text-gray-60 text-xs font-medium max-w-72">
                 {request.room.title}
               </h4>
-              <div className="bg-gray-90 px-3 rounded-3xl text-xs font-semibold text-gray-20">
+              <div className="bg-gray-90 px-4 py-1 rounded-3xl text-xs font-semibold text-gray-20">
                 {request.request_count}
               </div>
             </div>
@@ -57,8 +65,12 @@ const RequestList = ({ onRequestSelect }: RequestListProps) => {
               {request.request_info.map((info: any) => (
                 <div
                   key={info.id}
-                  onClick={() => onRequestSelect(info.id)}
-                  className="flex justify-between items-center hover:bg-blue-98 cursor-pointer p-4 rounded-md border border-gray-90"
+                  onClick={() => handleRequestClick(info.id)}
+                  className={`flex justify-between items-center cursor-pointer p-4 rounded-md border border-gray-90 ${
+                    selectedRequestId === info.id
+                      ? "bg-blue-98"
+                      : "hover:bg-blue-98"
+                  }`}
                 >
                   <div className="flex items-center space-x-3">
                     <img

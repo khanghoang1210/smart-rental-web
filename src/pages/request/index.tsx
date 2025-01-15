@@ -32,7 +32,7 @@ const Request = ({ requestID }: RequestProps) => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto mt-4 grid grid-cols-3 gap-6 w-[1100px]">
+      <div className="flex justify-center gap-24 mt-5">
         <div className="col-span-1">
           <RequestList onRequestSelect={setSelectedRequest} />
         </div>
