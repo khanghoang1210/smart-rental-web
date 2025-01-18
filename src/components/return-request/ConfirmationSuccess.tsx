@@ -38,6 +38,7 @@ const ConfirmationSuccess = () => {
     setIsModalOpen(true);
   };
 
+  console.log(tenantID, roomID, landlordID);
   const [criteriaRatings, setCriteriaRatings] = useState<
     Record<string, number>
   >({
@@ -79,6 +80,10 @@ const ConfirmationSuccess = () => {
       setTenant(data);
     };
 
+    if (tenantID) fetchTenant();
+  }, [tenantID]);
+
+  useEffect(() => {
     const fetchLandlord = async () => {
       const userService = new UserService();
       const res = await userService.getUserByID(landlordID, token);
@@ -92,12 +97,11 @@ const ConfirmationSuccess = () => {
       const data = res.data.data;
       setRoom(data);
     };
-    if (tenantID) fetchTenant();
     if (landlordID && roomID) {
       fetchLandlord();
-      fetchRoom;
+      fetchRoom();
     }
-  }, [tenantID, roomID, landlordID]);
+  }, [roomID, landlordID]);
   const handleOk = async () => {
     const ratingService = new RatingService();
     try {
@@ -367,7 +371,7 @@ const ConfirmationSuccess = () => {
                   <div className="w-1/2">
                     <div className="text-center mb-4">
                       <img
-                        src="https://via.placeholder.com/80"
+                        src={room?.room_images[0]}
                         alt="Avatar"
                         className="w-72 h-32 rounded-[30px] mx-auto mb-2"
                       />
@@ -467,12 +471,12 @@ const ConfirmationSuccess = () => {
                   <div className="w-1/2">
                     <div className="text-center mb-4">
                       <img
-                        src="https://via.placeholder.com/80"
+                        src={landlord?.avatar_url}
                         alt="Avatar"
                         className="w-20 h-20 rounded-full mx-auto mb-2"
                       />
                       <p className="font-semibold text-lg">
-                        Nguyễn Xuân Phương
+                        {landlord?.full_name}
                       </p>
                       <Rate
                         onChange={(value) =>

@@ -28,6 +28,8 @@ const ChatBox = () => {
   const [senderUser, setSenderUser] = useState<UserInfo>();
   const messageService = new MessageService();
   const userService = new UserService();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
@@ -35,6 +37,14 @@ const ChatBox = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Generate a preview URL
+    }
+  };
+  console.log(selectedImage);
   useEffect(() => {
     scrollToBottom();
   }, []);
@@ -43,6 +53,10 @@ const ChatBox = () => {
     scrollToBottom();
   }, [messages]);
 
+  const handleCancelImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
   useEffect(() => {
     const conversationService = new ConversationService();
     const handleFetch = async () => {
@@ -148,7 +162,7 @@ const ChatBox = () => {
 
   const handleSendMessage = async () => {
     const conversationService = new ConversationService();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !selectedImage) return;
 
     let conversationIdToUse = selectedConversationId;
     if (!selectedConversationId && selectedUserId) {
@@ -161,22 +175,54 @@ const ChatBox = () => {
       setSelectedConversationId(conversationIdToUse);
     }
     setNewMessage(newMessage);
-    socket?.emit("sendMessage", {
-      sender_id: userInfo?.id,
-      receiver_id: selectedUserId,
-      conversation_id: conversationIdToUse,
-      content: newMessage,
-      type: 1,
-    });
 
-    const messageSend: MessageSend = {
-      sender_id: userInfo?.id,
-      receiver_id: selectedUserId!, // Ensure receiver_id is from the state
-      content: newMessage,
-      type: 1,
-    };
-    addMessage(messageSend);
-    setNewMessage("");
+    if (selectedImage) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64File = reader.result?.toString().split(",")[1]; // Remove metadata
+        const fileExtension = selectedImage.name.split('.').pop(); 
+
+        socket?.emit("sendMessage", {
+          sender_id: userInfo?.id,
+          receiver_id: selectedUserId,
+          conversation_id: conversationIdToUse,
+          type: 3, // Type 3 for image
+          file: {
+            data: base64File, // Base64-encoded file
+            mimeType: selectedImage.type, // e.g., "image/png"
+            extension: `.${fileExtension}`, // e.g., ".png"
+          },
+          content: "", // Empty content for image messages
+        }, (response: any) => {
+          if (response.success) {
+            console.log("Image sent successfully:", response.message);
+            addMessage(response.message);
+            setSelectedImage(null); // Clear file
+            setImagePreview(null); // Clear preview
+          } else {
+            console.error("Failed to send image:", response.error);
+          }
+        });
+      };
+
+      reader.readAsDataURL(selectedImage); 
+    } else {
+      socket?.emit("sendMessage", {
+        sender_id: userInfo?.id,
+        receiver_id: selectedUserId,
+        conversation_id: conversationIdToUse,
+        content: newMessage,
+        type: 1,
+      });
+      const messageSend: MessageSend = {
+        sender_id: userInfo?.id,
+        receiver_id: selectedUserId!, // Ensure receiver_id is from the state
+        content: newMessage,
+        type: 1,
+      };
+      addMessage(messageSend);
+      setNewMessage("");
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -217,6 +263,12 @@ const ChatBox = () => {
                 roomAddress={msg.rent_auto_content.room_address}
                 isSender={msg.sender_id === userInfo?.id ? true : false}
               />
+            ) : msg.type === 3 ? (
+              <img
+                src={msg.content}
+                alt="Sent"
+                className="max-w-xs rounded-lg"
+              />
             ) : (
               <div
                 className={`px-3 py-2 rounded-xl max-w-xs ${
@@ -231,29 +283,53 @@ const ChatBox = () => {
           </div>
         ))}
       </div>
-
-      <div className="flex items-center p-4 bg-white space-x-3">
-        <button>
-          <img src={gallary} alt="" />
-        </button>
-        <Input
-          onKeyDown={handleKeyDown}
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          type="text"
-          id="newMessage"
-          name="newMessage"
-          placeholder="Nhấn vào đây để chat"
-          className="flex-grow px-4 py-2 border rounded-lg focus:outline-none"
-          suffix={
+      <div className="p-4 bg-white space-y-3">
+        {/* Image Preview */}
+        {imagePreview && (
+          <div className="relative mb-2">
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="w-32 h-32 object-cover rounded-lg"
+            />
             <button
-              className="rounded-full w-7 h-7 items-center flex justify-center"
-              onClick={handleSendMessage}
+              onClick={handleCancelImage}
+              className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
             >
-              <img src={send} alt="Send Icon" />
+              ✕
             </button>
-          }
-        />
+          </div>
+        )}
+        <div className="flex items-center p-4 bg-white space-x-3">
+          <button onClick={() => document.getElementById("fileInput")?.click()}>
+            <img src={gallary} alt="" />
+          </button>
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            accept="image/*"
+            onChange={handleFileSelect}
+          />
+          <Input
+            onKeyDown={handleKeyDown}
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            type="text"
+            id="newMessage"
+            name="newMessage"
+            placeholder="Nhấn vào đây để chat"
+            className="flex-grow px-4 py-2 border rounded-lg focus:outline-none"
+            suffix={
+              <button
+                className="rounded-full w-7 h-7 items-center flex justify-center"
+                onClick={handleSendMessage}
+              >
+                <img src={send} alt="Send Icon" />
+              </button>
+            }
+          />
+        </div>
       </div>
     </div>
   );

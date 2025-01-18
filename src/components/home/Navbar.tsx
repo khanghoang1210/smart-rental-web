@@ -279,7 +279,7 @@ const Navbar = (prop: NavbarProps) => {
                     className="flex border-b items-start space-x-3 p-2  cursor-pointer hover:bg-blue-98"
                     onClick={() =>
                       handleMenuClick(
-                        `/notifications/${notification.reference_id}`
+                        `/${notification.reference_type === "rental_request" ? "request" : notification.reference_type === "contract" ? "contract" : "return-request"}/${notification.reference_id}`
                       )
                     }
                   >

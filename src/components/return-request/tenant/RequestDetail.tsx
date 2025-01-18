@@ -1,9 +1,7 @@
 import { Button } from "antd";
 import clock from "../../../assets/clock.svg";
-import phone from "../../../assets/phone.svg";
 import checked from "../../../assets/checked.png";
-import message_white from "../../../assets/message_white.svg";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { CopyOutlined } from "@ant-design/icons";
 import { ReturnRequestRes } from "@/models/request";
 import {
   formatDate,
@@ -13,23 +11,43 @@ import {
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "sonner";
-import { useConversationStore } from "@/store";
 import { useNavigate } from "react-router-dom";
 import RequestService from "@/services/RequestService";
-import { USER_DEFAULT_AVATAR } from "@/utils/constants";
+import PaymentService from "@/services/PaymentService";
+import { PaymentRes } from "@/models/payment";
 
 interface RequestDetailsProps {
   requestId: number;
 }
 
 const RequestDetails = ({ requestId }: RequestDetailsProps) => {
-  const [isConfirmed, setIsConfirmed] = useState(false);
   const [request, setRequest] = useState<ReturnRequestRes>();
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
+  const [payment, setPayment] = useState<PaymentRes>();
+  const [hasMatchingPayment, setHasMatchingPayment] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const { setSelectedConversationId, setSelectedUserId } =
-    useConversationStore();
+  useEffect(() => {
+    const fetchPayments = async () => {
+      const paymentService = new PaymentService();
+      const res = await paymentService.getAll(token);
+      const data = res.data.data;
+      const matchingPayment = data.some(
+        (payment: any) => payment.return_request_id === request?.id
+      );
+      setHasMatchingPayment(matchingPayment);
+      const matchingPayments = data.filter(
+        (payment: any) => payment.return_request_id === request?.id
+      );
+
+      setPayment(matchingPayments[0]);
+    };
+    if (request) {
+      fetchPayments();
+    }
+  }, [request]);
+
   const navigate = useNavigate();
   useEffect(() => {
     const roomService = new RequestService();
@@ -49,39 +67,32 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
     if (requestId) fetchRequest();
   }, [requestId]);
 
-  const handleStartConversation = async () => {
+  const handleConfirmPayment = async () => {
+    if (!payment) return;
+    setLoading(true);
     try {
-      if (request?.created_user) {
-        setSelectedUserId(request.created_user.id);
-        setSelectedConversationId(null);
-        navigate("/chat");
-      }
-    } catch (error) {
-      console.error("Error starting conversation:", error);
-      toast.error("Đã xảy ra lỗi khi bắt đầu cuộc trò chuyện.");
+      const paymentService = new PaymentService();
+      await paymentService.confirmPayment(token, payment.id);
+      toast.success("Xác nhận thanh toán thành công.");
+    } catch (error: any) {
+      toast.error(error.message || "Lỗi khi xác nhận thanh toán.");
+    } finally {
+      setLoading(false);
     }
   };
-
   const handleReturnDeposit = async () => {
     navigate("/payment/info", { state: { returnID: request?.id } });
   };
-  const handleAcceptRequest = async () => {
+  const handleRating = async () => {
     try {
       if (!request) {
         toast.error("Thông tin không đủ để xử lý yêu cầu.");
         return;
       }
 
-      const requestService = new RequestService();
-      await requestService.approveReturnRequest(cookies.token, request.id);
-
-      toast.success("Yêu cầu trả phòng đã được tiếp nhận!");
-
-      setTimeout(() => {
-        navigate("/return-request/success", {
-          state: { tenantID: request.created_user.id },
-        });
-      }, 500);
+      navigate("/return-request/success", {
+        state: { roomID: request.room.id, landlordID: request.room.owner },
+      });
     } catch (error) {
       console.error("Error accepting request:", error);
       toast.error("Đã xảy ra lỗi khi tiếp nhận yêu cầu.");
@@ -91,11 +102,104 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
   if (request?.total_return_deposit) {
     total_return = request?.total_return_deposit - request?.deduct_amount;
   }
-  console.log(total_return);
+  console.log(request);
   if (!requestId) return <div></div>;
 
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
+      {hasMatchingPayment && (
+        <div className="mb-5">
+          <div className="flex justify-between">
+            <div className="flex space-x-3">
+              <h2 className="text-xl font-bold mb-3">Thông tin hoàn cọc</h2>
+              <div
+                className={`flex items-center space-x-2 ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green bg-[#E9FFE8]"}  px-3 py-1 rounded-sm text-sm font-medium `}
+              >
+                <img
+                  src={payment?.status == 0 ? clock : checked}
+                  className="w-5"
+                  alt=""
+                />
+                <p>
+                  {payment?.status === 0 ? "Chờ xác nhận" : "Đã thanh toán"}
+                </p>
+              </div>
+            </div>
+
+            {payment?.status === 0 && (
+              <div>
+                <Button
+                  onClick={handleConfirmPayment}
+                  className="w-full bg-blue-60 text-base font-medium text-[#fff] p-5 rounded-[100px]"
+                >
+                  Xác nhận đã nhận lại cọc
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="text-[12px] text-gray-20 mb-4">
+            Thời gian tạo: {formatDateTime(payment?.paid_time)}
+          </div>
+          <div className="border border-blue-95 rounded-lg p-6 mt-8 text-left">
+            <h2 className="text-lg text-gray-20 font-semibold mb-4">
+              Chi tiết giao dịch
+            </h2>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-20">Trạng thái</span>
+                <span
+                  className={` text-xs font-bold ${payment?.status === 0 ? "bg-gray-90 text-gray-40" : " text-green bg-[#E9FFE8]"} rounded-full px-3 py-1`}
+                >
+                  {payment?.status === 0 ? "Chờ xác nhận" : "Đã thanh toán"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-20">Mã giao dịch</span>
+                <span className="text-blue-20 font-bold flex items-center">
+                  {payment?.code}
+                  <button className="ml-2 text-blue-600">
+                    <CopyOutlined />
+                  </button>
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-20">Thời gian</span>
+                <span className="text-gray-20 font-semibold">
+                  {payment?.paid_time
+                    ? formatDateTime(payment?.paid_time)
+                    : "Chưa thanh toán"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-20">Người giao dịch</span>
+                <span className="text-gray-20 font-semibold">
+                  {payment?.sender_name}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-20">Tổng thanh toán</span>
+                <span className="text-gray-20 font-semibold">
+                  {toCurrencyFormat(payment?.amount)}đ
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-20">Phương thức</span>
+                <span className="text-gray-20 font-semibold">Chuyển khoản</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-20">Minh chứng</span>
+                <div className="border mt-2 rounded-lg overflow-hidden w-[70px]">
+                  <img
+                    src={payment?.evidence_image || ""}
+                    alt="Minh chứng chuyển khoản"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex justify-start">
         <h3 className="font-bold text-gray-20 text-lg mr-8">
           Yêu cầu #{request?.contract_id}
@@ -174,11 +278,20 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
             </ul>
           </div>
           <h3 className="text-gray-60 text-start text-xs my-4">
-            Bạn có 7 ngày kể từ ngày người thuê trả phòng để kiểm tra và xác
-            nhận tình trạng phòng cũng như ghi nhận hư hại (nếu có). Sau thời
-            gian này, hệ thống sẽ tự động xác nhận việc trả phòng đã hoàn tất.
+            Bạn có 7 ngày kể từ ngày trả phòng để chủ nhà kiểm tra và xác nhận
+            tình trạng phòng cũng như ghi nhận hư hại (nếu có). Sau thời gian
+            này, hệ thống sẽ tự động xác nhận việc trả phòng đã hoàn tất và hoàn
+            tiền cọc nếu không có vấn đề phát sinh.
           </h3>
-          {request?.status === 0 && (
+          {request?.status === 2 && (
+            <Button
+              onClick={handleRating}
+              className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
+            >
+              Đánh giá phòng
+            </Button>
+          )}
+          {/* {request?.status === 0 && (
             <Button
               onClick={handleAcceptRequest}
               className="w-full bg-blue-60 text-[#fff] rounded-[100px] py-4"
@@ -193,7 +306,7 @@ const RequestDetails = ({ requestId }: RequestDetailsProps) => {
             >
               Hoàn trả tiền cọc
             </Button>
-          )}
+          )} */}
         </div>
         <div className="w-1/2">
           <div className="mt-4 border border-blue-95 p-5 rounded-xl ">

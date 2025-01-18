@@ -45,7 +45,7 @@ const RequestListTenant = ({ onRequestSelect }: RequestListProps) => {
       <div className="mt-2 space-y-3">
         {requests.map((item) => (
           <div
-            className="flex justify-between items-center hover:bg-blue-98 cursor-pointer focus:border-none p-5 rounded-md border border-gray-90"
+            className="flex justify-between items-center hover:bg-blue-98 cursor-pointer focus:border-none p-4 rounded-md border border-gray-90"
             key={item.id}
             onClick={() => onRequestSelect(item)}
           >
@@ -56,7 +56,7 @@ const RequestListTenant = ({ onRequestSelect }: RequestListProps) => {
                 className="w-10 h-10 object-cover rounded-full"
               />
               <div>
-                <p className="font-semibold text-gray-20 text-sm">
+                <p className="font-semibold text-gray-20 text-sm truncate max-w-40">
                   {item.room.title}
                 </p>
                 <p className="text-xs text-gray-40">

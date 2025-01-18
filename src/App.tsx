@@ -122,14 +122,14 @@ function App() {
           path="/return-request/success"
           element={<ConfirmationSuccess />}
         />
-        <Route
+        {/* <Route
           path="/return-request/manage"
           element={
             <PrivateRoute>
               <ReturnRequestMangement />
             </PrivateRoute>
           }
-        />
+        /> */}
         <Route path="filter" element={<Filter />} />
         <Route
           path="/contract/create"

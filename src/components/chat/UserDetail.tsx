@@ -33,7 +33,7 @@ const UserDetail = () => {
         />
         <span className="text-lg font-semibold">{senderUser?.full_name}</span>
         <span className="text-sm text-gray-500">
-          {senderUser?.role === 1 ? "Chủ nhà" : "Khách thuê"}
+          {senderUser?.role === 1 ? "Chủ nhà" : senderUser?.role === 1 ?"Khách thuê" :""}
         </span>
       </div>
       {senderUser?.role === 1 && (

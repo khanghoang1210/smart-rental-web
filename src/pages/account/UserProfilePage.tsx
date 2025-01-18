@@ -55,7 +55,7 @@ const ProfilePage: React.FC = () => {
           </div>
           <section className="">
             <h2 className="text-xl font-semibold mb-4 text-gray-20">
-              Bài đánh giá chủ nhà
+              Bài đánh giá
             </h2>
             <div className="flex space-x-4">
               {user.rating_info.map((rating, index) => (
@@ -71,9 +71,9 @@ const ProfilePage: React.FC = () => {
               ))}
             </div>
           </section>
-          <section>
+          {userInfo?.role === 1 &&(<section>
             <PostedRoom title={" Danh sách phòng trọ"} />
-          </section>
+          </section>)}
         </div>
       </div>
     </>

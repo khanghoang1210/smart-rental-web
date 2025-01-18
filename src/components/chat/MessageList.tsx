@@ -108,9 +108,14 @@ const MessageList = () => {
                 {user ? user.full_name : "Unknown User"}
               </span>
               <span className="text-sm text-gray-60">
+                {userInfo?.id === conversation.last_message.sender_id
+                  ? "Bạn: "
+                  : ""}
                 {conversation.last_message.type === 2
                   ? "Yêu cầu được chấp nhận"
-                  : conversation.last_message.content}
+                  : conversation.last_message.type === 3
+                    ? "Đã gửi một ảnh"
+                    : conversation.last_message.content}
               </span>
             </div>
             <span className="ml-auto text-xs text-gray-80">
