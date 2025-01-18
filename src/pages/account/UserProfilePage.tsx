@@ -9,18 +9,21 @@ import { useAppStore } from "@/store";
 import { timeAgo } from "@/utils/converter";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { useLocation } from "react-router-dom";
 
 const ProfilePage: React.FC = () => {
   const [cookies] = useCookies(["token"]);
   const token = cookies.token;
   const { userInfo } = useAppStore();
   const [user, setUser] = useState<UserDetailRes>();
+  const location = useLocation();
+  const { userID } = location.state || {};
 
   useEffect(() => {
     const userService = new UserService();
     const fetchUser = async () => {
       try {
-        const response = await userService.getUserByID(userInfo?.id, token);
+        const response = await userService.getUserByID(userID, token);
         setUser(response.data.data);
       } catch (error) {
         console.error("Failed to fetch user data", error);
@@ -62,6 +65,7 @@ const ProfilePage: React.FC = () => {
                 <ReviewCard
                   key={index}
                   reviewerName={rating.rater_name}
+                  reviewerAvatar={rating.rater_avatar}
                   reviewText={rating.comment}
                   rating={rating.rate}
                   pros={rating.happy}

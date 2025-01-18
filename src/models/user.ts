@@ -18,6 +18,7 @@ export interface BankInfoRes {
 
 export interface RatingInfo {
   rater_name: string;
+  rater_avatar: string;
   created_at: string;
   rate: number;
   comment: string;

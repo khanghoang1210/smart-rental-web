@@ -39,6 +39,10 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
   const handleCreateContract = async () => {
     navigate("/contract/create", { state: request });
   };
+
+  const handleOnClickInfo = () => {
+    navigate("/profile", {state: {userID: request?.sender.id}})
+  }
   const handleAcceptRequest = async () => {
     try {
       if (!request) {
@@ -170,7 +174,7 @@ const RequestDetails = ({ request }: RequestDetailsProps) => {
       </div>
       <p className="text-gray-40 text-xs mt-3">13:49 17/09/2023</p>
       {userInfo?.role === 1 && (
-        <div className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
+        <div onClick={handleOnClickInfo} className="mt-4 border space-y-3 border-blue-95 p-5 rounded-xl">
           <h4 className="font-semibold text-sm text-gray-20">
             Thông tin người thuê
           </h4>

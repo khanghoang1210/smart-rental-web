@@ -29,7 +29,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
                 <img
                     src={reviewerAvatar}
                     alt="Reviewer Avatar"
-                    className="w-10 h-10 rounded-full mr-3"
+                    className="w-10 h-10 rounded-full mr-3 object-cover"
                 />
                 <div>
                     <h4 className="font-bold text-sm text-gray-20">{reviewerName}</h4>

@@ -105,6 +105,10 @@ const RoomDetail = () => {
     }
   };
 
+  const handleOnClickInfo = () => {
+    navigate("/profile", { state: { userID: user?.id } });
+  };
+
   const handleSubmit = async (values: FormValues) => {
     if (!roomId) {
       toast.error("Invalid room ID");
@@ -363,7 +367,7 @@ const RoomDetail = () => {
 
         <FeaturedRooms title="Đề xuất" />
         <div className="flex items-center justify-center">
-          <div className="flex justify-start items-center space-x-12 mr-24">
+          <div onClick={handleOnClickInfo} className="flex justify-start items-center space-x-12 mr-24 cursor-pointer">
             <LandlordInfo
               name={user?.full_name}
               totalRoom={user?.total_room}

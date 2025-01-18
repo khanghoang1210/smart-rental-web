@@ -18,8 +18,8 @@ const Index: React.FC = () => {
   const [indexData, setIndexData] = useState<any>(null);
   const [inputIndex, setInputIndex] = useState<number | null>(null);
 
-  const openModal = (roomNumber: number) => {
-    setSelectedRoom(roomNumber);
+  const openModal = (roomId: number) => {
+    setSelectedRoom(roomId);
     setIsModalOpen(true);
   };
 
@@ -35,7 +35,7 @@ const Index: React.FC = () => {
       const data = {
         room_id: indexData
           ?.flatMap((d: any) => d.index_info)
-          ?.find((info: any) => info.room_number === selectedRoom)?.room_id,
+          ?.find((info: any) => info.room_id === selectedRoom)?.room_id,
 
         month: getMonthYear(selectedPeriod).month,
         year: getMonthYear(selectedPeriod).year,
@@ -58,6 +58,14 @@ const Index: React.FC = () => {
     const [month, year] = period.split("/").map(Number);
     return { month, year };
   };
+
+  const roomNumber = indexData?.find((data: any) =>
+    data.index_info.some(
+      (info: any) => info.room_id === selectedRoom
+    )
+  )?.room_number
+
+  console.log(roomNumber)
 
   const fetchIndexData = async (type: string, period: string) => {
     const { month, year } = getMonthYear(period);
@@ -152,7 +160,7 @@ const Index: React.FC = () => {
                   <div>
                     {info.new_index === null ? (
                       <button
-                        onClick={() => openModal(info.room_number)}
+                        onClick={() => openModal(info.room_id)}
                         className="px-2 py-1 text-blue-40 bg-blue-98 text-sm font-semibold rounded"
                       >
                         Ghi
@@ -189,14 +197,14 @@ const Index: React.FC = () => {
                 {
                   indexData?.find((data: any) =>
                     data.index_info.some(
-                      (info: any) => info.room_number === selectedRoom
+                      (info: any) => info.room_id === selectedRoom
                     )
                   )?.address
                 }
               </p>
             </div>
             <p className="font-semibold text-blue-40">
-              PHÒNG SỐ {selectedRoom}
+              PHÒNG SỐ 1
             </p>
           </div>
           <div className="text-gray-40">
